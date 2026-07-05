@@ -4,3 +4,8 @@ qa-output-*/
 *.log
 .DS_Store
 Thumbs.db
+.env
+.env.*
+gsc-oauth-client.json
+gsc-token.json
+search-console-private/
