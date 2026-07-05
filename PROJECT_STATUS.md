@@ -5295,3 +5295,154 @@ Chrome連携:
 - GitHubリポジトリが既にあるか
 - Netlify側でGitHub連携が使える状態か
 - 自動デプロイ対象ブランチを `main` にするか
+## 2026-07-05 Search Console API 初回認証とレポート作成
+
+実施内容:
+
+- Google OAuthの初回認証を完了
+- `gsc-token.json` の保存を確認
+- `node tools/search-console-report.mjs` で初回レポートを作成
+- レポート保存先: `search-console-private/reports/2026-07-05.md`
+
+初回レポート概要:
+
+- 対象日: 2026-07-02
+- 全体: クリック0 / 表示1 / CTR 0.00% / 平均順位9.0
+- 直近対象期間: 2026-06-26 〜 2026-07-02
+- 表示が確認されたページ:
+  - `/`
+  - `/first-time.html`
+  - `/grade1-addition-word-problems.html`
+  - `/grade3-division-remainder.html`
+  - `/summer-2026.html`
+- 表示が確認された検索語:
+  - `site:netlify.app`
+  - `足し算 文章題 1年生`
+
+URL検査:
+
+- `/`: PASS / 送信して登録されました
+- `/first-time.html`: PASS / 送信して登録されました
+- `/step-calculation.html`: NEUTRAL / URL が Google に認識されていません
+- `/grade2-kuku-word-problems.html`: PASS / 送信して登録されました
+
+判断:
+
+- Search Console APIでの自動レポート取得は成功
+- `step-calculation.html` はまだGoogleに認識されていないため、Search Consoleの割り当てが戻ったらURL検査から登録リクエストを優先する
+- 検索表示はまだ少ないため、クリック0は現時点では自然。表示回数の増加をまず見る
+
+次の候補:
+
+1. `step-calculation.html` をSearch Console画面で登録リクエスト
+2. 毎朝 `node tools/search-console-report.mjs` を実行してレポート確認
+3. Windowsタスクスケジューラで毎朝自動実行を設定
+## 2026-07-05 AI社員会議
+
+議題:
+
+- 今日このあと何を優先するか
+- 自動デプロイ、Search Console API、Substack自動化希望をどう運用に落とすか
+
+現在地:
+
+- GitHub連携とNetlify自動デプロイは成功
+- Search Console APIの初回認証と初回レポート作成は成功
+- `step-calculation.html` はまだGoogleに認識されていない
+- Search Consoleの登録リクエスト割り当てはまだ戻っていない
+- `毎日ステップ計算` は17ステップの機械チェック済みだが、ブラウザ上の操作確認は未完
+
+担当別意見:
+
+- SEO担当: `step-calculation.html` の登録リクエストは割り当て復旧待ち。今日は内部リンクと発信でGoogleが見つけやすい状態を維持するのがよい。
+- UX担当: 17ステップ化で選択肢が増えたので、スマホで見づらくないか確認したい。特に「あまり」の入力欄を実画面で確認したい。
+- 教材担当: 出題チェックは通っている。次は、1年生から3年生への難易度の流れが画面上でも自然か確認したい。
+- QA担当: 今日の最優先はブラウザでの操作確認。採点、答え表示、商とあまり入力、印刷表示を確認したい。
+- 収益化担当: 今日は広告や収益化を増やさない。信頼と教材品質を優先する。
+- 分析担当: APIレポートは成功。毎朝実行できるようにして、数字確認を習慣化したい。
+- 広告運用担当: 発信は「毎日少しずつ進める無料計算ドリル」軸がよい。XとSubstackの下書きに使える。
+- LP改善担当: トップと初めての方からステップ計算への導線はある。今日は大きく触らず、クリック後のページ品質を優先する。
+- 編集長: Substack自動化は、完全自動公開ではなく「ネタ整理と下書き生成まで」を標準化する。公開は社長確認を残す。
+
+対立点:
+
+- SEO担当は早くSearch Console登録を進めたい
+- QA担当とUX担当は、登録より先に実画面確認を優先したい
+- 編集長は、割り当てが戻らない状態でSearch Consoleに時間を使い続けるより、今日できる品質確認と発信準備を優先すべきと判断
+
+編集長判断:
+
+- 採用:
+  - 17ステップのブラウザ操作確認
+  - Search Consoleレポートの定期運用準備
+  - Substack下書き生成フローの型作り
+- 保留:
+  - `step-calculation.html` のSearch Console登録リクエスト
+  - 完全自動のSubstack公開
+- やらない:
+  - 今日さらに新教材を増やす
+  - Search Consoleの割り当て復旧待ちで時間を溶かす
+
+今日やること:
+
+1. `毎日ステップ計算` のブラウザ操作確認
+2. Search Consoleレポートを毎朝実行できる形に近づける
+3. Substack下書き用の標準フローを作る
+4. 余力があれば、X投稿案またはSubstackネタを作る
+
+明日の候補:
+
+- Search Console割り当てが戻ったら `step-calculation.html` を登録リクエスト
+- Search Console自動レポートの数字を見て、表示が出たページの改善を決める
+- Substack記事をChrome連携で下書き化する
+
+未確認事項:
+
+- Chrome連携の安定性
+- ブラウザ上での17ステップ操作確認
+- Windowsタスクスケジューラでの毎朝自動実行
+## 2026-07-05 会議後の実行結果
+
+実施内容:
+
+- `毎日ステップ計算` を一時ローカルサーバーでブラウザ操作確認
+- 通常幅で17ステップ、20問生成、あまり入力、採点、答え表示、50問切替を確認
+- スマホ幅390pxで横スクロールなし、商とあまり入力欄の幅を確認
+- Search Consoleレポートを毎朝7:30に実行するWindowsタスクを作成
+- Substack編集長フロー `SUBSTACK_EDITOR_FLOW.md` を追加
+- Substack下書きブリーフ作成スクリプト `tools/substack-brief.mjs` を追加
+- 今日のSubstackブリーフを `substack-private/2026-07-05-brief.md` に作成
+
+ブラウザQA結果:
+
+- h1: `毎日ステップ計算`
+- ステップ選択肢: 17件
+- 初期問題数: 20問
+- あまりのあるわり算: 商入力20件 / あまり入力20件
+- 採点: 1問入力で `20問中1問正解` を確認
+- 答え表示: 20件表示を確認
+- 50問切替: 50問生成を確認
+- 通常幅: 横スクロールなし
+- スマホ幅390px: 横スクロールなし
+- スマホ幅の商/あまり入力欄: 約109pxずつ
+- ブラウザconsoleエラー: なし
+
+Search Console自動化:
+
+- タスク名: `Keisan Land Search Console Report`
+- 実行時刻: 毎日 7:30
+- 次回実行: 2026-07-06 7:30
+- 実行内容: `node tools/search-console-report.mjs`
+- ログ: `search-console-private/report-run.log`
+
+Substack自動化方針:
+
+- 完全自動公開はしない
+- 自動化するのは、ネタ整理、下書き材料、文末URL整理まで
+- 公開は社長確認を残す
+
+未確認事項:
+
+- 実際のSubstack下書き投入
+- Search Console割り当て復旧後の `step-calculation.html` 登録リクエスト
+- 明朝のタスク自動実行結果
