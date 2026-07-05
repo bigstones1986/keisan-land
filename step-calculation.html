@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="小学1年生から3年生まで使える、反復・スモールステップ型の無料計算ドリルです。足し算、引き算、九九、わり算を少しずつ練習できます。印刷にも対応しています。">
+  <meta name="robots" content="index, follow">
+  <title>毎日ステップ計算｜反復・スモールステップ型の無料計算ドリル｜けいさんランド</title>
+  <link rel="canonical" href="https://keisan-land.netlify.app/step-calculation.html">
+  <link rel="icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page step-page">
+    <section class="app">
+      <ol class="breadcrumb">
+        <li><a href="index.html">けいさんランド</a></li>
+        <li>毎日ステップ計算</li>
+      </ol>
+
+      <div class="title-area">
+        <img class="mascot-image" src="images/plus-land-kun.png" alt="けいさんランドの公式マスコット">
+        <p class="label">反復・スモールステップ型</p>
+        <h1 class="logo-title"><span class="logo-mark">+</span><span>毎日ステップ計算</span></h1>
+        <p class="description">
+          かんたんな計算から少しずつ進む、けいさんランド流の反復ドリルです。小学1年生から3年生まで、足し算、引き算、九九、わり算を無理なく毎日続けられる形にしました。
+        </p>
+        <div class="print-header">
+          <div>
+            <p class="print-brand">けいさんランド</p>
+            <p id="stepPrintSubtitle" class="print-subtitle">毎日ステップ計算</p>
+          </div>
+          <div class="print-student-info">
+            <p>なまえ：________________</p>
+            <p>日付：____年____月____日</p>
+          </div>
+        </div>
+      </div>
+
+      <section class="content-section step-guide-section">
+        <h2>今日のステップを選ぶ</h2>
+        <p class="step-guide-text">
+          はじめはやさしいところからで大丈夫です。90点以上なら次のステップへ、80点未満なら同じステップをもう一度。毎日少しずつ進めることを大切にしています。
+        </p>
+        <div class="step-settings">
+          <label class="setting">
+            <span>ステップ</span>
+            <select id="stepLevelSelect">
+              <optgroup label="小学1年生">
+                <option value="g1-add-5">ステップ1：5までの足し算</option>
+                <option value="g1-add-10">ステップ2：10までの足し算</option>
+                <option value="g1-add-3nums">ステップ3：10までの3つの数</option>
+                <option value="g1-add-20">ステップ4：20までの足し算</option>
+                <option value="g1-add-carry">ステップ5：くり上がりのある足し算</option>
+                <option value="g1-sub-10">ステップ6：10までの引き算</option>
+                <option value="g1-sub-20">ステップ7：20までの引き算</option>
+                <option value="g1-mix-20">ステップ8：20までの足し算・引き算</option>
+              </optgroup>
+              <optgroup label="小学2年生">
+                <option value="g2-add-100">ステップ9：100までの足し算</option>
+                <option value="g2-sub-100">ステップ10：100までの引き算</option>
+                <option value="g2-kuku-2to5">ステップ11：九九 2〜5の段</option>
+                <option value="g2-kuku-6to9">ステップ12：九九 6〜9の段</option>
+                <option value="g2-kuku-all">ステップ13：九九のまとめ</option>
+              </optgroup>
+              <optgroup label="小学3年生">
+                <option value="g3-mul-2digit-1digit">ステップ14：2けた×1けた</option>
+                <option value="g3-div-basic">ステップ15：九九でできるわり算</option>
+                <option value="g3-div-remainder">ステップ16：あまりのあるわり算</option>
+                <option value="g3-mix">ステップ17：3年生の計算まとめ</option>
+              </optgroup>
+            </select>
+          </label>
+          <label class="setting">
+            <span>問題数</span>
+            <select id="stepCountSelect">
+              <option value="10">10問</option>
+              <option value="20" selected>20問</option>
+              <option value="50">50問</option>
+            </select>
+          </label>
+        </div>
+        <p id="stepHelpText" class="step-help-text">5までの足し算から、ゆっくり始めます。</p>
+        <div class="button-area">
+          <button type="button" id="stepNewButton">新しいステップ問題</button>
+          <button type="button" id="stepScoreButton">採点</button>
+          <button type="button" id="stepAnswersButton">答えを表示</button>
+          <button type="button" id="stepPrintButton">印刷</button>
+        </div>
+      </section>
+
+      <div id="stepResultArea" class="result-area" aria-live="polite"></div>
+
+      <ol id="stepQuestionList" class="question-list step-question-list"></ol>
+
+      <div class="button-area bottom-button-area">
+        <button type="button" id="stepBottomScoreButton">採点</button>
+      </div>
+
+      <section class="content-section step-note-section">
+        <h2>けいさんランド流の進め方</h2>
+        <ul class="content-list">
+          <li>時間を急がせず、まずは正しく解けることを大切にします。</li>
+          <li>90点以上なら次へ、80点未満なら同じステップをもう一度練習します。</li>
+          <li>印刷して、毎日の家庭学習や朝学習にも使えます。</li>
+          <li>1年生は足し算・引き算、2年生は100までの計算と九九、3年生はかけ算・わり算へ少しずつ進みます。</li>
+          <li>特定の教材や教室の内容を写すのではなく、けいさんランド独自の出題ルールで作っています。</li>
+        </ul>
+      </section>
+
+      <nav class="drill-links" aria-label="関連ドリル">
+        <h2>関連ドリル</h2>
+        <div class="drill-link-grid">
+          <a href="grade1-addition.html">小学1年生 足し算ドリル</a>
+          <a href="grade1-subtraction.html">小学1年生 引き算ドリル</a>
+          <a href="grade2-kuku.html">小学2年生 九九ドリル</a>
+          <a href="grade3-division.html">小学3年生 わり算ドリル</a>
+          <a href="first-time.html">はじめての方へ</a>
+          <a href="how-to-use.html">使い方を見る</a>
+        </div>
+      </nav>
+
+      <footer class="site-footer">
+        <ul class="footer-links">
+          <li><a href="about.html">運営者情報</a></li>
+          <li><a href="first-time.html">はじめての方へ</a></li>
+          <li><a href="how-to-use.html">使い方</a></li>
+          <li><a href="teacher-print.html">先生向け</a></li>
+          <li><a href="privacy.html">プライバシーポリシー</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+        <p class="footer-note">けいさんランドは、家庭学習や復習に使える無料の計算ドリルサイトです。</p>
+      </footer>
+    </section>
+  </main>
+
+  <script src="step-calculation.js"></script>
+</body>
+</html>
