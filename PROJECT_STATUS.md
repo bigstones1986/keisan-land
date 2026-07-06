@@ -5648,3 +5648,22 @@ Search Consoleレポート結果:
 - Search Consoleの割り当て復旧
 - `step-calculation.html` のGoogle認識状況
 - 明日点検する教材ページ
+
+## 2026-07-06 Substack #10 公開完了
+
+実施内容:
+
+- 社長より、Substack #10 は公開済みと共有あり
+- 明日の候補から「#10公開」を外し、公開後のX投稿とSearch Console確認を優先する方針に更新
+
+確認結果:
+
+- 公開後のX投稿は未作成
+- Search Consoleの割り当て復旧は未確認
+
+次の候補:
+
+1. Substack #10 公開後のX投稿文を作成
+2. Search Console割り当て復旧確認
+3. `step-calculation.html` の登録リクエスト
+4. 既存教材1ページの品質点検
