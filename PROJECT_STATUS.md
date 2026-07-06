@@ -5558,3 +5558,22 @@ Search Consoleレポート結果:
 - Substack #11 の実際の下書き投入
 - X投稿の実投稿
 - Search Consoleの登録リクエスト復旧
+## 2026-07-06 Substack #10 下書き作成
+
+実施内容:
+
+- Chrome連携でSubstackの投稿編集画面を開いた
+- `dev-diary-10-substack-ready.md` を元に、開発日記 #10 の下書きを作成
+- タイトルは `クリックされない日にも、できることはある（開発日記 #10）`
+- 文末に `けいさんランド`、`https://keisan-land.netlify.app`、`https://keisan-land.netlify.app/first-time.html` が入っていることを確認
+- 公開ボタンは押していない
+
+確認結果:
+
+- Substack画面上で `Saved` 表示を確認
+- 下書きURL: `https://stone1986.substack.com/publish/post/205497214`
+
+未確認事項:
+
+- 社長による最終確認
+- 公開後のX投稿
