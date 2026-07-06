@@ -30,7 +30,7 @@ async function main() {
   const date = today();
   const status = await readFile("PROJECT_STATUS.md", "utf8");
   const report = await latestReport();
-  const recentStatus = tail(status, "## 2026-07-05", 9000);
+  const recentStatus = status.slice(-9000);
 
   const brief = `# Substack下書きブリーフ ${date}
 

@@ -1,9 +1,10 @@
-﻿import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 const CLIENT_FILE = "gsc-oauth-client.json";
 const TOKEN_FILE = "gsc-token.json";
 const REPORT_DIR = "search-console-private/reports";
 const SITE_URL = process.env.GSC_SITE_URL || "https://keisan-land.netlify.app/";
+const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 const DEFAULT_INSPECTION_URLS = [
   "https://keisan-land.netlify.app/",
   "https://keisan-land.netlify.app/first-time.html",
@@ -12,13 +13,11 @@ const DEFAULT_INSPECTION_URLS = [
 ];
 
 function formatDate(date) {
-  return date.toISOString().slice(0, 10);
+  return new Date(date.getTime() + JST_OFFSET_MS).toISOString().slice(0, 10);
 }
 
 function daysAgo(days) {
-  const date = new Date();
-  date.setUTCDate(date.getUTCDate() - days);
-  return formatDate(date);
+  return formatDate(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
 }
 
 function getClientConfig(raw) {

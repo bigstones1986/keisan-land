@@ -5446,3 +5446,115 @@ Substack自動化方針:
 - 実際のSubstack下書き投入
 - Search Console割り当て復旧後の `step-calculation.html` 登録リクエスト
 - 明朝のタスク自動実行結果
+## 2026-07-06 AI社員会議
+
+議題:
+
+- 今日の作業優先順位を決める
+- Search Console自動レポート、ステップ計算、Substack下書き化をどう進めるか
+
+現在地:
+
+- Netlify自動デプロイは成功済み
+- Search Console APIの認証とレポート取得は成功済み
+- Windowsタスクスケジューラの毎朝7:30実行は動作確認できた
+- ただし、2026-07-06朝の実行結果が `2026-07-05.md` に保存されており、レポート日付がUTC基準になっている可能性あり
+- `step-calculation.html` はSearch Console API上ではまだGoogleに認識されていない
+- Search Consoleの登録リクエスト割り当ては社長側でまだ戻っていない
+- `毎日ステップ計算` のブラウザQAは通常幅・スマホ幅ともに通過済み
+- Substack下書きブリーフ作成フローは作成済み
+
+担当別意見:
+
+- SEO担当: まずSearch Consoleレポートの日付ズレを直す。数字を見る仕組みがズレると判断もズレる。`step-calculation.html` の登録リクエストは割り当て復旧待ち。
+- UX担当: ステップ計算のスマホ確認は通過済み。今日は大きなUI変更より、本番確認と発信準備がよい。
+- 教材担当: 出題ロジックとブラウザQAは通っているため、今日は新教材を増やさず、ステップ計算を発信できる状態にする。
+- QA担当: Search Consoleレポートの日付修正後、再実行して保存先と内容を確認したい。その後、本番URL確認を行う。
+- 収益化担当: 収益化はまだ触らない。無料・登録不要・安全な学習サイトとしての信頼作りを優先する。
+- 分析担当: 今日の最優先は自動レポートの信頼性。毎朝の数字が正しい日付で残るようにする。
+- 広告運用担当: ステップ計算はXとSubstackで紹介しやすい。訴求は「毎日少しずつ」「1年生から3年生」「登録不要・無料」。
+- LP改善担当: トップと初めての方ページから導線はある。今日はLP改修より、発信とGoogle認識待ちの整理がよい。
+- 編集長: 今日のゴールは、運用自動化の小さな不具合を直し、Substack記事を下書き化できる状態まで進めること。
+
+対立点:
+
+- SEO担当は登録リクエストを進めたい
+- 分析担当とQA担当は、まず自動レポートの日付ズレ修正を優先したい
+- 編集長は、割り当てが戻らない作業に時間を使わず、今日直せる自動化の品質を優先する
+
+編集長判断:
+
+- 採用:
+  - Search Consoleレポートの日付を日本時間基準に修正
+  - 修正後にレポートを再実行して保存先を確認
+  - `step-calculation.html` の本番確認
+  - Substack #11 の下書き準備
+- 保留:
+  - Search Consoleの登録リクエスト
+  - 新教材追加
+- やらない:
+  - Substackの完全自動公開
+  - Search Console割り当て待ちで何度も手動確認すること
+
+今日やること:
+
+1. Search Console自動レポートの日付ズレ修正
+2. レポート再実行と保存確認
+3. ステップ計算の本番確認
+4. Substack #11 の下書きブリーフから記事化準備
+5. 余力があればX投稿案を作る
+
+明日の候補:
+
+- Search Console割り当てが戻ったら `step-calculation.html` を登録リクエスト
+- 朝レポートでGoogle認識状況を確認
+- Substack公開後にX投稿
+
+未確認事項:
+
+- `step-calculation.html` のGoogle認識状況の変化
+- Netlify自動デプロイ後の本番確認
+- Substack下書き投入のChrome連携安定性
+## 2026-07-06 実行結果
+
+実施内容:
+
+- Search Console自動レポートの日付処理を日本時間基準に修正
+- `tools/search-console-report.mjs` の `formatDate` / `daysAgo` をJST基準に変更
+- `tools/substack-brief.mjs` の日付処理をJST基準に変更
+- Substackブリーフが常に `PROJECT_STATUS.md` の最新末尾を使うように修正
+- Search Consoleレポートを再実行し、`search-console-private/reports/2026-07-06.md` を作成
+- Substackブリーフを再作成し、`substack-private/2026-07-06-brief.md` を作成
+- `step-calculation.html` と `step-calculation.js` の本番反映を確認
+- Substack #11 下書き `dev-diary-11-substack-ready.md` を作成
+- X投稿案 `x-posts-2026-07-06.md` を作成
+
+Search Consoleレポート結果:
+
+- レポート日付: 2026-07-06
+- 対象日: 2026-07-03
+- 全体: クリック0 / 表示2 / CTR 0.00% / 平均順位17.0
+- `step-calculation.html`: URL が Google に認識されていません
+- 判断: 表示回数は少し増えたが、まだ母数が小さいため観測継続
+
+本番確認:
+
+- `https://keisan-land.netlify.app/step-calculation.html`: 200 OK
+- title確認OK
+- canonical確認OK
+- `stepHelpText` 反映あり
+- `step-calculation.js`: 200 OK
+- `quotient-input` / `remainder-input` 反映あり
+- `sitemap.xml`: 200 OK、`step-calculation.html` あり
+
+編集長判断:
+
+- 今日の積み上げは完了
+- Search Console登録リクエストは割り当て復旧待ち
+- 次はSubstack #11をChrome連携で下書き投入する候補
+
+未確認事項:
+
+- Substack #11 の実際の下書き投入
+- X投稿の実投稿
+- Search Consoleの登録リクエスト復旧
