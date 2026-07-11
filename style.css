@@ -1146,11 +1146,11 @@ button:focus-visible {
 
   .lp-hero-media {
     position: relative;
-    height: 200px;
+    height: 170px;
   }
 
   .lp-hero-media::after {
-    background: linear-gradient(180deg, rgba(247, 249, 252, 0.06) 0%, rgba(247, 249, 252, 0.84) 100%);
+    background: linear-gradient(180deg, rgba(247, 249, 252, 0.02) 0%, rgba(247, 249, 252, 0.22) 62%, rgba(247, 249, 252, 0.68) 100%);
   }
 
   .lp-hero-content {
