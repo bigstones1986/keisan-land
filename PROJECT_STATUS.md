@@ -5770,6 +5770,12 @@ Search Consoleレポート結果:
 3. JSON、全ページSEO項目、重複を確認
 4. 本番へ反映して200 OKと内容を確認
 
+確認結果:
+
+- 本番トップページは200 OK
+- 本番HTMLにWebSiteとEducationalApplicationの2種類の構造化データが反映済み
+- WebSiteのサイト名は `けいさんランド`
+
 明日の候補:
 
 1. Search Console自動レポートで表示回数の変化を確認
@@ -5778,6 +5784,5 @@ Search Consoleレポート結果:
 
 未確認事項:
 
-- 本番反映後のWebSite構造化データ
 - Googleが検索結果のサイト名として採用するか
 - SEO変更後の表示回数、CTR、平均順位
