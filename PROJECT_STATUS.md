@@ -5696,6 +5696,7 @@ Search Consoleレポート結果:
 - title、h1、canonicalは各1つ
 - 変更対象ページのローカルリンク切れなし
 - `git diff --check` で内容上のエラーなし
+- 本番ページは200 OK、新しいtitle、h1、BreadcrumbListの反映を確認
 
 判断:
 
@@ -5705,7 +5706,7 @@ Search Consoleレポート結果:
 
 未確認事項:
 
-- 本番デプロイ後のスマホ表示
+- 本番ページのスマホ実機表示
 - Google再クロール後の検索結果タイトル
 - `足し算 文章題 1年生` の表示回数、CTR、平均順位の変化
 - `step-calculation.html` のGoogle認識状況
