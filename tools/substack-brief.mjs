@@ -71,7 +71,7 @@ ${recentStatus}
 https://keisan-land.netlify.app/
 
 毎日ステップ計算はこちら:
-https://keisan-land.netlify.app/step-calculation.html
+https://keisan-land.netlify.app/step-calculation
 `;
 
   await mkdir(OUTPUT_DIR, { recursive: true });

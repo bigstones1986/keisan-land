@@ -8,6 +8,7 @@ const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 const DEFAULT_INSPECTION_URLS = [
   "https://keisan-land.netlify.app/",
   "https://keisan-land.netlify.app/first-time.html",
+  "https://keisan-land.netlify.app/step-calculation",
   "https://keisan-land.netlify.app/step-calculation.html",
   "https://keisan-land.netlify.app/grade2-kuku-word-problems.html"
 ];
@@ -167,9 +168,9 @@ async function main() {
   ]), ["検索語", "クリック", "表示", "CTR", "平均順位"]);
 
   const inspectionTable = table(inspections.map((item) => item.ok
-    ? [item.url, item.verdict, item.coverageState, item.lastCrawlTime]
-    : [item.url, "ERROR", item.error, "-"]
-  ), ["URL", "判定", "状態", "最終クロール"]);
+    ? [item.url, item.verdict, item.coverageState, item.lastCrawlTime, item.googleCanonical, item.userCanonical]
+    : [item.url, "ERROR", item.error, "-", "-", "-"]
+  ), ["URL", "判定", "状態", "最終クロール", "Google canonical", "指定canonical"]);
 
   const reportDate = formatDate(new Date());
   const report = `# Search Console 自動レポート ${reportDate}\n\n対象サイト: ${SITE_URL}\n\n## ${targetDate} の全体\n\n${metricLine(summary.rows?.[0])}\n\n## 直近対象期間\n\n${sevenDaysStart} 〜 ${sevenDaysEnd}\n\n## ページ別 上位\n\n${pageTable}\n\n## 検索語 上位\n\n${queryTable}\n\n## URL検査\n\n${inspectionTable}\n\n## 今日見るポイント\n\n- 表示回数が増えているページがあれば、タイトルや導線を強化する\n- 表示はあるのにクリックがない検索語は、検索結果での見え方を見直す\n- URL検査で登録されていない重要ページは、Search Console画面から手動で登録リクエストする\n`;

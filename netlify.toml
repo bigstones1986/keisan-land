@@ -2,6 +2,12 @@
   publish = "."
   command = ""
 
+[[redirects]]
+  from = "/step-calculation.html"
+  to = "/step-calculation"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]

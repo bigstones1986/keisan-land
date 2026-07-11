@@ -5910,3 +5910,39 @@ Search Consoleレポート結果:
 - Search Consoleの手動登録リクエスト割り当てが復旧しているか
 - X投稿案2の実投稿
 - 本日品質確認する教材の最終結果
+
+## 2026-07-12 実行結果
+
+Search Console計測改善:
+
+- 自動レポートのURL検査対象に `/step-calculation` を追加
+- URL検査表にGoogle canonicalと指定canonicalを追加
+- 改善後のレポートを再実行
+- `/step-calculation` はPASS、最終クロール2026-07-09、Google canonicalは拡張子なしURL
+- `/step-calculation.html` はGoogle未認識
+- サイト指定canonicalは `.html` だったため、Googleの選択とずれていることを確認
+
+URL統一:
+
+- 正式URLを `https://keisan-land.netlify.app/step-calculation` に変更
+- `.html` から拡張子なしURLへの301転送をNetlify設定へ追加
+- canonical、sitemap、トップページ、はじめての方へ、SubstackブリーフのURLを統一
+- sitemapのlastmodを2026-07-12へ更新
+- Search Consoleレポートでは当面2URLを比較監視する
+
+教材品質確認:
+
+- 対象: `grade1-addition-word-problems.html`
+- 問題10問、答え10件を確認
+- 10問すべての計算結果と助数詞が正しい
+- スマホ幅390pxで横スクロールなし
+- title、h1、説明文、印刷ボタン、問題表示に文字切れなし
+- 印刷ボタンは `window.print()` に接続済み
+- 印刷時は操作ボタン、関連リンク、パンくず、フッターを非表示
+- 問題と答えは別ページになり、各問題は途中で分割されない設定を確認
+
+未確認事項:
+
+- 自動デプロイ後の301転送、canonical、sitemap
+- X投稿案2の実投稿
+- Search Consoleが次回クロール後も拡張子なしURLを正式URLとして維持するか
