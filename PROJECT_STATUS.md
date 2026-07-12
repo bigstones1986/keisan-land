@@ -5943,6 +5943,22 @@ URL統一:
 
 未確認事項:
 
-- 自動デプロイ後の301転送、canonical、sitemap
-- X投稿案2の実投稿
 - Search Consoleが次回クロール後も拡張子なしURLを正式URLとして維持するか
+
+本番確認:
+
+- `.html` URLは301で `/step-calculation` へ転送
+- `/step-calculation` は200 OK
+- canonicalは `https://keisan-land.netlify.app/step-calculation`
+- sitemapは拡張子なしURLを掲載し、`.html` URLは掲載していない
+
+X投稿:
+
+- 2026-07-12にX投稿案2を投稿
+- 投稿内容は小学1年生向け足し算文章題10問、登録不要、無料、印刷利用、答え掲載の案内
+- 投稿URL: https://x.com/TakaAirdropblo1/status/2076405483309801790
+
+編集長最終判断:
+
+- 今日予定した計測改善、2URL比較、教材品質確認、X投稿をすべて完了
+- 追加のtitle変更、新教材、広告追加は行わず、次回レポートで変化を観測する
