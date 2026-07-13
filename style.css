@@ -291,6 +291,28 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.quality-note {
+  margin: 12px 0 0;
+  color: #35506d;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.learning-step-list strong {
+  color: #17395f;
+}
+
+.answer-list strong,
+.answer-explanation {
+  display: block;
+}
+
+.answer-explanation {
+  margin-top: 4px;
+  color: #35506d;
+  font-size: 15px;
+}
+
 .content-button {
   width: fit-content;
   margin-top: 16px;
@@ -1434,6 +1456,17 @@ button:focus-visible {
   .word-problems-page .answer-line {
     color: #000000;
     font-weight: 700;
+  }
+
+  .word-problems-page .quality-note {
+    color: #000000;
+    font-size: 9pt;
+  }
+
+  .word-problems-page .answer-explanation {
+    margin-top: 1mm;
+    color: #000000;
+    font-size: 9.5pt;
   }
 
   .question-list {
