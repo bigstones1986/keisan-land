@@ -30,11 +30,11 @@
 
 ### 次の候補
 
-1. `grade1-subtraction-word-problems.html`
-2. `grade2-kuku-word-problems.html`
+1. `grade2-kuku-word-problems.html`
+2. `grade2-addition-word-problems.html`
 3. `step-calculation.html`
 
-第1優先ページの公開確認を終えてから、同じ品質基準を1ページずつ展開する。
+`grade1-subtraction-word-problems.html` は2026-07-13に同じ品質基準で改善済み。公開確認を終えてから、次の候補へ1ページずつ展開する。
 
 ## Search Consoleなしで行う確認
 
@@ -64,4 +64,3 @@
 - 競合ページの文章や構成をそのまま写す
 - SEOのためだけに内容の薄い教材ページを増やす
 - 子どもの学習を邪魔する広告配置を増やす
-
