@@ -1,0 +1,13 @@
+{
+  "name": "keisan-land",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "qa": "npm run qa:site && npm run qa:drill",
+    "qa:site": "node tools/site-audit.mjs",
+    "qa:drill": "node tools/step-calculation-qa.mjs"
+  },
+  "engines": {
+    "node": ">=20.1"
+  }
+}
