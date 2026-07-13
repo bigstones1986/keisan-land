@@ -6134,3 +6134,11 @@ Search Console再認証:
 - 品質保証の自動化を採用
 - 新教材追加や検索データ未確認のSEO変更より優先
 - GitHub ActionsとNetlifyの初回実行結果を送信後に確認する
+
+初回自動実行結果:
+
+- GitHub Actionsの `Quality checks` はコミット `e53f5d3` で完了・成功
+- Netlifyはコミット `e53f5d3` を `ready` として公開
+- Netlify公開時刻は2026-07-13 21:57 JST
+- 本番トップページはHTTP 200で正常応答
+- 品質点検を通過してから自動公開される流れが実際に動くことを確認
