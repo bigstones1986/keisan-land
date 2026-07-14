@@ -1,6 +1,6 @@
 # けいさんランド SEO成長方針
 
-更新日: 2026-07-13
+更新日: 2026-07-14
 
 ## 目標
 
@@ -30,11 +30,11 @@
 
 ### 次の候補
 
-1. `grade2-kuku-word-problems.html`
-2. `grade2-addition-word-problems.html`
+1. `grade2-addition-word-problems.html`
+2. `grade2-subtraction-word-problems.html`
 3. `step-calculation.html`
 
-`grade1-subtraction-word-problems.html` は2026-07-13に同じ品質基準で改善済み。公開確認を終えてから、次の候補へ1ページずつ展開する。
+`grade1-subtraction-word-problems.html` は2026-07-13、`grade2-kuku-word-problems.html` は2026-07-14に同じ品質基準で改善済み。公開確認を終えてから、次の候補へ1ページずつ展開する。
 
 ## Search Consoleなしで行う確認
 
