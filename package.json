@@ -6,7 +6,7 @@
     "qa": "npm run qa:site && npm run qa:drill && npm run qa:content",
     "qa:site": "node tools/site-audit.mjs",
     "qa:drill": "node tools/step-calculation-qa.mjs",
-    "qa:content": "node tools/content-completeness-audit.mjs --require-80"
+    "qa:content": "node tools/content-completeness-audit.mjs --require-100"
   },
   "engines": {
     "node": ">=20.1"

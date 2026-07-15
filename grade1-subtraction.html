@@ -29,7 +29,7 @@
         <p class="label">小学1年生向け</p>
         <h1 class="logo-title"><span class="logo-mark">-</span><span>小学1年生 引き算ドリル</span></h1>
         <p class="description">20までの引き算を、答えがマイナスにならない問題で練習できます。</p>
-        <p class="quality-note">2026年7月14日に、20までの引き算の出題範囲と採点・印刷の動作を確認しました。</p>
+        <p class="quality-note">2026年7月15日に、20までの引き算の出題範囲とページ内の採点・印刷動作を確認しました。</p>
       </div>
       <section class="content-section">
         <h2>このドリルで練習できること</h2>
@@ -39,7 +39,12 @@
           <li>10問、20問、50問から選べる問題数</li>
           <li>採点、答え表示、印刷用プリント作成</li>
         </ul>
-        <a class="content-button" href="index.html?grade=1&operation=subtraction#questionList">引き算ドリルを始める</a>
+        <a class="content-button" href="#questionList">このページで引き算ドリルを始める</a>
+      </section>
+      <section class="practice-tool" data-drill-tool data-drill-grade="1" data-drill-operation="subtraction" aria-labelledby="practiceTitle">
+        <h2 id="practiceTitle" class="practice-tool-title">引き算をこのページで練習</h2>
+        <p id="questionList" class="practice-tool-intro" aria-live="polite">問題を読み込んでいます。</p>
+        <noscript><p>問題を表示するにはJavaScriptが必要です。<a href="index.html?grade=1&amp;operation=subtraction#questionList">本体の引き算ドリル</a>も利用できます。</p></noscript>
       </section>
       <section class="content-section">
         <h2>練習の進め方</h2>
@@ -71,6 +76,7 @@
       </footer>
     </section>
   </main>
+  <script src="script.js?v=20260715-dedicated-drills"></script>
 </body>
 </html>
 

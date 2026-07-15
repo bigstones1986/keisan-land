@@ -32,7 +32,7 @@
         <p class="label">小学3年生向け</p>
         <h1 class="logo-title"><span class="logo-mark">×</span><span>小学3年生 2桁×1桁の掛け算ドリル</span></h1>
         <p class="description">2桁の数に1桁の数をかける計算を、ランダム問題で練習できます。</p>
-        <p class="quality-note">2026年7月14日に、2桁×1桁の出題条件と採点・印刷の動作を確認しました。</p>
+        <p class="quality-note">2026年7月15日に、2桁×1桁の出題条件とページ内の採点・印刷動作を確認しました。</p>
       </div>
 
       <section class="content-section">
@@ -44,7 +44,13 @@
           <li>10問、20問、50問から選べる問題数</li>
           <li>採点、答え表示、印刷用プリント作成</li>
         </ul>
-        <a class="content-button" href="index.html?grade=3&operation=multiplication2Digit#questionList">2桁×1桁の掛け算ドリルを始める</a>
+        <a class="content-button" href="#questionList">このページで2桁×1桁の掛け算ドリルを始める</a>
+      </section>
+
+      <section class="practice-tool" data-drill-tool data-drill-grade="3" data-drill-operation="multiplication2Digit" aria-labelledby="practiceTitle">
+        <h2 id="practiceTitle" class="practice-tool-title">2桁×1桁をこのページで練習</h2>
+        <p id="questionList" class="practice-tool-intro" aria-live="polite">問題を読み込んでいます。</p>
+        <noscript><p>問題を表示するにはJavaScriptが必要です。<a href="index.html?grade=3&amp;operation=multiplication2Digit#questionList">本体の2桁×1桁ドリル</a>も利用できます。</p></noscript>
       </section>
 
       <section class="content-section">
@@ -79,6 +85,7 @@
       </footer>
     </section>
   </main>
+  <script src="script.js?v=20260715-dedicated-drills"></script>
 </body>
 </html>
 

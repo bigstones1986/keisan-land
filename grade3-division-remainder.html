@@ -32,7 +32,7 @@
         <p class="label">小学3年生向け</p>
         <h1 class="logo-title"><span class="logo-mark">÷</span><span>小学3年生 あまりのある割り算ドリル</span></h1>
         <p class="description">商とあまりを分けて、あまりのある割り算を練習できます。</p>
-        <p class="quality-note">2026年7月14日に、商とあまりの出題条件と採点・印刷の動作を確認しました。</p>
+        <p class="quality-note">2026年7月15日に、商とあまりの出題条件とページ内の採点・印刷動作を確認しました。</p>
       </div>
 
       <section class="content-section">
@@ -43,7 +43,13 @@
           <li>10問、20問、50問から選べる問題数</li>
           <li>採点、答え表示、印刷用プリント作成</li>
         </ul>
-        <a class="content-button" href="index.html?grade=3&operation=divisionRemainder#questionList">あまりのある割り算ドリルを始める</a>
+        <a class="content-button" href="#questionList">このページであまりのある割り算ドリルを始める</a>
+      </section>
+
+      <section class="practice-tool" data-drill-tool data-drill-grade="3" data-drill-operation="divisionRemainder" aria-labelledby="practiceTitle">
+        <h2 id="practiceTitle" class="practice-tool-title">あまりのある割り算をこのページで練習</h2>
+        <p id="questionList" class="practice-tool-intro" aria-live="polite">問題を読み込んでいます。</p>
+        <noscript><p>問題を表示するにはJavaScriptが必要です。<a href="index.html?grade=3&amp;operation=divisionRemainder#questionList">本体のあまりのある割り算ドリル</a>も利用できます。</p></noscript>
       </section>
 
       <section class="content-section">
@@ -64,7 +70,7 @@
           <a href="grade3-division.html">小学3年生 割り算ドリル</a>
           <a href="grade3-division-remainder-word-problems.html">小学3年生 あまりのある割り算の文章問題</a>
           <a href="grade3-multiplication.html">小学3年生 掛け算ドリル</a>
-          <a href="index.html?grade=3&operation=divisionRemainder#questionList">あまりのある割り算をすぐ始める</a>
+          <a href="#questionList">あまりのある割り算をすぐ始める</a>
         </div>
       </nav>
 
@@ -80,6 +86,7 @@
       </footer>
     </section>
   </main>
+  <script src="script.js?v=20260715-dedicated-drills"></script>
 </body>
 </html>
 

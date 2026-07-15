@@ -157,6 +157,28 @@ h1 {
   font-size: 24px;
 }
 
+.practice-tool {
+  margin: 32px 0;
+  padding: 28px 0;
+  border-top: 2px solid #d8e8f5;
+  border-bottom: 2px solid #d8e8f5;
+}
+
+.practice-tool-title {
+  margin: 0 0 10px;
+  color: #17395f;
+  font-size: 26px;
+}
+
+.practice-tool-intro {
+  margin: 0 0 20px;
+  line-height: 1.8;
+}
+
+.practice-settings {
+  grid-template-columns: minmax(180px, 280px);
+}
+
 .support-link-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1472,6 +1494,21 @@ button:focus-visible {
     margin-top: 1mm;
     color: #000000;
     font-size: 9.5pt;
+  }
+
+  .practice-tool {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .practice-tool-title,
+  .practice-tool-intro {
+    display: none;
+  }
+
+  .drill-practice-page .quality-note {
+    display: none;
   }
 
   .question-list {

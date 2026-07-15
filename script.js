@@ -1,3 +1,102 @@
+const operationLabels = {
+  addition: "足し算",
+  subtraction: "引き算",
+  multiplication: "掛け算",
+  multiplication2Digit: "2桁×1桁",
+  division: "割り算",
+  divisionRemainder: "あまりのある割り算",
+  kuku: "九九"
+};
+
+const gradeLabels = {
+  1: "小学1年生",
+  2: "小学2年生",
+  3: "小学3年生",
+  4: "小学4年生",
+  5: "小学5年生",
+  6: "小学6年生"
+};
+
+const drillToolMount = document.querySelector("[data-drill-tool]");
+const fixedDrillSettings = drillToolMount ? {
+  grade: drillToolMount.dataset.drillGrade,
+  operation: drillToolMount.dataset.drillOperation
+} : null;
+
+if (drillToolMount) {
+  document.body.classList.add("drill-practice-page");
+  const gradeLabel = gradeLabels[fixedDrillSettings.grade];
+  const operationLabel = operationLabels[fixedDrillSettings.operation];
+
+  if (!gradeLabel || !operationLabel) {
+    throw new Error("専用ドリルの学年または計算種類が正しくありません。");
+  }
+
+  const drillLabel = `${gradeLabel} ${operationLabel}`;
+  const titleArea = document.querySelector(".title-area");
+
+  if (titleArea && !titleArea.querySelector(".print-header")) {
+    titleArea.insertAdjacentHTML("beforeend", `
+      <div class="print-header">
+        <div>
+          <p class="print-brand">けいさんランド</p>
+          <p id="printSubtitle" class="print-subtitle">${drillLabel}ドリル（10問）</p>
+        </div>
+        <div class="print-student-info">
+          <p>なまえ：________________</p>
+          <p>日付：____年____月____日</p>
+        </div>
+      </div>
+    `);
+  }
+
+  drillToolMount.innerHTML = `
+    <h2 id="practiceTitle" class="practice-tool-title">${operationLabel}をこのページで練習</h2>
+    <p class="practice-tool-intro">問題数を選んで始められます。採点、答えの確認、印刷もこのページでできます。</p>
+    <select id="gradeSelect" hidden aria-hidden="true">
+      <option value="${fixedDrillSettings.grade}" selected>${gradeLabel}</option>
+    </select>
+    <select id="operationSelect" hidden aria-hidden="true"></select>
+    <div class="settings-area practice-settings">
+      <label class="setting">
+        <span>問題数</span>
+        <select id="questionCountSelect">
+          <option value="10">10問</option>
+          <option value="20">20問</option>
+          <option value="50">50問</option>
+        </select>
+      </label>
+    </div>
+    <div class="button-area">
+      <button type="button" id="newQuizButton">新しい問題</button>
+      <button type="button" id="scoreButton">採点</button>
+      <button type="button" id="showAnswersButton">答えを表示</button>
+      <button type="button" id="printButton">印刷</button>
+    </div>
+    <div id="resultArea" class="result-area" aria-live="polite"></div>
+    <ol id="questionList" class="question-list" aria-label="${drillLabel}の問題"></ol>
+    <div class="button-area bottom-button-area">
+      <button type="button" id="bottomScoreButton">採点</button>
+    </div>
+    <div class="keypad" aria-label="数字キーパッド">
+      <button type="button" class="keypad-button" data-key="1">1</button>
+      <button type="button" class="keypad-button" data-key="2">2</button>
+      <button type="button" class="keypad-button" data-key="3">3</button>
+      <button type="button" class="keypad-button" data-key="4">4</button>
+      <button type="button" class="keypad-button" data-key="5">5</button>
+      <button type="button" class="keypad-button" data-key="6">6</button>
+      <button type="button" class="keypad-button" data-key="7">7</button>
+      <button type="button" class="keypad-button" data-key="8">8</button>
+      <button type="button" class="keypad-button" data-key="9">9</button>
+      <button type="button" class="keypad-button keypad-button-secondary" data-action="clear">消す</button>
+      <button type="button" class="keypad-button" data-key="0">0</button>
+      <button type="button" class="keypad-button keypad-button-secondary" data-action="delete">削除</button>
+      <button type="button" class="keypad-button" data-key="/">/</button>
+      <button type="button" class="keypad-button keypad-button-next" data-action="next">次の問題へ</button>
+    </div>
+  `;
+}
+
 const questionList = document.getElementById("questionList");
 const gradeSelect = document.getElementById("gradeSelect");
 const operationSelect = document.getElementById("operationSelect");
@@ -12,16 +111,6 @@ const keypad = document.querySelector(".keypad");
 const historyStorageKey = "keisanLandScoreHistory";
 const maxHistoryCount = 5;
 let activeAnswerInput = null;
-
-const operationLabels = {
-  addition: "足し算",
-  subtraction: "引き算",
-  multiplication: "掛け算",
-  multiplication2Digit: "2桁×1桁",
-  division: "割り算",
-  divisionRemainder: "あまりのある割り算",
-  kuku: "九九"
-};
 
 const printSubtitle = document.getElementById("printSubtitle");
 
@@ -80,8 +169,8 @@ function updatePrintHeader(questionCount) {
 
 function applyUrlSettings() {
   const params = new URLSearchParams(window.location.search);
-  const grade = params.get("grade");
-  const operation = params.get("operation");
+  const grade = fixedDrillSettings ? fixedDrillSettings.grade : params.get("grade");
+  const operation = fixedDrillSettings ? fixedDrillSettings.operation : params.get("operation");
   const questionCount = params.get("count");
 
   if (grade && gradeSettings[grade]) {

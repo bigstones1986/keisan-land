@@ -32,7 +32,7 @@
         <p class="label">小学2年生向け</p>
         <h1 class="logo-title"><span class="logo-mark">×</span><span>小学2年生 九九ドリル</span></h1>
         <p class="description">1の段から9の段までの九九を、ランダム問題で練習できます。</p>
-        <p class="quality-note">2026年7月14日に、1の段から9の段までの出題範囲と採点・印刷の動作を確認しました。</p>
+        <p class="quality-note">2026年7月15日に、1の段から9の段までの出題範囲とページ内の採点・印刷動作を確認しました。</p>
       </div>
 
       <section class="content-section">
@@ -43,7 +43,13 @@
           <li>10問、20問、50問から選べる問題数</li>
           <li>採点、答え表示、印刷用プリント作成</li>
         </ul>
-        <a class="content-button" href="index.html?grade=2&operation=kuku#questionList">九九ドリルを始める</a>
+        <a class="content-button" href="#questionList">このページで九九ドリルを始める</a>
+      </section>
+
+      <section class="practice-tool" data-drill-tool data-drill-grade="2" data-drill-operation="kuku" aria-labelledby="practiceTitle">
+        <h2 id="practiceTitle" class="practice-tool-title">九九をこのページで練習</h2>
+        <p id="questionList" class="practice-tool-intro" aria-live="polite">問題を読み込んでいます。</p>
+        <noscript><p>問題を表示するにはJavaScriptが必要です。<a href="index.html?grade=2&amp;operation=kuku#questionList">本体の九九ドリル</a>も利用できます。</p></noscript>
       </section>
 
       <section class="content-section">
@@ -65,7 +71,7 @@
           <a href="grade3-multiplication-2digit.html">小学3年生 2桁×1桁の掛け算ドリル</a>
           <a href="grade3-division-remainder.html">小学3年生 あまりのある割り算ドリル</a>
           <a href="grade3-multiplication.html">小学3年生 掛け算ドリル</a>
-          <a href="index.html?grade=2&operation=kuku#questionList">九九ドリルをすぐ始める</a>
+          <a href="#questionList">九九ドリルをすぐ始める</a>
         </div>
       </nav>
 
@@ -81,6 +87,7 @@
       </footer>
     </section>
   </main>
+  <script src="script.js?v=20260715-dedicated-drills"></script>
 </body>
 </html>
 
