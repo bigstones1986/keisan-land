@@ -1,0 +1,129 @@
+import { readFile, readdir } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const files = await readdir(rootDir);
+const targetUrl = "https://keisan-land.netlify.app/grade1-addition-word-problems.html";
+const homeUrl = "https://keisan-land.netlify.app/";
+const errors = [];
+const warnings = [];
+
+function latestMatching(pattern, label) {
+  const matches = files.filter((name) => pattern.test(name)).sort((a, b) =>
+    a.localeCompare(b, "ja", { numeric: true }),
+  );
+  if (matches.length === 0) {
+    errors.push(`${label}: 対象原稿がありません`);
+    return null;
+  }
+  return matches.at(-1);
+}
+
+async function load(name) {
+  return { name, source: await readFile(path.join(rootDir, name), "utf8") };
+}
+
+function addError(file, message) {
+  errors.push(`${file}: ${message}`);
+}
+
+function addWarning(file, message) {
+  warnings.push(`${file}: ${message}`);
+}
+
+function markdownText(source) {
+  return source
+    .replace(/https?:\/\/\S+/g, "")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^[-*]>?\s*/gm, "")
+    .replace(/^\d+\.\s*/gm, "")
+    .replace(/[\[\]()`*_>]/g, "")
+    .trim();
+}
+
+function checkClaims(file, source) {
+  const forbidden = [
+    /絶対/u,
+    /必ず(?:成績|伸び|でき|解け)/u,
+    /成績が上がる/u,
+    /苦手がなくなる/u,
+    /検索(?:1位|トップ)にな/u,
+  ];
+  for (const pattern of forbidden) {
+    if (pattern.test(source)) addError(file, `効果を保証する表現があります（${pattern}）`);
+  }
+
+  const artificial = [/以下の通り/u, /結論として/u, /いかがでしたか/u, /まとめると/u];
+  for (const pattern of artificial) {
+    if (pattern.test(source)) addWarning(file, `定型的に見えやすい表現があります（${pattern}）`);
+  }
+}
+
+function checkParagraphs(file, source, maxLength) {
+  const paragraphs = source
+    .split(/\r?\n\s*\r?\n/)
+    .map((value) => value.replace(/^#{1,6}\s+/, "").trim())
+    .filter((value) => value && !value.startsWith("|") && !value.startsWith("- ["));
+  const longParagraph = paragraphs.find((value) => Array.from(markdownText(value)).length > maxLength);
+  if (longParagraph) {
+    addError(file, `スマホで長すぎる段落があります（${Array.from(markdownText(longParagraph)).length}文字）`);
+  }
+}
+
+const xName = latestMatching(/^x-posts-\d{4}-\d{2}-\d{2}\.md$/, "X");
+const noteName = latestMatching(/^note-.*\.md$/u, "note");
+const substackName = latestMatching(/^dev-diary-\d+-substack-ready\.md$/, "Substack");
+
+if (xName) {
+  const { source } = await load(xName);
+  const adopted = source.match(/## 採用案[^\n]*\r?\n([\s\S]*?)(?=\r?\n## |$)/)?.[1]?.trim();
+  if (!adopted) {
+    addError(xName, "採用案が見つかりません");
+  } else {
+    const counted = adopted.replace(/https?:\/\/\S+/g, "x".repeat(23));
+    const length = Array.from(markdownText(counted)).length;
+    if (length > 280) addError(xName, `投稿が280文字を超えています（${length}文字換算）`);
+    if (!adopted.includes(targetUrl)) addError(xName, "重点教材への直接URLがありません");
+    if (/#[^\s#]+/u.test(adopted)) addWarning(xName, "ハッシュタグが含まれています");
+    checkClaims(xName, adopted);
+    checkParagraphs(xName, adopted, 90);
+  }
+}
+
+if (noteName) {
+  const { source } = await load(noteName);
+  const h1 = source.match(/^#\s+.+$/gm) ?? [];
+  const h2 = source.match(/^##\s+.+$/gm) ?? [];
+  if (h1.length !== 1) addError(noteName, `h1は1つ必要です（現在${h1.length}）`);
+  if (h2.length < 4) addError(noteName, `見出しが不足しています（現在${h2.length}）`);
+  if (!source.includes(targetUrl)) addError(noteName, "重点教材へのURLがありません");
+  if (!source.includes("mext.go.jp") || !source.includes("nier.go.jp")) {
+    addError(noteName, "教育内容の参考にした公的資料が不足しています");
+  }
+  checkClaims(noteName, source);
+  checkParagraphs(noteName, source, 120);
+}
+
+if (substackName) {
+  const { source } = await load(substackName);
+  const title = source.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? "";
+  const h2 = source.match(/^##\s+.+$/gm) ?? [];
+  if (!/（開発日記 #\d+）$/u.test(title)) addError(substackName, "タイトル末尾の開発日記番号がありません");
+  if (h2.length < 2) addError(substackName, `見出しが不足しています（現在${h2.length}）`);
+  if (!source.includes(targetUrl)) addError(substackName, "記事内容と一致する教材URLがありません");
+  if (!source.includes(homeUrl)) addError(substackName, "文末のけいさんランドURLがありません");
+  if (!source.includes("けいさんランド")) addError(substackName, "けいさんランド名がありません");
+  checkClaims(substackName, source);
+  checkParagraphs(substackName, source, 120);
+}
+
+console.log("けいさんランド 発信原稿QA");
+console.log(`対象: ${[xName, noteName, substackName].filter(Boolean).join(" / ")}`);
+console.log(`エラー: ${errors.length} / 注意: ${warnings.length}`);
+
+for (const warning of warnings) console.log(`注意: ${warning}`);
+for (const error of errors) console.error(`エラー: ${error}`);
+
+if (errors.length > 0) process.exitCode = 1;
+else console.log("PASS: X・note・Substackの媒体別必須条件を確認しました。");

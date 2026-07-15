@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "qa": "npm run qa:site && npm run qa:drill && npm run qa:word-problems && npm run qa:content",
+    "qa": "npm run qa:site && npm run qa:drill && npm run qa:word-problems && npm run qa:content && npm run qa:publishing",
     "qa:site": "node tools/site-audit.mjs",
     "qa:drill": "node tools/step-calculation-qa.mjs",
     "qa:word-problems": "node tools/grade1-word-problem-generator-qa.mjs",
-    "qa:content": "node tools/content-completeness-audit.mjs --require-100"
+    "qa:content": "node tools/content-completeness-audit.mjs --require-100",
+    "qa:publishing": "node tools/publishing-content-qa.mjs"
   },
   "engines": {
     "node": ">=20.1"
