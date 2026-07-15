@@ -42,6 +42,19 @@ function markdownText(source) {
     .trim();
 }
 
+function frontmatter(source) {
+  const block = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)?.[1];
+  if (!block) return null;
+
+  return Object.fromEntries(
+    block
+      .split(/\r?\n/)
+      .map((line) => line.match(/^([^:]+):\s*(.*)$/))
+      .filter(Boolean)
+      .map((match) => [match[1].trim(), match[2].trim()]),
+  );
+}
+
 function checkClaims(file, source) {
   const forbidden = [
     /絶対/u,
@@ -71,12 +84,36 @@ function checkParagraphs(file, source, maxLength) {
   }
 }
 
-const xName = latestMatching(/^x-posts-\d{4}-\d{2}-\d{2}\.md$/, "X");
+const xNames = files
+  .filter((name) => /^x-posts-\d{4}-\d{2}-\d{2}\.md$/.test(name))
+  .filter((name) => name >= "x-posts-2026-07-16.md")
+  .sort((a, b) => a.localeCompare(b, "ja", { numeric: true }));
 const noteName = latestMatching(/^note-.*\.md$/u, "note");
 const substackName = latestMatching(/^dev-diary-\d+-substack-ready\.md$/, "Substack");
+const readyXNames = [];
 
-if (xName) {
+if (xNames.length === 0) errors.push("X: 2026-07-16以降の対象原稿がありません");
+
+for (const xName of xNames) {
   const { source } = await load(xName);
+  const metadata = frontmatter(source);
+  const filenameDate = xName.match(/(\d{4}-\d{2}-\d{2})/)?.[1];
+
+  if (!metadata) {
+    addError(xName, "公開管理用のfrontmatterがありません");
+    continue;
+  }
+  if (metadata.channel !== "x") addError(xName, "channelはxにしてください");
+  if (metadata.date !== filenameDate) addError(xName, `dateがファイル名と一致しません（${metadata.date ?? "未設定"}）`);
+  if (!["ready", "published", "hold"].includes(metadata.status)) {
+    addError(xName, `statusが不正です（${metadata.status ?? "未設定"}）`);
+  }
+  if (!["required", "none"].includes(metadata.link_policy)) {
+    addError(xName, `link_policyが不正です（${metadata.link_policy ?? "未設定"}）`);
+  }
+  if (metadata.status !== "ready") continue;
+
+  readyXNames.push(xName);
   const adopted = source.match(/## 採用案[^\n]*\r?\n([\s\S]*?)(?=\r?\n## |$)/)?.[1]?.trim();
   if (!adopted) {
     addError(xName, "採用案が見つかりません");
@@ -84,7 +121,12 @@ if (xName) {
     const counted = adopted.replace(/https?:\/\/\S+/g, "x".repeat(23));
     const length = Array.from(markdownText(counted)).length;
     if (length > 280) addError(xName, `投稿が280文字を超えています（${length}文字換算）`);
-    if (!adopted.includes(targetUrl)) addError(xName, "重点教材への直接URLがありません");
+    if (metadata.link_policy === "required" && !adopted.includes(targetUrl)) {
+      addError(xName, "重点教材への直接URLがありません");
+    }
+    if (metadata.link_policy === "none" && /https?:\/\//.test(adopted)) {
+      addError(xName, "リンクなし投稿にURLが含まれています");
+    }
     if (/#[^\s#]+/u.test(adopted)) addWarning(xName, "ハッシュタグが含まれています");
     checkClaims(xName, adopted);
     checkParagraphs(xName, adopted, 90);
@@ -119,7 +161,7 @@ if (substackName) {
 }
 
 console.log("けいさんランド 発信原稿QA");
-console.log(`対象: ${[xName, noteName, substackName].filter(Boolean).join(" / ")}`);
+console.log(`対象: ${[...readyXNames, noteName, substackName].filter(Boolean).join(" / ")}`);
 console.log(`エラー: ${errors.length} / 注意: ${warnings.length}`);
 
 for (const warning of warnings) console.log(`注意: ${warning}`);
