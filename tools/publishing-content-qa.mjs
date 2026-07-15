@@ -135,11 +135,34 @@ for (const xName of xNames) {
 
 if (noteName) {
   const { source } = await load(noteName);
+  const metadata = frontmatter(source);
   const h1 = source.match(/^#\s+.+$/gm) ?? [];
   const h2 = source.match(/^##\s+.+$/gm) ?? [];
+  const title = h1[0]?.replace(/^#\s+/, "") ?? "";
+  const textLength = Array.from(markdownText(source)).length;
+  if (!metadata) {
+    addError(noteName, "公開管理用のfrontmatterがありません");
+  } else {
+    if (metadata.channel !== "note") addError(noteName, "channelはnoteにしてください");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(metadata.date ?? "")) {
+      addError(noteName, "dateはYYYY-MM-DD形式にしてください");
+    }
+    if (!["ready", "published", "hold"].includes(metadata.status)) {
+      addError(noteName, `statusが不正です（${metadata.status ?? "未設定"}）`);
+    }
+  }
   if (h1.length !== 1) addError(noteName, `h1は1つ必要です（現在${h1.length}）`);
   if (h2.length < 4) addError(noteName, `見出しが不足しています（現在${h2.length}）`);
+  if (!title.includes("1年生") || !title.includes("足し算") || !title.includes("文章題")) {
+    addError(noteName, "重点検索意図に合う学年・単元・文章題がタイトルにありません");
+  }
+  if (!/^更新日:\s*\d{4}年\d{1,2}月\d{1,2}日$/mu.test(source)) {
+    addError(noteName, "読者向けの更新日がありません");
+  }
+  if (textLength < 900) addError(noteName, `保存版として本文が短すぎます（${textLength}文字）`);
+  if (textLength > 3500) addError(noteName, `スマホで読む保存版として長すぎます（${textLength}文字）`);
   if (!source.includes(targetUrl)) addError(noteName, "重点教材へのURLがありません");
+  if (!source.includes("けいさんランド")) addError(noteName, "けいさんランド名がありません");
   if (!source.includes("mext.go.jp") || !source.includes("nier.go.jp")) {
     addError(noteName, "教育内容の参考にした公的資料が不足しています");
   }
