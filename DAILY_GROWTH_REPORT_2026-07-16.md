@@ -76,6 +76,9 @@ Chromeで本番の重点ページを確認した。
 - 発信原稿: X 6本、note 1本、Substack 1本、エラー0、注意0
 - 信頼・紹介運用: エラー0
 - X・Substack・noteプロフィール導線: エラー0
+- GitHub Actions `Quality checks #27`: 8秒で成功
+- GitHub ActionsのNode.js 20廃止警告に対応し、`actions/checkout` と `actions/setup-node` をv6へ更新
+- 更新後の `Quality checks #28`: 11秒で成功、警告0
 
 ## 今日の発信判断
 
