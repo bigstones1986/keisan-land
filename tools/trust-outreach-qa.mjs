@@ -9,6 +9,9 @@ const candidateReviewName = "OUTREACH_CANDIDATE_REVIEW_2026-07-16.md";
 const mediaPitchName = "MEDIA_PITCH_KODOMO_IT_2026-07-16.md";
 const agentsName = "AGENTS.md";
 const growthName = "GROWTH_OPERATING_SYSTEM.md";
+const teacherName = "teacher-print.html";
+const contactName = "contact.html";
+const privacyName = "privacy.html";
 const targetUrl = "https://keisan-land.netlify.app/grade1-addition-word-problems.html";
 const errors = [];
 
@@ -20,19 +23,36 @@ function requireText(file, source, text, message) {
   if (!source.includes(text)) errors.push(`${file}: ${message}`);
 }
 
-const [plan, report, candidateReview, mediaPitch, agents, growth] = await Promise.all([
+const [plan, report, candidateReview, mediaPitch, agents, growth, teacher, contact, privacy] = await Promise.all([
   load(planName),
   load(reportName),
   load(candidateReviewName),
   load(mediaPitchName),
   load(agentsName),
   load(growthName),
+  load(teacherName),
+  load(contactName),
+  load(privacyName),
 ]);
 
 requireText(agentsName, agents, "## 教育広報・紹介担当", "教育広報・紹介担当が定義されていません");
 requireText(agentsName, agents, "外部フォームやメッセージの送信を、人間の最終確認なしで実行する", "無確認送信の禁止がありません");
 requireText(growthName, growth, "### 教育広報・自然な紹介", "検索成長OSに教育広報の運用がありません");
 requireText(growthName, growth, "外部送信は週1件以下", "外部送信の上限がありません");
+requireText(agentsName, agents, "## 利用者リサーチ・導入支援担当", "利用者リサーチ担当が定義されていません");
+requireText(agentsName, agents, "実際には届いていない感想や利用例を作る", "架空の利用例を禁止していません");
+requireText(agentsName, agents, "掲載許可を、問い合わせへの返信許可と同じものとして扱う", "公開許可の分離ルールがありません");
+requireText(growthName, growth, "### 利用者の声と導入支援", "利用者の声を改善へ戻す運用がありません");
+requireText(growthName, growth, "contact.html#teacher-feedback", "先生向け感想導線が成長OSにありません");
+
+requireText(teacherName, teacher, "使ってみた感想をお寄せください", "先生向けページに感想案内がありません");
+requireText(teacherName, teacher, "contact.html#teacher-feedback", "先生向けページから安全な連絡案内へ移動できません");
+requireText(teacherName, teacher, "許可なくサイトや発信へ掲載することはありません", "無断掲載を防ぐ案内がありません");
+requireText(contactName, contact, 'id="teacher-feedback"', "先生・支援者向けの連絡位置がありません");
+requireText(contactName, contact, "学年と単元", "教材改善に必要な最小情報がありません");
+requireText(contactName, contact, "改めて明確な許可を確認します", "掲載前の別許可が案内されていません");
+requireText(privacyName, privacy, "お問い合わせメールについて", "メールで受け取る情報の説明がありません");
+requireText(privacyName, privacy, "本人の明確な許可なく", "感想の無断公開を防ぐ方針がありません");
 
 requireText(planName, plan, targetUrl, "重点教材URLがありません");
 requireText(planName, plan, "文部科学省「たのしくまなび隊」 | 高い | 保留", "法人要件のある候補が保留になっていません");
@@ -93,7 +113,7 @@ requireText(reportName, report, "Search Consoleが認識する外部リンクは
 requireText(reportName, report, "大量PDFの急造", "競合模倣を避ける判断がありません");
 
 console.log("けいさんランド 信頼・紹介運用QA");
-console.log(`対象: ${agentsName} / ${growthName} / ${reportName} / ${planName} / ${candidateReviewName} / ${mediaPitchName}`);
+console.log(`対象: ${agentsName} / ${growthName} / ${reportName} / ${planName} / ${candidateReviewName} / ${mediaPitchName} / ${teacherName} / ${contactName} / ${privacyName}`);
 console.log(`エラー: ${errors.length}`);
 
 for (const error of errors) console.error(`エラー: ${error}`);
