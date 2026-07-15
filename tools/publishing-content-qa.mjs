@@ -1,4 +1,4 @@
-import { readFile, readdir } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -55,6 +55,37 @@ function frontmatter(source) {
   );
 }
 
+async function imageDimensions(filePath) {
+  const data = await readFile(filePath);
+  const signature = data.subarray(0, 8).toString("hex");
+  if (signature === "89504e470d0a1a0a" && data.length >= 24) {
+    return { width: data.readUInt32BE(16), height: data.readUInt32BE(20) };
+  }
+
+  if (data[0] === 0xff && data[1] === 0xd8) {
+    let offset = 2;
+    const startOfFrame = new Set([0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf]);
+    while (offset + 8 < data.length) {
+      if (data[offset] !== 0xff) {
+        offset += 1;
+        continue;
+      }
+      const marker = data[offset + 1];
+      offset += 2;
+      if (marker === 0xd8 || marker === 0xd9) continue;
+      if (offset + 2 > data.length) break;
+      const blockLength = data.readUInt16BE(offset);
+      if (blockLength < 2 || offset + blockLength > data.length) break;
+      if (startOfFrame.has(marker)) {
+        return { width: data.readUInt16BE(offset + 5), height: data.readUInt16BE(offset + 3) };
+      }
+      offset += blockLength;
+    }
+  }
+
+  return null;
+}
+
 function checkClaims(file, source) {
   const forbidden = [
     /絶対/u,
@@ -74,7 +105,8 @@ function checkClaims(file, source) {
 }
 
 function checkParagraphs(file, source, maxLength) {
-  const paragraphs = source
+  const content = source.replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, "");
+  const paragraphs = content
     .split(/\r?\n\s*\r?\n/)
     .map((value) => value.replace(/^#{1,6}\s+/, "").trim())
     .filter((value) => value && !value.startsWith("|") && !value.startsWith("- ["));
@@ -149,6 +181,50 @@ if (noteName) {
     }
     if (!["ready", "published", "hold"].includes(metadata.status)) {
       addError(noteName, `statusが不正です（${metadata.status ?? "未設定"}）`);
+    }
+
+    const cover = metadata.cover;
+    if (!cover) {
+      addError(noteName, "noteの見出し画像が未設定です");
+    } else {
+      const coverPath = path.resolve(rootDir, cover);
+      if (!coverPath.startsWith(`${rootDir}${path.sep}`)) {
+        addError(noteName, "見出し画像はプロジェクト内のファイルを指定してください");
+      } else {
+        try {
+          await access(coverPath);
+          const dimensions = await imageDimensions(coverPath);
+          if (!dimensions) {
+            addError(noteName, "見出し画像の寸法を確認できません");
+          } else {
+            const ratio = dimensions.width / dimensions.height;
+            if (dimensions.width < 1200 || dimensions.height < 630) {
+              addError(noteName, `見出し画像が小さすぎます（${dimensions.width}×${dimensions.height}）`);
+            }
+            if (ratio < 1.75 || ratio > 2) {
+              addError(noteName, `見出し画像の横長比率がnote向けではありません（${ratio.toFixed(2)}:1）`);
+            }
+          }
+        } catch {
+          addError(noteName, `見出し画像が見つかりません（${cover}）`);
+        }
+      }
+    }
+
+    if (!metadata.cover_alt || Array.from(metadata.cover_alt).length < 20) {
+      addError(noteName, "見出し画像の代替テキストを20文字以上で設定してください");
+    }
+
+    const tags = (metadata.tags ?? "")
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+    if (tags.length < 3 || tags.length > 7) {
+      addError(noteName, `noteのタグは3〜7個にしてください（現在${tags.length}個）`);
+    }
+    if (new Set(tags).size !== tags.length) addError(noteName, "noteのタグが重複しています");
+    for (const requiredTag of ["小学1年生", "算数", "文章題"]) {
+      if (!tags.includes(requiredTag)) addError(noteName, `重点テーマのタグ「${requiredTag}」がありません`);
     }
   }
   if (h1.length !== 1) addError(noteName, `h1は1つ必要です（現在${h1.length}）`);

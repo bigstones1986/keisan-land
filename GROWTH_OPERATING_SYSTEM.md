@@ -98,6 +98,9 @@ Chrome連携でSearch Consoleを確認した。
 - 読者の疑問をそのままタイトルと見出しにする
 - 冒頭で結論、2〜3文ごとの改行、具体例、図、出典を使う
 - frontmatterへ媒体、公開予定日、状態を記録し、本文へ読者向け更新日を入れる
+- frontmatterへ見出し画像、代替テキスト、タグも記録し、公開画面で設定漏れを防ぐ
+- 見出し画像は記事内容と一致する実際の教材画面を優先し、横長の切り取りで重要部分が残るか確認する
+- タグは3〜7個を目安に、学年、教科、単元、利用場面の具体語を組み合わせる
 - 運営者が実際に見直した点を入れ、参考資料だけで終わらず今日試せる一歩で閉じる
 - Substackの転載ではなく、検索意図に合わせて書き直す
 
@@ -197,6 +200,8 @@ Chrome連携でSearch Consoleを確認した。
 - X Organic best practices: https://business.x.com/en/basics/organic-best-practices
 - note 読みやすい記事を書くための10のコツ: https://note.com/notemag/n/n0e4bc242c5b6
 - note 検索でもAIでも見つけてもらいやすくするコツ 2026年版: https://note.com/notemag/n/nac99c25b8271
+- note 見出し画像の推奨サイズ: https://note.com/info/n/nc0abb0bcf97f
+- note ハッシュタグの選び方: https://note.com/notemag/n/n32e8a6605662
 - Substack Recommendations: https://support.substack.com/hc/en-us/articles/5036794583828-How-can-I-recommend-other-publications-on-Substack
 - 文部科学省 小学校学習指導要領解説 算数編: https://www.mext.go.jp/content/20211102-mxt_kyoiku02-100002607_04.pdf
 - 国立教育政策研究所 授業アイディア例: https://www.nier.go.jp/jugyourei/r06/index.html

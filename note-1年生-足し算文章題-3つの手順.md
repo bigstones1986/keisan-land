@@ -2,6 +2,9 @@
 channel: note
 date: 2026-07-17
 status: ready
+cover: media/grade1-addition-word-problems-20260716.png
+cover_alt: 小学1年生の足し算文章題を、最初の3こと増えた2こに分けて丸で表した教材画面
+tags: 小学1年生, 算数, 文章題, 家庭学習, 無料プリント
 ---
 
 # 小学1年生が足し算の文章題で止まったら。式より先に試したい3つの声かけ
