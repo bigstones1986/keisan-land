@@ -6665,6 +6665,13 @@ Search Console再認証:
 - 発信原稿QA: X、note、Substack、エラー0、注意0
 - 全体QA: 26ページエラー0、教材完成度170/170、計算17,000問と文章題10,000問PASS
 
+公開後確認:
+
+- コミット `723b04c` を `main` へ送信
+- GitHub Actions `Quality checks #21` は成功
+- Netlify本番で画像を配信し、1200×675、読み込み完了を確認
+- 本番画像URL: https://keisan-land.netlify.app/media/grade1-addition-word-problems-20260716.png
+
 編集長判断:
 
 - 採用: X 7/16のリンク投稿へ添付し、noteでは手順説明の実例画像として使う
