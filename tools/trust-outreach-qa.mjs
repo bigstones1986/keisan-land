@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const planName = "TRUST_AND_OUTREACH_PLAN_2026-07-16_TO_07-31.md";
 const reportName = "COMPETITOR_TRUST_REPORT_2026-07-15.md";
+const candidateReviewName = "OUTREACH_CANDIDATE_REVIEW_2026-07-16.md";
+const mediaPitchName = "MEDIA_PITCH_KODOMO_IT_2026-07-16.md";
 const agentsName = "AGENTS.md";
 const growthName = "GROWTH_OPERATING_SYSTEM.md";
 const targetUrl = "https://keisan-land.netlify.app/grade1-addition-word-problems.html";
@@ -18,9 +20,11 @@ function requireText(file, source, text, message) {
   if (!source.includes(text)) errors.push(`${file}: ${message}`);
 }
 
-const [plan, report, agents, growth] = await Promise.all([
+const [plan, report, candidateReview, mediaPitch, agents, growth] = await Promise.all([
   load(planName),
   load(reportName),
+  load(candidateReviewName),
+  load(mediaPitchName),
   load(agentsName),
   load(growthName),
 ]);
@@ -37,6 +41,30 @@ requireText(planName, plan, "エレファンキューブ「無料教材リンク
 requireText(planName, plan, "算願「学習に役立つリンク集」 | 高い | 連絡しない", "相互リンクを募集しない候補が除外されていません");
 requireText(planName, plan, "直前確認必須", "外部送信前の直前確認がありません");
 requireText(planName, plan, "## 送信前ゲート", "送信前ゲートがありません");
+requireText(planName, plan, "こどもとIT | 高い | 個別提案を準備・未送信", "最優先の編集媒体候補が記録されていません");
+
+requireText(candidateReviewName, candidateReview, "送信状態: 未送信", "候補レビューの送信状態が未送信ではありません");
+requireText(candidateReviewName, candidateReview, "こどもとIT | 高い", "最優先候補がありません");
+requireText(candidateReviewName, candidateReview, "EDUPEDIA | 中〜高", "教育実践媒体の保留判断がありません");
+requireText(candidateReviewName, candidateReview, "ICT教育ニュース | 中", "個人発信を受け付けない候補の判断がありません");
+requireText(candidateReviewName, candidateReview, "おやこイベント.com | 低〜中", "イベント媒体の対象外判断がありません");
+requireText(candidateReviewName, candidateReview, "https://edu.watch.impress.co.jp/docs/common/contact.html", "最優先候補の公式確認先がありません");
+
+requireText(mediaPitchName, mediaPitch, "送信状態: 未送信", "編集部向け提案が未送信になっていません");
+requireText(mediaPitchName, mediaPitch, "[要入力: 差出人氏名]", "差出人氏名の確認欄がありません");
+requireText(mediaPitchName, mediaPitch, "[要入力: 返信用メールアドレス]", "返信先の確認欄がありません");
+requireText(mediaPitchName, mediaPitch, targetUrl, "重点教材URLがありません");
+requireText(mediaPitchName, mediaPitch, "media/grade1-addition-word-problems-20260716.png", "実画面画像が指定されていません");
+requireText(mediaPitchName, mediaPitch, "人間が宛先、件名、本文、添付を確認し、送信を承認した", "送信直前の人間承認がありません");
+
+for (const [file, source] of [
+  [candidateReviewName, candidateReview],
+  [mediaPitchName, mediaPitch],
+]) {
+  if (/送信済み|掲載確定|検索1位|必ず掲載|必ず届く/u.test(source)) {
+    errors.push(`${file}: 未確認の送信・掲載・成果を断定しています`);
+  }
+}
 
 const scheduledDates = [...plan.matchAll(/^\| 7\/(\d{1,2}) \|/gm)].map((match) => Number(match[1]));
 const expectedDates = Array.from({ length: 16 }, (_, index) => index + 16);
@@ -65,7 +93,7 @@ requireText(reportName, report, "Search Consoleが認識する外部リンクは
 requireText(reportName, report, "大量PDFの急造", "競合模倣を避ける判断がありません");
 
 console.log("けいさんランド 信頼・紹介運用QA");
-console.log(`対象: ${agentsName} / ${growthName} / ${reportName} / ${planName}`);
+console.log(`対象: ${agentsName} / ${growthName} / ${reportName} / ${planName} / ${candidateReviewName} / ${mediaPitchName}`);
 console.log(`エラー: ${errors.length}`);
 
 for (const error of errors) console.error(`エラー: ${error}`);
