@@ -307,10 +307,17 @@ h1 {
 }
 
 .answer-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
   margin-top: 8px !important;
   color: #17395f;
   font-weight: 800;
   overflow-wrap: anywhere;
+}
+
+.answer-line span {
+  white-space: nowrap;
 }
 
 .quality-note {
@@ -333,6 +340,123 @@ h1 {
   margin-top: 4px;
   color: #35506d;
   font-size: 15px;
+}
+
+.quantity-example {
+  background: #fffaf0;
+  border-color: #f0d18a;
+}
+
+.quantity-diagram {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) auto minmax(100px, 1fr) auto minmax(90px, 0.8fr);
+  gap: 14px;
+  align-items: center;
+  margin: 18px 0;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #ead49c;
+  border-radius: 6px;
+}
+
+.quantity-group,
+.quantity-total {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.quantity-caption {
+  color: #35506d;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.quantity-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+  min-height: 28px;
+}
+
+.quantity-dots i {
+  width: 26px;
+  height: 26px;
+  background: #f28c38;
+  border: 2px solid #a74f14;
+  border-radius: 50%;
+}
+
+.quantity-dots-added i {
+  background: #2f8f83;
+  border-color: #206b62;
+}
+
+.quantity-symbol {
+  color: #17395f;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.quantity-total strong {
+  color: #17395f;
+  font-size: 28px;
+}
+
+.quantity-total span {
+  font-weight: 800;
+}
+
+.generated-word-problems {
+  background: #f3faf7;
+  border-color: #b9ddd2;
+}
+
+.generator-intro p {
+  line-height: 1.8;
+}
+
+.generator-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 18px 0 12px;
+}
+
+.generator-actions .secondary-button {
+  color: #17395f;
+  background: #ffffff;
+  border: 2px solid #2454a6;
+  box-shadow: none;
+}
+
+.generator-actions .secondary-button:hover {
+  color: #ffffff;
+  background: #1b4386;
+}
+
+.generator-status {
+  min-height: 24px;
+  margin: 0 0 14px;
+  color: #1f5f55;
+  font-weight: 700;
+}
+
+.generated-answer-section {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 2px dashed #b9ddd2;
+}
+
+.generated-answer-section h3 {
+  margin: 0 0 14px;
+  color: #17395f;
+  font-size: 20px;
+}
+
+.source-note a {
+  overflow-wrap: anywhere;
 }
 
 .content-button {
@@ -1160,6 +1284,27 @@ button:focus-visible {
     display: grid;
   }
 
+  .quantity-diagram {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .quantity-diagram .quantity-symbol:nth-of-type(2),
+  .quantity-total {
+    grid-column: 1 / -1;
+  }
+
+  .quantity-diagram .quantity-symbol:nth-of-type(2) {
+    display: none;
+  }
+
+  .generator-actions {
+    display: grid;
+  }
+
+  .generator-actions button {
+    width: 100%;
+  }
+
   .settings-area {
     grid-template-columns: 1fr;
   }
@@ -1451,6 +1596,25 @@ button:focus-visible {
   }
 
   .word-problems-page .intro-section {
+    display: none;
+  }
+
+  .word-problems-page .generated-word-problems {
+    display: none;
+  }
+
+  .word-problems-page.print-generated-word-problems .content-section {
+    display: none;
+  }
+
+  .word-problems-page.print-generated-word-problems .generated-word-problems {
+    display: block;
+  }
+
+  .word-problems-page.print-generated-word-problems .generator-intro,
+  .word-problems-page.print-generated-word-problems .generator-actions,
+  .word-problems-page.print-generated-word-problems .generator-status,
+  .word-problems-page.print-generated-word-problems .generated-answer-section {
     display: none;
   }
 
