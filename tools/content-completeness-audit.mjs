@@ -5,6 +5,7 @@ const root = resolve(import.meta.dirname, "..");
 
 const wordProblemPages = [
   "grade1-addition-word-problems.html",
+  "grade1-addition-subtraction-word-problems.html",
   "grade1-subtraction-word-problems.html",
   "grade2-addition-word-problems.html",
   "grade2-subtraction-word-problems.html",
@@ -157,7 +158,7 @@ if (equationErrors.length) {
   equationErrors.forEach((message) => console.error(`- ${message}`));
   process.exitCode = 1;
 } else {
-  console.log("\nPASS: 文章題80問の式と答えが成立しています。");
+  console.log(`\nPASS: 文章題${wordProblemPages.length * 10}問の式と答えが成立しています。`);
 }
 
 if (process.argv.includes("--require-80") && score / maximum < 0.8) {
