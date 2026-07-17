@@ -6,6 +6,14 @@ const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const errors = [];
 const netlify = await readFile(path.join(rootDir, "netlify.toml"), "utf8");
 
+const buildSection = netlify.match(/\[build\]([\s\S]*?)(?=\r?\n\[|$)/)?.[1] ?? "";
+if (!/^\s*publish\s*=\s*["']dist["']\s*$/mu.test(buildSection)) {
+  errors.push("netlify.toml: 公開先はdistにしてください");
+}
+if (!/^\s*command\s*=\s*["']npm run qa["']\s*$/mu.test(buildSection)) {
+  errors.push("netlify.toml: 品質検査を通してから公開してください");
+}
+
 const processingSection = netlify.match(/\[build\.processing\.html\]([\s\S]*?)(?=\r?\n\[|$)/)?.[1] ?? "";
 if (!/^\s*pretty_urls\s*=\s*false\s*$/mu.test(processingSection)) {
   errors.push("netlify.toml: Pretty URLsをfalseにしてください");
@@ -45,4 +53,4 @@ console.log(`エラー: ${errors.length}`);
 for (const error of errors) console.error(`エラー: ${error}`);
 
 if (errors.length > 0) process.exitCode = 1;
-else console.log("PASS: Pretty URLsを無効化し、canonicalと内部リンクのURL形式を確認しました。");
+else console.log("PASS: 公開先、Pretty URLs、canonicalと内部リンクのURL形式を確認しました。");

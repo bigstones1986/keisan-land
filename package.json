@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "qa": "npm run qa:hosting && npm run qa:site && npm run qa:drill && npm run qa:word-problems && npm run qa:mixed-word-problems && npm run qa:content && npm run qa:publishing && npm run qa:outreach && npm run qa:profiles",
+    "build": "node tools/build-public.mjs",
+    "qa": "npm run qa:hosting && npm run qa:site && npm run qa:drill && npm run qa:word-problems && npm run qa:mixed-word-problems && npm run qa:content && npm run qa:publishing && npm run qa:outreach && npm run qa:profiles && npm run build",
     "qa:hosting": "node tools/hosting-seo-qa.mjs",
     "qa:site": "node tools/site-audit.mjs",
     "qa:drill": "node tools/step-calculation-qa.mjs",

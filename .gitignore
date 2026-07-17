@@ -10,3 +10,4 @@ gsc-oauth-client.json
 gsc-token.json
 search-console-private/
 substack-private/
+dist/
