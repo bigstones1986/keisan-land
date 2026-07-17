@@ -7772,3 +7772,71 @@ Google公式方針との照合:
 - 本番での共有画像とOGP取得
 - Googleによる新ページのクロール・インデックス
 - 新教材を実際に使った保護者・先生の反応
+
+## 2026-07-16 Netlify本番URL正規化会議
+
+議題:
+
+- 本番内部リンクとcanonicalのURL形式が異なる状態を直し、Search Consoleの代替URLを今後増やさない
+
+現在地:
+
+- HTMLソース、canonical、sitemapは `.html` へ統一していた
+- Netlify本番ではPretty URLsにより、内部リンクだけ拡張子なしへ自動変換されていた
+- Search Consoleでは拡張子なしURLを含む「代替ページ（適切なcanonicalタグあり）」が6件確認されていた
+- Googleはcanonicalを理解しているが、内部リンクが別URLを案内し続ける状態はクロールの整理に不利だった
+
+担当別意見:
+
+- SEO担当: canonicalと内部リンクを同じURLにそろえ、Googleへ送る住所の合図を一本化する。
+- 分析担当: 既存の代替URL数がすぐ減るとは限らないため、7月22日と29日に増減を観測する。
+- QA担当: Netlify設定とHTMLソースの両方を自動検査し、再発を防ぐ。
+- UX担当: ユーザーの操作は変えず、裏側のURLだけを統一する。
+- 編集長: 重点ページのtitleや本文を変えない技術的なSEO修正なので採用する。
+
+対立点:
+
+- canonicalを拡張子なしへ全面変更する案と、既に登録されている `.html` canonicalを維持する案があった
+- Search Consoleから古いURLの削除を依頼する案と、canonicalで自然に整理されるのを待つ案があった
+
+編集長判断:
+
+- 採用:
+  - `[build.processing.html] pretty_urls = false`
+  - `.html` canonical、sitemap、内部リンクの統一
+  - `tools/hosting-seo-qa.mjs` と `qa:hosting` の追加
+  - 既存の全体QAの先頭でホスティングSEO設定を検査
+- 保留:
+  - 既存代替URL数の変化
+  - Search Consoleが本番内部リンクを再クロールした後の評価
+- やらない:
+  - canonicalの一斉変更
+  - URL削除リクエストの連打
+  - 重点ページのtitle、h1、本文変更
+
+今日やること:
+
+1. 本番HTMLの内部リンク変換を確認（完了）
+2. Netlify公式仕様を確認（完了）
+3. Pretty URLsを無効化（完了）
+4. ホスティングSEO設定QAを追加（完了）
+5. 全体QAと本番再確認（全体QA完了、本番は次デプロイ後）
+
+確認結果:
+
+- 修正前本番: `.html` 内部リンクが拡張子なしへ変換
+- canonical: `.html` を維持
+- sitemap: `.html` を維持
+- Netlify SEO設定QA: HTML 27ページ、エラー0
+- ソース内のURL形式: PASS
+
+明日の候補:
+
+1. 本番トップページで `.html` リンクが維持されていることを確認する
+2. 新教材本番とnote公開画面を確認する
+3. 7月22日にSearch Consoleの代替URL数と新ページ認識を確認する
+
+未確認事項:
+
+- 次デプロイ後のPretty URLs無効化
+- 既存の拡張子なしURLがGoogle上で整理される時期

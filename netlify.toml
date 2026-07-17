@@ -2,6 +2,9 @@
   publish = "."
   command = "npm run qa"
 
+[build.processing.html]
+  pretty_urls = false
+
 [[redirects]]
   from = "/step-calculation.html"
   to = "/step-calculation"
