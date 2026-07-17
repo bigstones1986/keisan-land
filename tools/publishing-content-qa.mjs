@@ -171,6 +171,7 @@ if (noteName) {
   const h1 = source.match(/^#\s+.+$/gm) ?? [];
   const h2 = source.match(/^##\s+.+$/gm) ?? [];
   const title = h1[0]?.replace(/^#\s+/, "") ?? "";
+  const readerDateMatch = source.match(/^更新日:\s*(\d{4})年(\d{1,2})月(\d{1,2})日$/mu);
   const textLength = Array.from(markdownText(source)).length;
   if (!metadata) {
     addError(noteName, "公開管理用のfrontmatterがありません");
@@ -232,8 +233,17 @@ if (noteName) {
   if (!title.includes("1年生") || !title.includes("足し算") || !title.includes("文章題")) {
     addError(noteName, "重点検索意図に合う学年・単元・文章題がタイトルにありません");
   }
-  if (!/^更新日:\s*\d{4}年\d{1,2}月\d{1,2}日$/mu.test(source)) {
+  if (!readerDateMatch) {
     addError(noteName, "読者向けの更新日がありません");
+  } else if (metadata) {
+    const readerDate = [
+      readerDateMatch[1],
+      readerDateMatch[2].padStart(2, "0"),
+      readerDateMatch[3].padStart(2, "0"),
+    ].join("-");
+    if (readerDate !== metadata.date) {
+      addError(noteName, `更新日と公開管理日が一致しません（更新日${readerDate} / 公開管理日${metadata.date}）`);
+    }
   }
   if (textLength < 900) addError(noteName, `保存版として本文が短すぎます（${textLength}文字）`);
   if (textLength > 3500) addError(noteName, `スマホで読む保存版として長すぎます（${textLength}文字）`);
