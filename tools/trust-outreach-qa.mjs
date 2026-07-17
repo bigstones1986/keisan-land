@@ -62,20 +62,42 @@ requireText(planName, plan, "算願「学習に役立つリンク集」 | 高い
 requireText(planName, plan, "直前確認必須", "外部送信前の直前確認がありません");
 requireText(planName, plan, "## 送信前ゲート", "送信前ゲートがありません");
 requireText(planName, plan, "こどもとIT | 高い | 個別提案を準備・未送信", "最優先の編集媒体候補が記録されていません");
+requireText(planName, plan, "みんなの教育技術 | 中〜高 | 保留", "一般問い合わせのみの候補が保留になっていません");
 
 requireText(candidateReviewName, candidateReview, "送信状態: 未送信", "候補レビューの送信状態が未送信ではありません");
+requireText(candidateReviewName, candidateReview, "確認日: 2026-07-17", "候補レビューの再確認日が更新されていません");
 requireText(candidateReviewName, candidateReview, "こどもとIT | 高い", "最優先候補がありません");
 requireText(candidateReviewName, candidateReview, "EDUPEDIA | 中〜高", "教育実践媒体の保留判断がありません");
 requireText(candidateReviewName, candidateReview, "ICT教育ニュース | 中", "個人発信を受け付けない候補の判断がありません");
 requireText(candidateReviewName, candidateReview, "おやこイベント.com | 低〜中", "イベント媒体の対象外判断がありません");
+requireText(candidateReviewName, candidateReview, "みんなの教育技術 | 中〜高", "一般問い合わせのみの候補判断がありません");
 requireText(candidateReviewName, candidateReview, "https://edu.watch.impress.co.jp/docs/common/contact.html", "最優先候補の公式確認先がありません");
 
 requireText(mediaPitchName, mediaPitch, "送信状態: 未送信", "編集部向け提案が未送信になっていません");
+requireText(mediaPitchName, mediaPitch, "最終確認日: 2026-07-17", "公式受付の再確認日がありません");
+requireText(mediaPitchName, mediaPitch, "編集評価: 96点", "編集評価がありません");
+requireText(mediaPitchName, mediaPitch, "送信判断予定日: 2026-07-23", "送信判断日がありません");
+requireText(mediaPitchName, mediaPitch, "送信した場合の24時間後確認: 2026-07-24", "24時間後の確認日がありません");
+requireText(mediaPitchName, mediaPitch, "送信した場合の7日後確認: 2026-07-30", "7日後の確認日がありません");
 requireText(mediaPitchName, mediaPitch, "[要入力: 差出人氏名]", "差出人氏名の確認欄がありません");
 requireText(mediaPitchName, mediaPitch, "[要入力: 返信用メールアドレス]", "返信先の確認欄がありません");
 requireText(mediaPitchName, mediaPitch, targetUrl, "重点教材URLがありません");
 requireText(mediaPitchName, mediaPitch, "media/grade1-addition-word-problems-20260716.png", "実画面画像が指定されていません");
 requireText(mediaPitchName, mediaPitch, "人間が宛先、件名、本文、添付を確認し、送信を承認した", "送信直前の人間承認がありません");
+requireText(mediaPitchName, mediaPitch, "## 送信した場合の記録", "送信後の記録欄がありません");
+if (mediaPitch.includes("全26ページ")) {
+  errors.push(`${mediaPitchName}: サイトのページ数が古いままです`);
+}
+
+const pitchBlocks = [...mediaPitch.matchAll(/```text\r?\n([\s\S]*?)\r?\n```/g)].map((match) => match[1]);
+const pitchBody = pitchBlocks[1] ?? "";
+if (!pitchBody) errors.push(`${mediaPitchName}: 送信本文がありません`);
+if (Array.from(pitchBody).length > 760) {
+  errors.push(`${mediaPitchName}: 編集部向け本文が長すぎます（${Array.from(pitchBody).length}文字）`);
+}
+if (!pitchBody.includes("ご返信は不要")) {
+  errors.push(`${mediaPitchName}: 返信を強制しない文面になっていません`);
+}
 
 for (const [file, source] of [
   [candidateReviewName, candidateReview],
