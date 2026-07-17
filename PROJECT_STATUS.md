@@ -7759,6 +7759,9 @@ Google公式方針との照合:
 - 画像切れ: 0
 - 画面エラー: 0
 - 外部公開・Search Console操作: 未実施
+- 実装コミット `d4d6a3b` を `main` へ送信
+- GitHub Actions `Quality checks #39` は成功
+- Netlify本番の新ページ、共有画像、問題作成、答え5問ずつ、スマホ表示を確認
 
 明日の候補:
 
@@ -7829,14 +7832,16 @@ Google公式方針との照合:
 - sitemap: `.html` を維持
 - Netlify SEO設定QA: HTML 27ページ、エラー0
 - ソース内のURL形式: PASS
+- 実装コミット `d107f64` を `main` へ送信
+- GitHub Actions `Quality checks #40` は成功
+- 本番トップ: `.html` リンクを維持し、拡張子なしへの書き換えなし
+- 本番sitemap: 新教材の `.html` URLを確認
 
 明日の候補:
 
-1. 本番トップページで `.html` リンクが維持されていることを確認する
-2. 新教材本番とnote公開画面を確認する
-3. 7月22日にSearch Consoleの代替URL数と新ページ認識を確認する
+1. 新教材本番とnote公開画面を確認する
+2. 7月22日にSearch Consoleの代替URL数と新ページ認識を確認する
 
 未確認事項:
 
-- 次デプロイ後のPretty URLs無効化
 - 既存の拡張子なしURLがGoogle上で整理される時期
