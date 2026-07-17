@@ -32,6 +32,10 @@ function addWarning(file, message) {
   warnings.push(`${file}: ${message}`);
 }
 
+function requireText(file, source, expected, message) {
+  if (!source.includes(expected)) addError(file, message);
+}
+
 function markdownText(source) {
   return source
     .replace(/https?:\/\/\S+/g, "")
@@ -53,6 +57,40 @@ function frontmatter(source) {
       .filter(Boolean)
       .map((match) => [match[1].trim(), match[2].trim()]),
   );
+}
+
+function addDays(dateString, days) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString ?? "")) return null;
+  const date = new Date(`${dateString}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return null;
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+function checkEditorialMetadata(file, metadata) {
+  if (!metadata) return;
+
+  if (!metadata.reader || Array.from(metadata.reader).length < 12) {
+    addError(file, "readerに具体的な対象読者を12文字以上で記録してください");
+  }
+
+  const score = Number(metadata.editorial_score);
+  if (!Number.isInteger(score) || score < 90 || score > 100) {
+    addError(file, `editorial_scoreは90〜100の整数にしてください（${metadata.editorial_score ?? "未設定"}）`);
+  }
+
+  if (!metadata.editorial_focus || Array.from(metadata.editorial_focus).length < 20) {
+    addError(file, "editorial_focusに今回の編集焦点を20文字以上で記録してください");
+  }
+
+  const expected24h = addDays(metadata.date, 1);
+  const expected7d = addDays(metadata.date, 7);
+  if (expected24h && metadata.review_24h !== expected24h) {
+    addError(file, `review_24hは公開予定日の翌日にしてください（正: ${expected24h}）`);
+  }
+  if (expected7d && metadata.review_7d !== expected7d) {
+    addError(file, `review_7dは公開予定日の7日後にしてください（正: ${expected7d}）`);
+  }
 }
 
 async function imageDimensions(filePath) {
@@ -143,6 +181,7 @@ for (const xName of xNames) {
   if (!["required", "none"].includes(metadata.link_policy)) {
     addError(xName, `link_policyが不正です（${metadata.link_policy ?? "未設定"}）`);
   }
+  checkEditorialMetadata(xName, metadata);
   if (metadata.status !== "ready") continue;
 
   readyXNames.push(xName);
@@ -163,6 +202,9 @@ for (const xName of xNames) {
     checkClaims(xName, adopted);
     checkParagraphs(xName, adopted, 90);
   }
+  if (!source.includes("## 公開後に記録")) addError(xName, "公開後の記録欄がありません");
+  if (!source.includes("- 読者が使った言葉:")) addError(xName, "読者の言葉を残す欄がありません");
+  if (!source.includes("- 次の投稿で直すこと:")) addError(xName, "次の投稿へ学びを戻す欄がありません");
 }
 
 if (noteName) {
@@ -183,6 +225,7 @@ if (noteName) {
     if (!["ready", "published", "hold"].includes(metadata.status)) {
       addError(noteName, `statusが不正です（${metadata.status ?? "未設定"}）`);
     }
+    checkEditorialMetadata(noteName, metadata);
 
     const cover = metadata.cover;
     if (!cover) {
@@ -254,12 +297,41 @@ if (noteName) {
   }
   checkClaims(noteName, source);
   checkParagraphs(noteName, source, 120);
+
+  if (metadata?.date) {
+    const packageName = `NOTE_PUBLISHING_PACKAGE_${metadata.date}.md`;
+    try {
+      const { source: packageSource } = await load(packageName);
+      requireText(packageName, packageSource, noteName, "対象のnote原稿名が一致しません");
+      requireText(packageName, packageSource, title, "note原稿のタイトルが一致しません");
+      requireText(packageName, packageSource, metadata.cover, "note原稿の見出し画像が一致しません");
+      requireText(packageName, packageSource, metadata.cover_alt, "note原稿の代替テキストが一致しません");
+      requireText(packageName, packageSource, targetUrl, "重点教材URLがありません");
+      requireText(packageName, packageSource, "24時間後", "24時間後の記録欄がありません");
+      requireText(packageName, packageSource, "7日後", "7日後の記録欄がありません");
+    } catch {
+      addError(noteName, `公開パッケージが見つかりません（${packageName}）`);
+    }
+  }
 }
 
 if (substackName) {
   const { source } = await load(substackName);
+  const metadata = frontmatter(source);
   const title = source.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? "";
   const h2 = source.match(/^##\s+.+$/gm) ?? [];
+  if (!metadata) {
+    addError(substackName, "公開管理用のfrontmatterがありません");
+  } else {
+    if (metadata.channel !== "substack") addError(substackName, "channelはsubstackにしてください");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(metadata.date ?? "")) {
+      addError(substackName, "dateはYYYY-MM-DD形式にしてください");
+    }
+    if (!["ready", "published", "hold"].includes(metadata.status)) {
+      addError(substackName, `statusが不正です（${metadata.status ?? "未設定"}）`);
+    }
+    checkEditorialMetadata(substackName, metadata);
+  }
   if (!/（開発日記 #\d+）$/u.test(title)) addError(substackName, "タイトル末尾の開発日記番号がありません");
   if (h2.length < 2) addError(substackName, `見出しが不足しています（現在${h2.length}）`);
   if (!source.includes(targetUrl)) addError(substackName, "記事内容と一致する教材URLがありません");
@@ -267,6 +339,21 @@ if (substackName) {
   if (!source.includes("けいさんランド")) addError(substackName, "けいさんランド名がありません");
   checkClaims(substackName, source);
   checkParagraphs(substackName, source, 120);
+
+  if (metadata?.date) {
+    const packageName = `SUBSTACK_PUBLISHING_PACKAGE_${metadata.date}.md`;
+    try {
+      const { source: packageSource } = await load(packageName);
+      requireText(packageName, packageSource, substackName, "対象のSubstack原稿名が一致しません");
+      requireText(packageName, packageSource, title, "Substack原稿のタイトルが一致しません");
+      requireText(packageName, packageSource, targetUrl, "重点教材URLがありません");
+      requireText(packageName, packageSource, homeUrl, "けいさんランドURLがありません");
+      requireText(packageName, packageSource, metadata.review_24h, "24時間後の確認日が一致しません");
+      requireText(packageName, packageSource, metadata.review_7d, "7日後の確認日が一致しません");
+    } catch {
+      addError(substackName, `公開パッケージが見つかりません（${packageName}）`);
+    }
+  }
 }
 
 console.log("けいさんランド 発信原稿QA");
