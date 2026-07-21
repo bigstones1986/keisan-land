@@ -202,6 +202,42 @@ for (const xName of xNames) {
     checkClaims(xName, adopted);
     checkParagraphs(xName, adopted, 90);
   }
+  if (metadata.link_policy === "required") {
+    if (!metadata.media) {
+      addError(xName, "リンク投稿の添付画像が未設定です");
+    } else {
+      const mediaPath = path.resolve(rootDir, metadata.media);
+      if (!mediaPath.startsWith(`${rootDir}${path.sep}`)) {
+        addError(xName, "Xの添付画像はプロジェクト内のファイルを指定してください");
+      } else {
+        try {
+          await access(mediaPath);
+          const dimensions = await imageDimensions(mediaPath);
+          if (!dimensions) {
+            addError(xName, "Xの添付画像の寸法を確認できません");
+          } else if (dimensions.width < 1200 || dimensions.height < 630) {
+            addError(xName, `Xの添付画像が小さすぎます（${dimensions.width}×${dimensions.height}）`);
+          }
+        } catch {
+          addError(xName, `Xの添付画像が見つかりません（${metadata.media}）`);
+        }
+      }
+    }
+    if (!metadata.media_alt || Array.from(metadata.media_alt).length < 20) {
+      addError(xName, "X画像の代替テキストを20文字以上で設定してください");
+    }
+
+    const packageName = `X_PUBLISHING_PACKAGE_${metadata.date}.md`;
+    if (files.includes(packageName)) {
+      const { source: packageSource } = await load(packageName);
+      requireText(packageName, packageSource, xName, "対象のX原稿名が一致しません");
+      requireText(packageName, packageSource, adopted, "X原稿の投稿文が一致しません");
+      requireText(packageName, packageSource, metadata.media, "X原稿の添付画像が一致しません");
+      requireText(packageName, packageSource, metadata.media_alt, "X原稿の代替テキストが一致しません");
+      requireText(packageName, packageSource, metadata.review_24h, "24時間後の確認日が一致しません");
+      requireText(packageName, packageSource, metadata.review_7d, "7日後の確認日が一致しません");
+    }
+  }
   if (!source.includes("## 公開後に記録")) addError(xName, "公開後の記録欄がありません");
   if (!source.includes("- 読者が使った言葉:")) addError(xName, "読者の言葉を残す欄がありません");
   if (!source.includes("- 次の投稿で直すこと:")) addError(xName, "次の投稿へ学びを戻す欄がありません");
