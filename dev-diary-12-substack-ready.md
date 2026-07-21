@@ -1,7 +1,7 @@
 ---
 channel: substack
 date: 2026-07-21
-status: ready
+status: reschedule
 reader: 計算はできるのに文章題で止まる子を見守る保護者と先生
 editorial_score: 96
 editorial_focus: 新しい問題を増やすだけでは足りなかった開発判断を家庭で使える声かけへ変える

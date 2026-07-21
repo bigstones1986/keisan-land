@@ -1,7 +1,7 @@
 ---
 channel: note
 date: 2026-07-17
-status: ready
+status: verify
 reader: 小学1年生の足し算文章題を家庭や教室で支える人
 editorial_score: 98
 editorial_focus: 式を急がず3つの声かけで場面をほどく方法を根拠と具体例で残す

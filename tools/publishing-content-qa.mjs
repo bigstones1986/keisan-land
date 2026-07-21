@@ -175,7 +175,7 @@ for (const xName of xNames) {
   }
   if (metadata.channel !== "x") addError(xName, "channelはxにしてください");
   if (metadata.date !== filenameDate) addError(xName, `dateがファイル名と一致しません（${metadata.date ?? "未設定"}）`);
-  if (!["ready", "published", "hold"].includes(metadata.status)) {
+  if (!["ready", "verify", "reschedule", "published", "hold"].includes(metadata.status)) {
     addError(xName, `statusが不正です（${metadata.status ?? "未設定"}）`);
   }
   if (!["required", "none"].includes(metadata.link_policy)) {
@@ -258,7 +258,7 @@ if (noteName) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(metadata.date ?? "")) {
       addError(noteName, "dateはYYYY-MM-DD形式にしてください");
     }
-    if (!["ready", "published", "hold"].includes(metadata.status)) {
+    if (!["ready", "verify", "reschedule", "published", "hold"].includes(metadata.status)) {
       addError(noteName, `statusが不正です（${metadata.status ?? "未設定"}）`);
     }
     checkEditorialMetadata(noteName, metadata);
@@ -363,7 +363,7 @@ if (substackName) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(metadata.date ?? "")) {
       addError(substackName, "dateはYYYY-MM-DD形式にしてください");
     }
-    if (!["ready", "published", "hold"].includes(metadata.status)) {
+    if (!["ready", "verify", "reschedule", "published", "hold"].includes(metadata.status)) {
       addError(substackName, `statusが不正です（${metadata.status ?? "未設定"}）`);
     }
     checkEditorialMetadata(substackName, metadata);
