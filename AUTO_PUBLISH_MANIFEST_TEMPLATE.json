@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "publication_id": "replace-with-unique-id",
+  "channel": "x",
+  "operation": "create_post",
+  "risk_level": "green",
+  "created_by": "X投稿・コミュニティ担当",
+  "created_at": "2026-07-23T09:00:00+09:00",
+  "scheduled_at": "2026-07-24T09:00:00+09:00",
+  "source_file": "x-posts-2026-07-24.md",
+  "payload": {
+    "text": "公開する本文をここへ入れる",
+    "links": [
+      "https://keisan-land.netlify.app/grade1-addition-word-problems.html"
+    ],
+    "media": [],
+    "delivery": "public",
+    "reply_to": null
+  },
+  "content_hash": "replace-with-sha256",
+  "risk_declarations": {
+    "contains_personal_data": false,
+    "contains_unverified_claims": false,
+    "contains_third_party_quote": false,
+    "contains_paid_offer": false,
+    "changes_profile": false,
+    "uses_reply_or_mention": false
+  },
+  "approvals": {
+    "editorial": {
+      "role": "編集長",
+      "review_id": "replace-editorial-review-id",
+      "decision": "approve",
+      "score": 90,
+      "content_hash": "replace-with-sha256",
+      "reviewed_at": "2026-07-23T09:10:00+09:00"
+    },
+    "qa": {
+      "role": "QA担当（品質保証担当）",
+      "review_id": "replace-qa-review-id",
+      "decision": "approve",
+      "content_hash": "replace-with-sha256",
+      "reviewed_at": "2026-07-23T09:15:00+09:00"
+    },
+    "safety": {
+      "role": "安全・ブランド監査責任者",
+      "review_id": "replace-safety-review-id",
+      "decision": "approve",
+      "findings": [],
+      "content_hash": "replace-with-sha256",
+      "reviewed_at": "2026-07-23T09:20:00+09:00"
+    },
+    "publication": {
+      "role": "AI公開承認責任者",
+      "review_id": "replace-publication-review-id",
+      "decision": "approve",
+      "content_hash": "replace-with-sha256",
+      "reviewed_at": "2026-07-23T09:25:00+09:00"
+    }
+  },
+  "transport": {
+    "kind": "dry_run",
+    "estimated_cost_usd": 0
+  }
+}

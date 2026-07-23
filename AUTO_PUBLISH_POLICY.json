@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "policy_id": "keisan-land-autonomous-publishing-v1",
+  "updated_at": "2026-07-23",
+  "autonomous_approval_enabled": true,
+  "external_publish_enabled": false,
+  "owner_charter": {
+    "status": "internal_gate_active_external_transport_pending",
+    "one_time_setup_required": true,
+    "per_post_owner_approval_required_for_green": false,
+    "per_post_owner_approval_required_for_yellow": true,
+    "red_is_always_blocked": true
+  },
+  "approval_chain": {
+    "required": [
+      "editorial",
+      "qa",
+      "safety",
+      "publication"
+    ],
+    "required_roles": {
+      "editorial": "編集長",
+      "qa": "QA担当（品質保証担当）",
+      "safety": "安全・ブランド監査責任者",
+      "publication": "AI公開承認責任者"
+    },
+    "distinct_review_passes": true,
+    "creator_cannot_approve": true,
+    "all_approvals_must_match_content_hash": true
+  },
+  "allowed_topics": [
+    "小学生の算数",
+    "家庭学習",
+    "授業・印刷教材",
+    "けいさんランドに実在する教材と機能",
+    "運営者が実際に確認した改善"
+  ],
+  "blocked_topics": [
+    "政治・選挙",
+    "医療・健康上の助言",
+    "金融・投資上の助言",
+    "法律上の助言",
+    "成人向け内容",
+    "識別可能な子どもの体験談・写真・学習記録",
+    "確認していない他者・競合への評価",
+    "災害・事件・流行語への便乗"
+  ],
+  "forbidden_phrases": [
+    "必ず成績が上がる",
+    "絶対にできる",
+    "苦手がなくなる",
+    "今すぐクリック",
+    "知らないと損",
+    "放置すると手遅れ",
+    "Google検索1位",
+    "検索トップ確実"
+  ],
+  "blocked_terms": [
+    "選挙",
+    "政党",
+    "候補者",
+    "投資",
+    "株価",
+    "治療",
+    "診断",
+    "弁護士",
+    "事件便乗",
+    "災害便乗",
+    "トレンド便乗"
+  ],
+  "allowed_link_hosts": [
+    "keisan-land.netlify.app",
+    "www.mext.go.jp",
+    "mext.go.jp",
+    "www.nier.go.jp",
+    "nier.go.jp"
+  ],
+  "publish_window_jst": {
+    "start": "07:00",
+    "end": "21:00"
+  },
+  "channel_rules": {
+    "x": {
+      "max_characters": 280,
+      "max_publications_per_day": 1,
+      "min_hours_between_publications": 20,
+      "allowed_transports": [
+        "dry_run",
+        "x_api"
+      ],
+      "transport_enabled": false,
+      "max_api_cost_usd_per_post": 0,
+      "allow_replies": false,
+      "allow_mentions": false,
+      "allow_direct_messages": false,
+      "allow_trending_topics": false,
+      "allow_profile_changes": false,
+      "made_with_ai": true
+    },
+    "substack": {
+      "max_publications_per_7_days": 1,
+      "min_hours_between_publications": 144,
+      "allowed_transports": [
+        "dry_run",
+        "substack_schedule"
+      ],
+      "transport_enabled": false,
+      "default_delivery": "web_only",
+      "allow_email_delivery_without_owner": false,
+      "allow_paid_posts": false,
+      "allow_profile_changes": false
+    },
+    "note": {
+      "max_publications_per_7_days": 1,
+      "min_hours_between_publications": 144,
+      "allowed_transports": [
+        "dry_run",
+        "note_schedule"
+      ],
+      "transport_enabled": false,
+      "requires_premium_or_pro_for_schedule": true,
+      "allow_paid_posts": false,
+      "allow_profile_changes": false
+    }
+  },
+  "risk_rules": {
+    "green": [
+      "許可済みテーマだけを扱う",
+      "実在する教材URLだけを使う",
+      "個人情報・保証表現・他者批判を含まない",
+      "既存の媒体別QAと公開ゲートに合格する"
+    ],
+    "yellow": [
+      "教育効果の解釈を含む",
+      "許可リスト外の外部URLを含む",
+      "Substackでメール配信する",
+      "有料設定、プロフィール、固定投稿を変更する",
+      "引用・第三者の声・写真を含む"
+    ],
+    "red": [
+      "個人情報を含む",
+      "禁止テーマまたは禁止表現を含む",
+      "存在しない教材・機能・URLを案内する",
+      "自動返信、DM、メンション、流行便乗を行う",
+      "安全監査の拒否を上書きする"
+    ]
+  },
+  "circuit_breaker": {
+    "pause_after_consecutive_transport_failures": 2,
+    "pause_on_public_content_mismatch": true,
+    "pause_on_broken_link": true,
+    "pause_on_policy_violation": true,
+    "auto_delete_publications": false,
+    "future_publications_require_reapproval_after_pause": true
+  }
+}

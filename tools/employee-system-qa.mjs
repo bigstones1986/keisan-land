@@ -40,6 +40,8 @@ const requiredRoles = [
   "X投稿・コミュニティ担当",
   "Substack編集・投稿担当",
   "note編集・投稿担当",
+  "安全・ブランド監査責任者",
+  "AI公開承認責任者",
   "発信進行・公開管理担当",
   "教材研究・信頼担当",
   "教育広報・紹介担当",
@@ -67,13 +69,13 @@ for (const level of ["L1 役割定義", "L2 再現可能", "L3 品質保証", "L
   requireText(matrixName, matrix, level, `成熟度「${level}」の説明がありません`);
 }
 
-for (const loop of ["発信:", "教材:", "検索露出:", "紹介・信頼:"]) {
+for (const loop of ["発信:", "自律発信:", "教材:", "検索露出:", "紹介・信頼:"]) {
   requireText(agentsName, agents, loop, `役割別改善ループ「${loop}」がありません`);
 }
 
 for (const handoff of [
   "分析担当 → 検索露出改善担当",
-  "発信戦略責任者 → X投稿・コミュニティ担当 / Substack編集・投稿担当 / note編集・投稿担当 → 編集長 → QA担当 → 発信進行・公開管理担当",
+  "発信戦略責任者 → X投稿・コミュニティ担当 / Substack編集・投稿担当 / note編集・投稿担当 → 編集長 → QA担当 → 安全・ブランド監査責任者 → AI公開承認責任者 → 発信進行・公開管理担当",
   "教材研究・信頼担当 → 教材品質責任者 → QA担当 → 編集長",
 ]) {
   requireText(growthName, growth, handoff, `社員間の引き継ぎ「${handoff}」がありません`);

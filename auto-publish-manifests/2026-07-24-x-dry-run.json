@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "publication_id": "x-20260724-learning-tip-001",
+  "channel": "x",
+  "operation": "create_post",
+  "risk_level": "green",
+  "created_by": "X投稿・コミュニティ担当",
+  "created_at": "2026-07-23T22:08:00+09:00",
+  "scheduled_at": "2026-07-24T09:00:00+09:00",
+  "source_file": "x-posts-2026-07-24.md",
+  "payload": {
+    "text": "「もらった」と書いてあるから足し算。\n\nこの覚え方だけだと、言い方が変わったときに迷うことがあります。\n\n見るのは言葉ではなく、数の変化です。\n\n・数が増えた\n・2つの集まりを合わせた\n\n場面を丸で確かめてから、式を考える方法もあります。",
+    "links": [],
+    "media": [],
+    "delivery": "public",
+    "reply_to": null
+  },
+  "content_hash": "sha256:3c33b88b9b4ebc7fab2ff1b86314df9c2ecd7696916e5616de42105f3b9da51e",
+  "risk_declarations": {
+    "contains_personal_data": false,
+    "contains_unverified_claims": false,
+    "contains_third_party_quote": false,
+    "contains_paid_offer": false,
+    "changes_profile": false,
+    "uses_reply_or_mention": false
+  },
+  "approvals": {
+    "editorial": {
+      "role": "編集長",
+      "review_id": "editorial-x-20260724-001",
+      "decision": "approve",
+      "score": 93,
+      "content_hash": "sha256:3c33b88b9b4ebc7fab2ff1b86314df9c2ecd7696916e5616de42105f3b9da51e",
+      "reviewed_at": "2026-07-23T22:10:00+09:00"
+    },
+    "qa": {
+      "role": "QA担当（品質保証担当）",
+      "review_id": "qa-x-20260724-001",
+      "decision": "approve",
+      "content_hash": "sha256:3c33b88b9b4ebc7fab2ff1b86314df9c2ecd7696916e5616de42105f3b9da51e",
+      "reviewed_at": "2026-07-23T22:12:00+09:00"
+    },
+    "safety": {
+      "role": "安全・ブランド監査責任者",
+      "review_id": "safety-x-20260724-001",
+      "decision": "approve",
+      "findings": [],
+      "content_hash": "sha256:3c33b88b9b4ebc7fab2ff1b86314df9c2ecd7696916e5616de42105f3b9da51e",
+      "reviewed_at": "2026-07-23T22:14:00+09:00"
+    },
+    "publication": {
+      "role": "AI公開承認責任者",
+      "review_id": "publication-x-20260724-001",
+      "decision": "approve",
+      "content_hash": "sha256:3c33b88b9b4ebc7fab2ff1b86314df9c2ecd7696916e5616de42105f3b9da51e",
+      "reviewed_at": "2026-07-23T22:16:00+09:00"
+    }
+  },
+  "transport": {
+    "kind": "dry_run",
+    "estimated_cost_usd": 0
+  }
+}

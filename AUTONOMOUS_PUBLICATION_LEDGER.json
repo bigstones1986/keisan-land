@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "paused": false,
+  "pause_reason": null,
+  "consecutive_transport_failures": 0,
+  "publications": []
+}

@@ -76,7 +76,7 @@ for (const stopCondition of [
   "原稿と投稿画面の内容が一致しない",
   "リンク先が開かない",
   "既存記事や下書きを上書きする可能性がある",
-  "人間の公開承認がない",
+  "有効なAI公開承認マニフェストがない",
 ]) {
   requireText(playbookName, playbook, stopCondition, `停止条件「${stopCondition}」がありません`);
 }
@@ -96,6 +96,12 @@ requireText(
   runbook,
   "npm run qa:operators",
   "公開前ゲートに投稿担当QAがありません",
+);
+requireText(
+  runbookName,
+  runbook,
+  "npm run qa:autopublish",
+  "公開前ゲートに自律公開QAがありません",
 );
 requireText(
   runbookName,
