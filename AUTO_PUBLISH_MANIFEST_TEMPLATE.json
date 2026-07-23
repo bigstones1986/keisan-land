@@ -59,7 +59,7 @@
     }
   },
   "transport": {
-    "kind": "dry_run",
+    "kind": "owner_manual_chrome",
     "estimated_cost_usd": 0
   }
 }

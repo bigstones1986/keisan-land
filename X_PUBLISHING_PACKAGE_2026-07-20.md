@@ -47,7 +47,7 @@ https://keisan-land.netlify.app/grade1-addition-word-problems.html
 - [ ] 代替テキストを設定した
 - [ ] ハッシュタグを追加していない
 - [ ] 発信原稿QAがエラー0、注意0
-- [ ] 公開ボタンを押す直前に人間が確認した
+- [ ] AI社員は投稿を確定せず、最後の投稿操作を社長が行った
 
 ## 公開後に記録
 

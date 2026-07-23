@@ -1,12 +1,13 @@
 ---
 channel: substack
-date: 2026-07-21
-status: reschedule
+date: 2026-07-28
+status: ready
+handoff_status: owner_ready
 reader: 計算はできるのに文章題で止まる子を見守る保護者と先生
 editorial_score: 96
 editorial_focus: 新しい問題を増やすだけでは足りなかった開発判断を家庭で使える声かけへ変える
-review_24h: 2026-07-22
-review_7d: 2026-07-28
+review_24h: 2026-07-29
+review_7d: 2026-08-04
 ---
 
 # 文章題で止まった子に「式は？」と聞くのを、いったんやめました（開発日記 #12）

@@ -64,7 +64,12 @@ function hoursBetween(a, b) {
   return Math.abs(a.getTime() - b.getTime()) / 3_600_000;
 }
 
-export function evaluateManifest(policy, ledger, manifest, { external = false } = {}) {
+export function evaluateManifest(
+  policy,
+  ledger,
+  manifest,
+  { external = false, handoff = false } = {},
+) {
   const errors = [];
   const warnings = [];
   const add = (message) => errors.push(message);
@@ -245,17 +250,35 @@ export function evaluateManifest(policy, ledger, manifest, { external = false } 
     }
   }
 
+  if (external && handoff) add("外部投稿と社長引き渡しを同時には指定できません");
+
   if (external) {
     if (!policy.external_publish_enabled) add("外部自動投稿が無効です");
     if (channelRule && !channelRule.transport_enabled) add(`${manifest.channel}の投稿経路が無効です`);
     if (transport.kind === "dry_run") add("dry_runは外部投稿に使えません");
+  } else if (handoff) {
+    if (policy.owner_charter?.final_external_action !== "owner_only") {
+      add("最終投稿者が社長に固定されていません");
+    }
+    if (channelRule && !channelRule.owner_handoff_enabled) {
+      add(`${manifest.channel}の社長引き渡しが無効です`);
+    }
+    if (transport.kind !== "owner_manual_chrome") {
+      add("社長引き渡しはowner_manual_chromeだけを使えます");
+    }
   } else if (transport.kind !== "dry_run") {
     warnings.push("外部投稿せず、投稿経路の設定だけを検査しました");
   }
 
+  const approvedStatus = external
+    ? "APPROVED_FOR_EXTERNAL_PUBLISH"
+    : handoff
+      ? "APPROVED_FOR_OWNER_POST"
+      : "APPROVED_DRY_RUN";
+
   return {
     ok: errors.length === 0,
-    status: errors.length === 0 ? (external ? "APPROVED_FOR_EXTERNAL_PUBLISH" : "APPROVED_DRY_RUN") : "BLOCKED",
+    status: errors.length === 0 ? approvedStatus : "BLOCKED",
     expected_hash: expectedHash,
     errors,
     warnings,
@@ -395,8 +418,18 @@ async function selfTest(policy, ledger) {
       shouldPass: false,
     },
     {
+      name: "社長が最終投稿するChrome引き渡しを承認",
+      manifest: finalizedManifest({
+        transport: { kind: "owner_manual_chrome", estimated_cost_usd: 0 },
+      }),
+      shouldPass: true,
+      handoff: true,
+    },
+    {
       name: "外部投稿無効時の実投稿を拒否",
-      manifest: finalizedManifest({ transport: { kind: "x_api", estimated_cost_usd: 0 } }),
+      manifest: finalizedManifest({
+        transport: { kind: "owner_manual_chrome", estimated_cost_usd: 0 },
+      }),
       shouldPass: false,
       external: true,
     },
@@ -406,6 +439,7 @@ async function selfTest(policy, ledger) {
   for (const testCase of cases) {
     const result = evaluateManifest(policy, ledger, testCase.manifest, {
       external: testCase.external ?? false,
+      handoff: testCase.handoff ?? false,
     });
     if (result.ok !== testCase.shouldPass) failures.push(`${testCase.name}: ${result.errors.join(" / ")}`);
   }
@@ -420,7 +454,7 @@ async function selfTest(policy, ledger) {
     if (!result.ok) failures.push(`${name}: ${result.errors.join(" / ")}`);
   }
 
-  console.log("けいさんランド 自律公開ゲートQA");
+  console.log("けいさんランド AI発信承認ゲートQA");
   console.log(`テスト: ${cases.length}`);
   console.log(`実マニフェスト: ${manifestNames.length}`);
   console.log(`失敗: ${failures.length}`);
@@ -443,7 +477,9 @@ async function main() {
 
   const manifestArg = args.find((arg) => !arg.startsWith("--"));
   if (!manifestArg) {
-    console.error("使い方: node tools/autonomous-publication-gate.mjs <manifest.json> [--external]");
+    console.error(
+      "使い方: node tools/autonomous-publication-gate.mjs <manifest.json> [--handoff | --external]",
+    );
     process.exitCode = 1;
     return;
   }
@@ -463,6 +499,7 @@ async function main() {
 
   const result = evaluateManifest(policy, ledger, manifest, {
     external: args.includes("--external"),
+    handoff: args.includes("--handoff"),
   });
   console.log(JSON.stringify(result, null, 2));
   if (!result.ok) process.exitCode = 1;

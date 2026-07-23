@@ -69,7 +69,7 @@ for (const level of ["L1 役割定義", "L2 再現可能", "L3 品質保証", "L
   requireText(matrixName, matrix, level, `成熟度「${level}」の説明がありません`);
 }
 
-for (const loop of ["発信:", "自律発信:", "教材:", "検索露出:", "紹介・信頼:"]) {
+for (const loop of ["発信:", "発信承認:", "教材:", "検索露出:", "紹介・信頼:"]) {
   requireText(agentsName, agents, loop, `役割別改善ループ「${loop}」がありません`);
 }
 

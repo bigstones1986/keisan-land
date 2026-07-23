@@ -1,15 +1,18 @@
 {
   "schema_version": 1,
-  "policy_id": "keisan-land-autonomous-publishing-v1",
+  "policy_id": "keisan-land-owner-final-publishing-v2",
   "updated_at": "2026-07-23",
   "autonomous_approval_enabled": true,
   "external_publish_enabled": false,
   "owner_charter": {
-    "status": "internal_gate_active_external_transport_pending",
-    "one_time_setup_required": true,
-    "per_post_owner_approval_required_for_green": false,
+    "status": "ai_draft_approval_active_owner_final_publish",
+    "one_time_setup_required": false,
+    "per_post_owner_approval_required_for_green": true,
     "per_post_owner_approval_required_for_yellow": true,
-    "red_is_always_blocked": true
+    "red_is_always_blocked": true,
+    "final_external_action": "owner_only",
+    "ai_may_prepare_chrome_draft": true,
+    "ai_must_not_click_publish_schedule_or_send": true
   },
   "approval_chain": {
     "required": [
@@ -86,9 +89,11 @@
       "min_hours_between_publications": 20,
       "allowed_transports": [
         "dry_run",
-        "x_api"
+        "owner_manual_chrome"
       ],
       "transport_enabled": false,
+      "owner_handoff_enabled": true,
+      "ai_may_prepare_chrome_draft": false,
       "max_api_cost_usd_per_post": 0,
       "allow_replies": false,
       "allow_mentions": false,
@@ -102,9 +107,11 @@
       "min_hours_between_publications": 144,
       "allowed_transports": [
         "dry_run",
-        "substack_schedule"
+        "owner_manual_chrome"
       ],
       "transport_enabled": false,
+      "owner_handoff_enabled": true,
+      "ai_may_prepare_chrome_draft": true,
       "default_delivery": "web_only",
       "allow_email_delivery_without_owner": false,
       "allow_paid_posts": false,
@@ -115,9 +122,11 @@
       "min_hours_between_publications": 144,
       "allowed_transports": [
         "dry_run",
-        "note_schedule"
+        "owner_manual_chrome"
       ],
       "transport_enabled": false,
+      "owner_handoff_enabled": true,
+      "ai_may_prepare_chrome_draft": true,
       "requires_premium_or_pro_for_schedule": true,
       "allow_paid_posts": false,
       "allow_profile_changes": false

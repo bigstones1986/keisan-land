@@ -62,7 +62,7 @@ for (const gate of [
   "投稿先アカウント",
   "公開パッケージ",
   "スマホ表示",
-  "人間の公開承認",
+  "最後の操作は社長",
   "公開日時",
   "公開URL",
   "24時間後",
@@ -76,7 +76,7 @@ for (const stopCondition of [
   "原稿と投稿画面の内容が一致しない",
   "リンク先が開かない",
   "既存記事や下書きを上書きする可能性がある",
-  "有効なAI公開承認マニフェストがない",
+  "AI社員が投稿、公開、予約、配信の確定操作を求められた",
 ]) {
   requireText(playbookName, playbook, stopCondition, `停止条件「${stopCondition}」がありません`);
 }
@@ -109,22 +109,34 @@ requireText(
   "PUBLISHING_OPERATOR_PLAYBOOK.md",
   "投稿担当プレイブックへの案内がありません",
 );
+requireText(
+  runbookName,
+  runbook,
+  "OWNER_PUBLISHING_INBOX.md",
+  "社長用投稿ボックスへの案内がありません",
+);
+requireText(
+  runbookName,
+  runbook,
+  "AI社員は外部サービスの投稿、公開、予約、配信を確定しない",
+  "AI社員の外部確定操作が禁止されていません",
+);
 
 const packageChecks = [
   {
     label: "X",
     name: latest(files, "X_PUBLISHING_PACKAGE_"),
-    required: ["投稿アカウント", "投稿文", "代替テキスト", "人間が確認", "公開URL"],
+    required: ["投稿アカウント", "投稿文", "代替テキスト", "社長", "公開URL"],
   },
   {
     label: "Substack",
     name: latest(files, "SUBSTACK_PUBLISHING_PACKAGE_"),
-    required: ["新規下書き", "スマホ", "人間が内容を確認", "公開URL"],
+    required: ["新規下書き", "スマホ", "社長", "公開URL"],
   },
   {
     label: "note",
     name: latest(files, "NOTE_PUBLISHING_PACKAGE_"),
-    required: ["見出し画像", "代替テキスト", "タグ", "スマホ", "人間が内容を確認", "公開URL"],
+    required: ["見出し画像", "代替テキスト", "タグ", "スマホ", "社長", "公開URL"],
   },
 ];
 
