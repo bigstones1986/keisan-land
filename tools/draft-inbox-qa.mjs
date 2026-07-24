@@ -42,6 +42,7 @@ if (!policy.owner_charter?.ai_must_not_click_publish_schedule_or_send) {
 const publicationIds = new Set();
 const priorities = new Set();
 const counts = { x: 0, substack: 0, note: 0 };
+const publishedCounts = { x: 0, substack: 0, note: 0 };
 const expectedRoles = {
   editorial: "編集長",
   qa: "QA担当（品質保証担当）",
@@ -118,6 +119,72 @@ for (const entry of inbox.entries ?? []) {
   }
 }
 
+for (const entry of inbox.published_entries ?? []) {
+  const label = entry.publication_id ?? "publication_id未設定";
+  if (!entry.publication_id || publicationIds.has(entry.publication_id)) {
+    add(`${label}: publication_idが未設定または重複しています`);
+  }
+  publicationIds.add(entry.publication_id);
+
+  if (!(entry.channel in publishedCounts)) add(`${label}: 未対応の公開媒体です`);
+  else publishedCounts[entry.channel] += 1;
+  if (entry.status !== "published" || entry.handoff_status !== "completed") {
+    add(`${label}: 公開済み状態が不正です`);
+  }
+  if (entry.owner_action !== "owner_published_in_chrome") {
+    add(`${label}: 社長による公開操作が記録されていません`);
+  }
+  if (entry.risk_level !== "green") add(`${label}: 公開済み記録がGreenではありません`);
+  if (!entry.published_at || Number.isNaN(Date.parse(entry.published_at))) {
+    add(`${label}: 公開日時が不正です`);
+  }
+  if (!entry.public_url?.startsWith("https://")) add(`${label}: 公開URLが不正です`);
+  if (!entry.review_24h || !entry.review_7d) add(`${label}: 公開後確認日がありません`);
+  if (!entry.verification?.title_verified) add(`${label}: 公開タイトルが未確認です`);
+  if (!Array.isArray(entry.verification?.links_verified) || entry.verification.links_verified.length === 0) {
+    add(`${label}: 公開リンクが未確認です`);
+  }
+
+  const sourcePath = insideRoot(entry.source_file);
+  const packagePath = insideRoot(entry.package_file);
+  if (!sourcePath || !packagePath) {
+    add(`${label}: 公開記録がプロジェクト外を参照しています`);
+    continue;
+  }
+
+  let source;
+  try {
+    source = await readFile(sourcePath);
+    await readFile(packagePath);
+  } catch {
+    add(`${label}: 公開原稿または投稿パッケージを読み込めません`);
+    continue;
+  }
+
+  const actualHash = sourceHash(source);
+  if (entry.source_hash !== actualHash) add(`${label}: 公開時原稿のハッシュが一致しません`);
+
+  if (entry.approvals) {
+    const reviewIds = new Set();
+    for (const [key, role] of Object.entries(expectedRoles)) {
+      const approval = entry.approvals[key];
+      if (!approval) {
+        add(`${label}: 公開前の${key}承認がありません`);
+        continue;
+      }
+      if (approval.role !== role) add(`${label}: 公開前の${key}承認担当が違います`);
+      if (approval.decision !== "approve") add(`${label}: 公開前の${key}承認がapproveではありません`);
+      if (approval.content_hash !== actualHash) add(`${label}: 公開前の${key}承認ハッシュが違います`);
+      if (!approval.review_id || reviewIds.has(approval.review_id)) {
+        add(`${label}: 公開前review_idが未設定または重複しています`);
+      }
+      reviewIds.add(approval.review_id);
+    }
+  } else if (entry.approval_mode !== "owner_published_verified_draft") {
+    add(`${label}: 公開前承認または社長公開記録がありません`);
+  }
+}
+
 if (counts.x > 5) add("Xの完成稿が5本を超えています");
 if (counts.substack > 2) add("Substackの完成稿が2本を超えています");
 if (counts.note > 2) add("noteの完成稿が2本を超えています");
@@ -125,6 +192,10 @@ if (counts.note > 2) add("noteの完成稿が2本を超えています");
 console.log("けいさんランド 社長用投稿ボックスQA");
 console.log(`完成稿: ${(inbox.entries ?? []).length}`);
 console.log(`内訳: X ${counts.x} / Substack ${counts.substack} / note ${counts.note}`);
+console.log(`公開済み: ${(inbox.published_entries ?? []).length}`);
+console.log(
+  `公開内訳: X ${publishedCounts.x} / Substack ${publishedCounts.substack} / note ${publishedCounts.note}`,
+);
 console.log(`エラー: ${errors.length}`);
 for (const error of errors) console.error(`エラー: ${error}`);
 
