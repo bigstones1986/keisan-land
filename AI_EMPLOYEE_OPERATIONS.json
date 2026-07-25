@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-07-25",
+  "timezone": "Asia/Tokyo",
+  "coverage_mode": "4交代の定時実行。常時連続処理ではなく、各勤務の間は次回実行を待機する。",
+  "shifts": [
+    {
+      "id": "night-watch",
+      "name": "夜間監視",
+      "time": "00:30",
+      "window_start": "00:00",
+      "window_end": "06:29",
+      "automation_id": "automation",
+      "roles": [
+        "QA担当（品質保証担当）",
+        "安全・ブランド監査責任者"
+      ],
+      "mission": "重大な不具合、リンク、教材QA、期限切れを点検し、朝担当へ引き継ぐ。",
+      "status": "active"
+    },
+    {
+      "id": "morning-growth",
+      "name": "朝の成長分析",
+      "time": "06:30",
+      "window_start": "06:30",
+      "window_end": "12:29",
+      "automation_id": "automation-2",
+      "roles": [
+        "分析担当",
+        "検索露出改善担当",
+        "SEO担当"
+      ],
+      "mission": "検索データと前回値を比べ、その日に変える点を一つだけ決める。",
+      "status": "active"
+    },
+    {
+      "id": "day-improvement",
+      "name": "昼の改善勤務",
+      "time": "12:30",
+      "window_start": "12:30",
+      "window_end": "20:29",
+      "automation_id": "automation-3",
+      "roles": [
+        "教材品質責任者",
+        "UX担当",
+        "発信戦略責任者"
+      ],
+      "mission": "朝の判断を受け、教材、導線、検索露出、発信準備から一つを改善する。",
+      "status": "active"
+    },
+    {
+      "id": "evening-publishing",
+      "name": "夜の発信準備",
+      "time": "20:30",
+      "window_start": "20:30",
+      "window_end": "23:59",
+      "automation_id": "note-substack",
+      "roles": [
+        "note編集・投稿担当",
+        "Substack編集・投稿担当",
+        "編集長"
+      ],
+      "mission": "noteとSubstackを別原稿で準備し、90点以上だけを社長へ引き渡す。",
+      "status": "active"
+    }
+  ],
+  "guardrails": [
+    "外部サービスへの公開、投稿、送信、プロフィール変更は社長が最後に行う",
+    "広告費、課金、フォーム送信、Search Console送信は自動実行しない",
+    "未確認の数字、成果、利用者の声を事実として記録しない",
+    "大きな変更後7日間は、同じ主要要素を再変更しない",
+    "作業終了時に活動ログと次担当への引き継ぎを残す",
+    "実績証拠がない社員をL4または育成済みと表示しない"
+  ]
+}

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>けいさんランド AI社員ダッシュボード</title>
+  <link rel="icon" href="../favicon-simple-32x32.png" type="image/png">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="../favicon-simple-32x32.png" width="32" height="32" alt="">
+      <div>
+        <p class="eyebrow">けいさんランド運営室</p>
+        <h1>AI社員ダッシュボード</h1>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <div class="live-clock" aria-label="現在の日本時間">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="live-clock">--:--</span>
+      </div>
+      <button class="icon-button" id="refresh-button" type="button" title="最新状態に更新" aria-label="最新状態に更新">
+        <span aria-hidden="true">↻</span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="ダッシュボード表示">
+    <button class="tab is-active" type="button" data-tab="overview">全体</button>
+    <button class="tab" type="button" data-tab="employees">社員</button>
+    <button class="tab" type="button" data-tab="operations">勤務</button>
+    <button class="tab" type="button" data-tab="history">履歴</button>
+  </nav>
+
+  <main>
+    <section class="tab-panel is-active" id="overview" data-panel="overview">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">TODAY</p>
+          <h2>今日の運営状況</h2>
+        </div>
+        <p class="updated-at" id="updated-at">データ作成: --</p>
+      </div>
+
+      <div class="summary-grid" id="summary-grid" aria-label="運営サマリー"></div>
+
+      <section class="work-band" aria-labelledby="current-shift-title">
+        <div class="current-shift-copy">
+          <p class="section-kicker">CURRENT SHIFT</p>
+          <h2 id="current-shift-title">現在の勤務帯</h2>
+          <p id="current-shift-mission"></p>
+        </div>
+        <div class="shift-state">
+          <span class="state-label" id="current-shift-state">待機中</span>
+          <strong id="next-run">次回 --</strong>
+        </div>
+      </section>
+
+      <section class="content-section" aria-labelledby="timeline-title">
+        <div class="section-heading compact">
+          <div>
+            <p class="section-kicker">24H ROTATION</p>
+            <h2 id="timeline-title">4交代の勤務表</h2>
+          </div>
+          <p>定時実行の間は待機します</p>
+        </div>
+        <div class="shift-timeline" id="shift-timeline"></div>
+      </section>
+
+      <div class="two-column">
+        <section class="content-section" aria-labelledby="search-title">
+          <div class="section-heading compact">
+            <div>
+              <p class="section-kicker">SEARCH</p>
+              <h2 id="search-title">検索の現在地</h2>
+            </div>
+          </div>
+          <div id="search-status"></div>
+        </section>
+
+        <section class="content-section" aria-labelledby="latest-title">
+          <div class="section-heading compact">
+            <div>
+              <p class="section-kicker">LATEST</p>
+              <h2 id="latest-title">直近の仕事</h2>
+            </div>
+          </div>
+          <div id="latest-activity"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="employees" data-panel="employees">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">GROWTH</p>
+          <h2>AI社員の育成状況</h2>
+        </div>
+        <p>L4だけを「育成済み」と表示します</p>
+      </div>
+
+      <div class="filters" aria-label="社員の絞り込み">
+        <label>
+          <span>担当領域</span>
+          <select id="team-filter">
+            <option value="all">すべて</option>
+          </select>
+        </label>
+        <label>
+          <span>レベル</span>
+          <select id="level-filter">
+            <option value="all">すべて</option>
+            <option value="L4">L4 学習済み</option>
+            <option value="L3">L3 品質保証</option>
+            <option value="L2">L2 再現可能</option>
+            <option value="L1">L1 役割定義</option>
+          </select>
+        </label>
+        <label class="search-field">
+          <span>社員名</span>
+          <input id="employee-search" type="search" placeholder="例: SEO">
+        </label>
+      </div>
+
+      <div class="employee-count" id="employee-count"></div>
+      <div class="employee-list" id="employee-list"></div>
+    </section>
+
+    <section class="tab-panel" id="operations" data-panel="operations">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">OPERATIONS</p>
+          <h2>自動勤務と安全管理</h2>
+        </div>
+        <p id="coverage-mode"></p>
+      </div>
+
+      <div class="automation-list" id="automation-list"></div>
+
+      <div class="two-column">
+        <section class="content-section" aria-labelledby="guardrail-title">
+          <div class="section-heading compact">
+            <div>
+              <p class="section-kicker">GUARDRAILS</p>
+              <h2 id="guardrail-title">暴走防止ルール</h2>
+            </div>
+          </div>
+          <ul class="check-list" id="guardrail-list"></ul>
+        </section>
+
+        <section class="content-section" aria-labelledby="inbox-title">
+          <div class="section-heading compact">
+            <div>
+              <p class="section-kicker">PUBLISHING</p>
+              <h2 id="inbox-title">社長用投稿ボックス</h2>
+            </div>
+          </div>
+          <div id="inbox-status"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="history" data-panel="history">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">ACTIVITY</p>
+          <h2>勤務履歴と引き継ぎ</h2>
+        </div>
+        <p>完了・停止・未確認を区別して記録します</p>
+      </div>
+      <div class="activity-list" id="activity-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>この画面はローカル専用です。外部公開操作は行いません。</p>
+    <p id="source-note"></p>
+  </footer>
+
+  <script src="dashboard-data.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
