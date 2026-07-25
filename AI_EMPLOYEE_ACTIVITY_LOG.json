@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-25T11:20:00+09:00",
+  "updated_at": "2026-07-25T16:10:00+09:00",
   "entries": [
     {
       "id": "activity-20260725-search-training",
@@ -43,6 +43,107 @@
         "AI_EMPLOYEE_ACTIVITY_LOG.json"
       ],
       "handoff": "各自動勤務の初回結果を活動ログへ残し、失敗時は停止理由を表示する。"
+    },
+    {
+      "id": "activity-20260725-queue-triage",
+      "shift_id": "day-improvement",
+      "started_at": "2026-07-25T12:50:10+09:00",
+      "completed_at": "2026-07-25T12:52:28+09:00",
+      "status": "completed",
+      "roles": [
+        "発信進行・公開管理担当",
+        "分析担当",
+        "QA担当（品質保証担当）",
+        "編集長"
+      ],
+      "title": "期限前キューを棚卸しし教材QAを追加",
+      "summary": "今夜と7月29日待ちを保留し、重点ページのスマホ・印刷QAをready追加した。",
+      "qa": "投稿ボックス、検索確認日、教材QA未完了を照合し、重複しない一件だけを追加。ダッシュボード更新とqa:dashboardはPASS",
+      "files": [
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md",
+        "employee-dashboard/dashboard-data.js"
+      ],
+      "handoff": "次の昼勤務は qa-focus-page-mobile-print を最優先、夜は2026年7月25日22:55以降に公開済みnote・Substackの24時間後確認へ進む。"
+    },
+    {
+      "id": "activity-20260725-focus-page-qa",
+      "shift_id": "day-improvement",
+      "started_at": "2026-07-25T14:53:58+09:00",
+      "completed_at": "2026-07-25T14:53:58+09:00",
+      "status": "completed",
+      "roles": [
+        "QA担当（品質保証担当）",
+        "UX担当",
+        "教材品質責任者",
+        "編集長"
+      ],
+      "title": "重点ページのスマホ・印刷QAを完了",
+      "summary": "grade1-addition-word-problems.html を390px相当で確認し、生成10問、答えトグル、関連導線、教材QAを完了した。",
+      "qa": "スマホ390px相当の画面確認、生成10問と答えトグル確認、関連リンク9件が200、console warn/error 0、qa:word-problems PASS。印刷はCSS分岐とJSの印刷クラス切替を確認し、OS印刷プレビュー目視のみ未確認として分離。",
+      "files": [
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md",
+        "style.css",
+        "grade1-addition-word-problems.html",
+        "grade1-addition-word-problems.js"
+      ],
+      "handoff": "2026年7月25日22:55以降は review-published-longform-24h を開始し、公開済みnote・Substackの24時間後結果を記録する。"
+    },
+    {
+      "id": "activity-20260725-future-review-queue",
+      "shift_id": "day-improvement",
+      "started_at": "2026-07-25T15:51:42+09:00",
+      "completed_at": "2026-07-25T15:51:42+09:00",
+      "status": "completed",
+      "roles": [
+        "発信進行・公開管理担当",
+        "分析担当",
+        "QA担当（品質保証担当）",
+        "編集長"
+      ],
+      "title": "期限前キューをwaitingへ整理し7日後確認を追加",
+      "summary": "22:55前の24時間後確認は待機へ戻し、7月31日の公開済みnote・Substack 7日後確認を一件追加した。",
+      "qa": "仕事キュー、社長用投稿ボックス、公開済みnote・Substackのreview_7dを照合し、重複しない一件だけを追加。ダッシュボード更新とqa:dashboardを実施する。",
+      "files": [
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md",
+        "employee-dashboard/dashboard-data.js"
+      ],
+      "handoff": "2026年7月25日22:55以降は review-published-longform-24h、2026年7月29日は search-exposure-7d-review、2026年7月31日は review-published-longform-7d を開始する。"
+    },
+    {
+      "id": "activity-20260725-autonomous-company-v2",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T15:55:00+09:00",
+      "completed_at": "2026-07-25T16:10:00+09:00",
+      "status": "completed",
+      "roles": [
+        "発信進行・公開管理担当",
+        "分析担当",
+        "検索露出改善担当",
+        "QA担当（品質保証担当）",
+        "安全・ブランド監査責任者",
+        "編集長"
+      ],
+      "title": "固定勤務からAI社員カンパニー自律運営へ移行",
+      "summary": "PC起動中の常駐監督、優先度付き仕事キュー、1時間ごとの自律ディレクター、ゲーム風ライブ運営室へ再構成した。",
+      "qa": "AI社員16名、AI判断2/2、仕事キュー5件、ダッシュボードQA、全サイト27ページ、教材37,000問、発信安全ゲートの全検査に合格",
+      "files": [
+        "AI_EMPLOYEE_OPERATIONS.json",
+        "AI_EMPLOYEE_WORK_QUEUE_TEMPLATE.json",
+        "tools/ai-company-runtime.mjs",
+        "employee-dashboard/index.html",
+        "employee-dashboard/dashboard.css",
+        "employee-dashboard/dashboard.js"
+      ],
+      "handoff": "社長起動または次回Windowsログイン後に常駐心拍とキャラクターを確認し、22時55分以降は公開記事24時間後確認を最優先にする。"
     }
   ]
 }

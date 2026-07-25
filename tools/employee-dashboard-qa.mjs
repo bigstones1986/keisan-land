@@ -19,20 +19,44 @@ function requireText(name, source, text, message) {
   if (!source.includes(text)) errors.push(`${name}: ${message}`);
 }
 
-const [html, css, app, dataSource, operationsSource, activitySource, launcher, powerShellLauncher] = await Promise.all([
+const [
+  html,
+  css,
+  app,
+  dataSource,
+  operationsSource,
+  activitySource,
+  queueTemplateSource,
+  launcher,
+  powerShellLauncher,
+  runtimeSource,
+  runtimeStarter,
+  stopLauncher,
+  autostartInstaller,
+  autostartRemover,
+  ignoreSource,
+] = await Promise.all([
   load("employee-dashboard/index.html"),
   load("employee-dashboard/dashboard.css"),
   load("employee-dashboard/dashboard.js"),
   load("employee-dashboard/dashboard-data.js"),
   load("AI_EMPLOYEE_OPERATIONS.json"),
   load("AI_EMPLOYEE_ACTIVITY_LOG.json"),
+  load("AI_EMPLOYEE_WORK_QUEUE_TEMPLATE.json"),
   load("open-ai-employee-dashboard.cmd"),
   load("open-ai-employee-dashboard.ps1"),
+  load("tools/ai-company-runtime.mjs"),
+  load("tools/start-ai-company-runtime.ps1"),
+  load("stop-ai-company.cmd"),
+  load("install-ai-company-autostart.ps1"),
+  load("uninstall-ai-company-autostart.ps1"),
+  load(".gitignore"),
 ]);
 
 let data = null;
 let operations = null;
 let activity = null;
+let queueTemplate = null;
 try {
   const jsonSource = dataSource
     .replace(/^window\.EMPLOYEE_DASHBOARD_DATA\s*=\s*/, "")
@@ -40,6 +64,7 @@ try {
   data = JSON.parse(jsonSource);
   operations = JSON.parse(operationsSource);
   activity = JSON.parse(activitySource);
+  queueTemplate = JSON.parse(queueTemplateSource);
 } catch (error) {
   errors.push(`JSON: ${error.message}`);
 }
@@ -49,6 +74,9 @@ for (const text of [
   "data-tab=\"employees\"",
   "data-tab=\"operations\"",
   "data-tab=\"history\"",
+  "id=\"office-floor\"",
+  "id=\"terminal-stream\"",
+  "id=\"work-queue\"",
   "employee-dashboard/dashboard-data.js".split("/").at(-1),
 ]) {
   requireText("employee-dashboard/index.html", html, text, `必須表示「${text}」がありません`);
@@ -59,7 +87,9 @@ for (const text of [
   "renderEmployees",
   "renderOperations",
   "renderHistory",
-  "currentShift",
+  "renderOffice",
+  "renderQueue",
+  "refreshLiveData",
   "escapeHtml",
 ]) {
   requireText("employee-dashboard/dashboard.js", app, text, `必須処理「${text}」がありません`);
@@ -70,6 +100,11 @@ for (const text of [
   ".shift-timeline",
   ".employee-card",
   ".activity-entry",
+  ".office-floor",
+  ".employee-avatar",
+  "@keyframes employee-bob",
+  ".terminal-stream",
+  ".queue-card",
 ]) {
   requireText("employee-dashboard/dashboard.css", css, text, `必須スタイル「${text}」がありません`);
 }
@@ -89,6 +124,7 @@ requireText(
 );
 for (const text of [
   "build-employee-dashboard.mjs",
+  "start-ai-company-runtime.ps1",
   "employee-dashboard\\index.html",
   "Start-Process",
   "Test-Path",
@@ -102,15 +138,40 @@ for (const text of [
 }
 
 if (operations) {
-  if (operations.shifts?.length !== 4) {
-    errors.push(`AI_EMPLOYEE_OPERATIONS.json: 4交代ではありません（${operations.shifts?.length ?? 0}件）`);
+  if (operations.workstations?.length !== 4) {
+    errors.push(`AI_EMPLOYEE_OPERATIONS.json: 作業エリアが4つではありません（${operations.workstations?.length ?? 0}件）`);
   }
-  const automationIds = new Set(operations.shifts?.map((shift) => shift.automation_id));
-  if (automationIds.size !== operations.shifts?.length) {
-    errors.push("AI_EMPLOYEE_OPERATIONS.json: 自動勤務IDが重複しています");
+  if (operations.ai_automations?.length !== 2) {
+    errors.push(`AI_EMPLOYEE_OPERATIONS.json: AI判断担当が2つではありません（${operations.ai_automations?.length ?? 0}件）`);
   }
-  if ((operations.guardrails?.length ?? 0) < 5) {
+  const automationIds = new Set(operations.ai_automations?.map((automation) => automation.id));
+  if (automationIds.size !== operations.ai_automations?.length) {
+    errors.push("AI_EMPLOYEE_OPERATIONS.json: AI判断担当IDが重複しています");
+  }
+  if ((operations.guardrails?.length ?? 0) < 8) {
     errors.push("AI_EMPLOYEE_OPERATIONS.json: 暴走防止ルールが不足しています");
+  }
+  for (const field of [
+    "heartbeat_seconds",
+    "stale_after_seconds",
+    "dashboard_refresh_seconds",
+    "dashboard_qa_minutes",
+    "full_qa_hours",
+  ]) {
+    if (!Number.isFinite(operations.runtime?.[field])) {
+      errors.push(`AI_EMPLOYEE_OPERATIONS.json: 常駐設定${field}がありません`);
+    }
+  }
+}
+
+if ((queueTemplate?.tasks?.length ?? 0) < 3) {
+  errors.push("AI_EMPLOYEE_WORK_QUEUE_TEMPLATE.json: 初期仕事が不足しています");
+}
+for (const task of queueTemplate?.tasks ?? []) {
+  for (const field of ["id", "title", "priority", "status", "executor", "reason", "success_condition"]) {
+    if (task[field] === undefined || task[field] === "") {
+      errors.push(`AI_EMPLOYEE_WORK_QUEUE_TEMPLATE.json: ${task.id ?? "IDなし"}の${field}がありません`);
+    }
   }
 }
 
@@ -131,16 +192,22 @@ if (data) {
   if (data.summary?.trained_count !== data.employees?.filter((employee) => employee.level === "L4").length) {
     errors.push("dashboard-data.js: L4と育成済み人数が一致しません");
   }
-  if (data.summary?.active_automations !== 4) {
-    errors.push(`dashboard-data.js: 自動勤務が全件有効ではありません（${data.summary?.active_automations ?? 0}/4）`);
+  if (data.summary?.active_automations !== 2) {
+    errors.push(`dashboard-data.js: AI判断担当が全件有効ではありません（${data.summary?.active_automations ?? 0}/2）`);
   }
   if ((data.activities?.length ?? 0) < 2) {
     errors.push("dashboard-data.js: 初期活動履歴が不足しています");
   }
+  if (!data.runtime || !Array.isArray(data.runtime.recent_events)) {
+    errors.push("dashboard-data.js: 常駐エンジン状態がありません");
+  }
+  if ((data.queue?.tasks?.length ?? 0) < 3) {
+    errors.push("dashboard-data.js: 自律仕事キューが不足しています");
+  }
 }
 
 const automationDir = path.join(os.homedir(), ".codex", "automations");
-for (const id of operations?.shifts?.map((shift) => shift.automation_id) ?? []) {
+for (const id of operations?.ai_automations?.map((automation) => automation.id) ?? []) {
   try {
     const automation = await readFile(path.join(automationDir, id, "automation.toml"), "utf8");
     requireText(`automation:${id}`, automation, "status = \"ACTIVE\"", "自動勤務が有効ではありません");
@@ -151,9 +218,57 @@ for (const id of operations?.shifts?.map((shift) => shift.automation_id) ?? []) 
   }
 }
 
+for (const text of [
+  "AI_EMPLOYEE_RUNTIME.json",
+  "AI_EMPLOYEE_WORK_QUEUE.json",
+  "heartbeat_at",
+  "runCommand",
+  "updateQueue",
+  "addQaFailureTask",
+  "qa:dashboard",
+  "qa:site",
+]) {
+  requireText("tools/ai-company-runtime.mjs", runtimeSource, text, `常駐処理「${text}」がありません`);
+}
+
+for (const text of [
+  "Start-Process",
+  "ai-company-runtime.mjs",
+  "Test-AiCompanyRunning",
+  "WindowStyle Hidden",
+]) {
+  requireText("tools/start-ai-company-runtime.ps1", runtimeStarter, text, `起動処理「${text}」がありません`);
+}
+
+requireText("stop-ai-company.cmd", stopLauncher, "stop-ai-company.ps1", "停止処理がありません");
+for (const text of [
+  "GetFolderPath(\"Startup\")",
+  "Keisan Land AI Company.lnk",
+  "start-ai-company-runtime.ps1",
+  "CreateShortcut",
+]) {
+  requireText("install-ai-company-autostart.ps1", autostartInstaller, text, `自動起動設定「${text}」がありません`);
+}
+for (const text of [
+  "GetFolderPath(\"Startup\")",
+  "Keisan Land AI Company.lnk",
+  "Remove-Item",
+]) {
+  requireText("uninstall-ai-company-autostart.ps1", autostartRemover, text, `自動起動解除「${text}」がありません`);
+}
+for (const name of [
+  "AI_EMPLOYEE_RUNTIME.json",
+  "AI_EMPLOYEE_WORK_QUEUE.json",
+  "employee-dashboard/dashboard-data.js",
+]) {
+  requireText(".gitignore", ignoreSource, name, `実行時ファイル${name}が除外されていません`);
+}
+
 console.log("けいさんランド AI社員ダッシュボードQA");
 console.log(`AI社員: ${data?.employees?.length ?? 0}`);
-console.log(`自動勤務: ${data?.summary?.active_automations ?? 0}/${operations?.shifts?.length ?? 0}`);
+console.log(`自律監督: ${data?.summary?.supervisor_active ? "稼働中" : "停止または未起動"}`);
+console.log(`AI判断: ${data?.summary?.active_automations ?? 0}/${operations?.ai_automations?.length ?? 0}`);
+console.log(`仕事キュー: ${data?.queue?.tasks?.length ?? 0}`);
 console.log(`活動履歴: ${data?.activities?.length ?? 0}`);
 console.log(`エラー: ${errors.length}`);
 
@@ -162,5 +277,5 @@ for (const error of errors) console.error(`エラー: ${error}`);
 if (errors.length > 0) {
   process.exitCode = 1;
 } else {
-  console.log("PASS: 育成状況、4交代勤務、活動履歴、暴走防止を確認しました。");
+  console.log("PASS: 育成状況、自律監督、AI判断、仕事キュー、活動履歴、暴走防止を確認しました。");
 }

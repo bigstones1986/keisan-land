@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const data = window.EMPLOYEE_DASHBOARD_DATA;
+  let data = window.EMPLOYEE_DASHBOARD_DATA;
   if (!data) {
     document.body.innerHTML = "<p class=\"empty-state\">データがありません。ダッシュボード更新を実行してください。</p>";
     return;
@@ -21,6 +21,11 @@
     failed: "失敗",
     blocked: "停止",
     in_progress: "作業中",
+    working: "作業中",
+    waiting: "待機",
+    watching: "監視中",
+    monitoring: "監視中",
+    offline: "停止",
   };
 
   const escapeHtml = (value) => String(value ?? "")
@@ -43,61 +48,27 @@
     }).format(date);
   };
 
-  const minutesFromTime = (value) => {
-    const [hour, minute] = value.split(":").map(Number);
-    return (hour * 60) + minute;
-  };
-
-  const currentMinutes = () => {
-    const parts = new Intl.DateTimeFormat("ja-JP", {
-      timeZone: "Asia/Tokyo",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    }).formatToParts(new Date());
-    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-    return (Number(values.hour) * 60) + Number(values.minute);
-  };
-
-  const currentShift = () => {
-    const now = currentMinutes();
-    return data.operations.shifts.find((shift) => {
-      const start = minutesFromTime(shift.window_start);
-      const end = minutesFromTime(shift.window_end);
-      return now >= start && now <= end;
-    }) ?? data.operations.shifts[0];
-  };
-
-  const nextRun = () => {
-    const now = currentMinutes();
-    const ordered = data.operations.shifts
-      .map((shift) => ({ ...shift, minutes: minutesFromTime(shift.time) }))
-      .sort((a, b) => a.minutes - b.minutes);
-    const next = ordered.find((shift) => shift.minutes > now);
-    return next ? `次回 ${next.time} ${next.name}` : `次回 明日 ${ordered[0].time} ${ordered[0].name}`;
-  };
-
   const renderSummary = () => {
     const cards = [
       {
-        label: "自動勤務",
-        value: `${data.summary.active_automations}/${data.operations.shifts.length}`,
-        detail: "毎日4交代",
+        label: "自律監督",
+        value: data.summary.supervisor_active ? "稼働中" : "停止",
+        detail: data.summary.supervisor_active ? "PC起動中の常駐監視" : "心拍を確認できません",
       },
       {
-        label: "AI社員",
-        value: data.summary.employee_count,
-        detail: `L3以上 ${data.summary.quality_assured_count}名`,
+        label: "AI判断",
+        value: `${data.summary.active_automations}/${data.operations.ai_automations.length}`,
+        detail: "自律ディレクターと発信担当",
+      },
+      {
+        label: "仕事待ち",
+        value: data.summary.ready_tasks,
+        detail: `AI社員 ${data.summary.employee_count}名`,
       },
       {
         label: "育成済み",
         value: data.summary.trained_count,
-        detail: "証拠があるL4のみ",
-      },
-      {
-        label: "社長確認待ち",
-        value: data.publishing.ready,
-        detail: `公開済み ${data.publishing.published}件`,
+        detail: `L3以上 ${data.summary.quality_assured_count}名`,
       },
     ];
     document.querySelector("#summary-grid").innerHTML = cards.map((card) => `
@@ -110,29 +81,114 @@
   };
 
   const renderCurrentShift = () => {
-    const shift = currentShift();
-    const automation = data.automations.find((item) => item.id === shift.automation_id);
-    document.querySelector("#current-shift-title").textContent = shift.name;
-    document.querySelector("#current-shift-mission").textContent = shift.mission;
-    document.querySelector("#current-shift-state").textContent =
-      automation?.status === "ACTIVE" ? "稼働予約済み" : "設定を確認";
-    document.querySelector("#next-run").textContent = nextRun();
+    const runtime = data.runtime;
+    const active = runtime.supervisor_active;
+    const title = runtime.current_task?.title
+      ?? (active ? "サイトと仕事キューを監視中" : "自律監督エンジンは停止中");
+    document.querySelector("#current-shift-title").textContent = title;
+    document.querySelector("#current-shift-mission").textContent = active
+      ? data.operations.target
+      : "実際の心拍を確認できないため、キャラクターも停止しています。";
+    document.querySelector("#current-shift-state").textContent = active
+      ? (runtime.status === "working" ? "作業中" : "監視中")
+      : "停止";
+    document.querySelector("#current-shift-state").className =
+      `state-label ${active ? "" : "is-offline"}`;
+    document.querySelector("#next-run").textContent = runtime.heartbeat_age_seconds === null
+      ? "心拍 未確認"
+      : `心拍 ${runtime.heartbeat_age_seconds}秒前`;
   };
 
-  const renderTimeline = () => {
-    const current = currentShift().id;
-    document.querySelector("#shift-timeline").innerHTML = data.operations.shifts.map((shift) => {
-      const automation = data.automations.find((item) => item.id === shift.automation_id);
-      const active = automation?.status === "ACTIVE";
-      return `
-        <article class="shift-item ${shift.id === current ? "is-current" : ""}">
-          <span class="shift-time">${escapeHtml(shift.time)}</span>
-          <h3>${escapeHtml(shift.name)}</h3>
-          <p>${escapeHtml(shift.roles.join("・"))}</p>
-          <span class="badge ${active ? "active" : "failed"}">${active ? "有効" : "要確認"}</span>
-        </article>
-      `;
-    }).join("");
+  let officeAnimationTimer = null;
+
+  const avatarPositions = () => {
+    if (window.innerWidth <= 720) {
+      return [
+        [27, 12], [70, 18],
+        [30, 35], [73, 41],
+        [28, 59], [70, 65],
+        [30, 83], [72, 89],
+      ];
+    }
+    return [
+      [18, 24], [35, 34],
+      [65, 24], [82, 34],
+      [18, 70], [35, 80],
+      [65, 70], [82, 80],
+    ];
+  };
+
+  const renderOffice = () => {
+    const floor = document.querySelector("#office-floor");
+    const terminal = document.querySelector(".terminal");
+    const active = data.runtime.supervisor_active;
+    floor.classList.toggle("is-live", active);
+    terminal.classList.toggle("is-live", active);
+    document.querySelector("#terminal-state").textContent = active ? "LIVE" : "OFFLINE";
+    document.querySelector("#office-caption").textContent = active
+      ? `${data.runtime.status === "working" ? "作業中" : "監視中"}・心拍 ${data.runtime.heartbeat_age_seconds}秒前`
+      : "監督エンジン停止・演出も停止";
+
+    document.querySelectorAll(".office-zone").forEach((zone) => {
+      zone.classList.toggle("is-active", active && zone.dataset.zone === data.runtime.active_zone);
+    });
+
+    const avatarContainer = document.querySelector("#employee-avatars");
+    if (!avatarContainer.children.length) {
+      const colors = ["#13795b", "#2463a9", "#4f7a62", "#326f9e", "#a65a12", "#d4821f", "#b13a3a", "#774b8e"];
+      avatarContainer.innerHTML = colors.map((color, index) => `
+        <div class="employee-avatar" data-avatar="${index}" style="--avatar-color:${color};--delay:${index * -0.17}s">
+          <span class="avatar-head"></span>
+          <span class="avatar-hair"></span>
+          <span class="avatar-body"></span>
+          <span class="avatar-legs"></span>
+        </div>
+      `).join("");
+    }
+
+    const moveAvatars = () => {
+      const positions = avatarPositions();
+      document.querySelectorAll(".employee-avatar").forEach((avatar, index) => {
+        const [baseX, baseY] = positions[index];
+        const jitter = active ? ((Date.now() / 1000 + index) % 3) - 1 : 0;
+        avatar.style.setProperty("--x", `${baseX + jitter}%`);
+        avatar.style.setProperty("--y", `${baseY + (active ? (index % 2 ? -1 : 1) : 0)}%`);
+      });
+    };
+    moveAvatars();
+    if (officeAnimationTimer) window.clearInterval(officeAnimationTimer);
+    officeAnimationTimer = window.setInterval(moveAvatars, 3400);
+
+    const events = [...(data.runtime.recent_events ?? [])].slice(0, 16).reverse();
+    document.querySelector("#terminal-stream").innerHTML = events.length
+      ? `${events.map((event) => `
+          <p class="terminal-line ${escapeHtml(event.level)}">
+            <span class="time">[${escapeHtml(dateTime(event.at))}]</span>
+            ${escapeHtml(event.message)}
+          </p>
+        `).join("")}<span class="terminal-cursor" aria-hidden="true"></span>`
+      : `<p class="terminal-line">[system] 心拍を待っています<span class="terminal-cursor" aria-hidden="true"></span></p>`;
+  };
+
+  const renderQueue = () => {
+    const tasks = data.queue.tasks ?? [];
+    const ready = tasks.filter((task) => task.status === "ready").length;
+    const working = tasks.filter((task) => task.status === "working").length;
+    const blocked = tasks.filter((task) => task.status === "blocked").length;
+    document.querySelector("#queue-summary").textContent =
+      `作業中 ${working}・開始可能 ${ready}・停止 ${blocked}`;
+    document.querySelector("#work-queue").innerHTML = tasks.length
+      ? tasks.slice(0, 6).map((task) => `
+          <article class="queue-card" data-status="${escapeHtml(task.status)}">
+            <div class="queue-meta">
+              <span class="badge ${escapeHtml(task.status)}">${escapeHtml(statusLabels[task.status] || task.status)}</span>
+              <span>優先度 ${escapeHtml(task.priority)}</span>
+            </div>
+            <h3>${escapeHtml(task.title)}</h3>
+            <p class="queue-reason">${escapeHtml(task.reason)}</p>
+          </article>
+        `).join("")
+      : "<div class=\"empty-state\">仕事キューは空です。</div>";
   };
 
   const renderSearch = () => {
@@ -215,24 +271,37 @@
 
   const renderOperations = () => {
     document.querySelector("#coverage-mode").textContent = data.operations.coverage_mode;
-    document.querySelector("#automation-list").innerHTML = data.operations.shifts.map((shift) => {
-      const automation = data.automations.find((item) => item.id === shift.automation_id);
+    const runtimeCard = `
+      <article class="automation-card">
+        <div class="automation-head">
+          <div>
+            <p class="time">常駐プロセス</p>
+            <h3>${escapeHtml(data.operations.runtime.name)}</h3>
+          </div>
+          <span class="badge ${data.runtime.supervisor_active ? "active" : "failed"}">${data.runtime.supervisor_active ? "稼働中" : "停止"}</span>
+        </div>
+        <p class="mission">${escapeHtml(data.operations.coverage_mode)}</p>
+        <p class="roles"><strong>現在:</strong> ${escapeHtml(data.runtime.current_task?.title ?? "監視・待機")}</p>
+      </article>
+    `;
+    const automationCards = data.operations.ai_automations.map((operation) => {
+      const automation = data.automations.find((item) => item.id === operation.id);
       const status = automation?.status ?? "MISSING";
       const active = status === "ACTIVE";
       return `
         <article class="automation-card">
           <div class="automation-head">
             <div>
-              <p class="time">毎日 ${escapeHtml(shift.time)}</p>
-              <h3>${escapeHtml(shift.name)}</h3>
+              <p class="time">${escapeHtml(operation.cadence)}</p>
+              <h3>${escapeHtml(operation.name)}</h3>
             </div>
             <span class="badge ${active ? "active" : "failed"}">${escapeHtml(statusLabels[status] || "要確認")}</span>
           </div>
-          <p class="mission">${escapeHtml(shift.mission)}</p>
-          <p class="roles"><strong>担当:</strong> ${escapeHtml(shift.roles.join("・"))}</p>
+          <p class="mission">${escapeHtml(operation.mission)}</p>
         </article>
       `;
     }).join("");
+    document.querySelector("#automation-list").innerHTML = runtimeCard + automationCards;
 
     document.querySelector("#guardrail-list").innerHTML = data.operations.guardrails
       .map((rule) => `<li>${escapeHtml(rule)}</li>`)
@@ -246,6 +315,37 @@
       </div>
       <p class="owner-note">公開ボタンを押す最後の操作は社長が担当します。</p>
     `;
+  };
+
+  const renderDynamic = () => {
+    document.querySelector("#updated-at").textContent = `データ作成: ${dateTime(data.generated_at)}`;
+    renderSummary();
+    renderCurrentShift();
+    renderOffice();
+    renderQueue();
+    renderSearch();
+    renderLatestActivity();
+    renderOperations();
+    renderHistory();
+  };
+
+  let liveDataLoading = false;
+  const refreshLiveData = () => {
+    if (liveDataLoading) return;
+    liveDataLoading = true;
+    const script = document.createElement("script");
+    script.src = `dashboard-data.js?t=${Date.now()}`;
+    script.onload = () => {
+      data = window.EMPLOYEE_DASHBOARD_DATA;
+      renderDynamic();
+      script.remove();
+      liveDataLoading = false;
+    };
+    script.onerror = () => {
+      script.remove();
+      liveDataLoading = false;
+    };
+    document.head.append(script);
   };
 
   const renderHistory = () => {
@@ -291,17 +391,12 @@
 
   document.querySelector("#updated-at").textContent = `データ作成: ${dateTime(data.generated_at)}`;
   document.querySelector("#source-note").textContent = `最新レポート: ${data.search.source_file || "未確認"}`;
-  document.querySelector("#refresh-button").addEventListener("click", () => window.location.reload());
+  document.querySelector("#refresh-button").addEventListener("click", refreshLiveData);
 
-  renderSummary();
-  renderCurrentShift();
-  renderTimeline();
-  renderSearch();
-  renderLatestActivity();
+  renderDynamic();
   renderEmployees();
-  renderOperations();
-  renderHistory();
   setupTabs();
   updateClock();
   window.setInterval(updateClock, 1000);
+  window.setInterval(refreshLiveData, 10000);
 })();

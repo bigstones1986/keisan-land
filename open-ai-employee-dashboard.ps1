@@ -3,6 +3,11 @@ $ErrorActionPreference = "Stop"
 try {
     Set-Location -LiteralPath $PSScriptRoot
 
+    & "$PSScriptRoot\tools\start-ai-company-runtime.ps1" -WaitUntilReady
+    if ($LASTEXITCODE -ne 0) {
+        throw "AI company runtime could not be started."
+    }
+
     $node = Get-Command node -ErrorAction Stop
     & $node.Source "tools\build-employee-dashboard.mjs"
     if ($LASTEXITCODE -ne 0) {

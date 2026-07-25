@@ -1,66 +1,70 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "updated_at": "2026-07-25",
   "timezone": "Asia/Tokyo",
-  "coverage_mode": "4交代の定時実行。常時連続処理ではなく、各勤務の間は次回実行を待機する。",
-  "shifts": [
+  "objective": "けいさんランドを、保護者と先生から信頼される検索上位の無料学習サイトへ育てる。",
+  "target": "重点検索語で検索1ページ目を安定させ、長期的に1位を目指す。順位は保証しない。",
+  "coverage_mode": "PC起動中は自律監督エンジンが常駐監視し、AI判断が必要な仕事は自律成長ディレクターが最優先案件を選ぶ。",
+  "runtime": {
+    "id": "ai-company-supervisor",
+    "name": "AIカンパニー自律監督",
+    "heartbeat_seconds": 20,
+    "stale_after_seconds": 90,
+    "dashboard_refresh_seconds": 30,
+    "dashboard_qa_minutes": 15,
+    "site_qa_after_change_minutes": 2,
+    "full_qa_hours": 6,
+    "responsibilities": [
+      "ファイル変更と重大不具合を監視する",
+      "期限、検索確認日、公開後レビュー日から仕事を発行する",
+      "安全に実行できるQAとダッシュボード更新を行う",
+      "AI判断が必要な仕事を優先順位付きでディレクターへ渡す",
+      "停止、失敗、未確認を隠さず記録する"
+    ]
+  },
+  "workstations": [
     {
-      "id": "night-watch",
-      "name": "夜間監視",
-      "time": "00:30",
-      "window_start": "00:00",
-      "window_end": "06:29",
-      "automation_id": "automation",
-      "roles": [
-        "QA担当（品質保証担当）",
-        "安全・ブランド監査責任者"
-      ],
-      "mission": "重大な不具合、リンク、教材QA、期限切れを点検し、朝担当へ引き継ぐ。",
+      "id": "strategy-hub",
+      "name": "戦略司令室",
+      "team": "分析・検索露出・SEO",
+      "color": "green",
+      "mission": "検索データと仕事キューを読み、次に変える一つを決める。"
+    },
+    {
+      "id": "search-lab",
+      "name": "検索研究室",
+      "team": "SEO・教材研究・広報",
+      "color": "blue",
+      "mission": "検索意図、ページ対応、外部信頼を調べ、表示機会を増やす。"
+    },
+    {
+      "id": "content-studio",
+      "name": "教材・発信スタジオ",
+      "team": "教材・UX・note・Substack・X",
+      "color": "amber",
+      "mission": "実在する教材価値を改善し、媒体ごとに異なる原稿を作る。"
+    },
+    {
+      "id": "quality-gate",
+      "name": "品質・安全ゲート",
+      "team": "QA・安全監査・編集長",
+      "color": "red",
+      "mission": "教材、リンク、表現、公開条件を検査し、危険な作業を止める。"
+    }
+  ],
+  "ai_automations": [
+    {
+      "id": "automation",
+      "name": "けいさんランド自律成長ディレクター",
+      "cadence": "1時間ごとの判断パルス",
+      "mission": "仕事キューから最優先の一件を選び、必要な担当ロールを招集して完了または明確な停止理由まで進める。",
       "status": "active"
     },
     {
-      "id": "morning-growth",
-      "name": "朝の成長分析",
-      "time": "06:30",
-      "window_start": "06:30",
-      "window_end": "12:29",
-      "automation_id": "automation-2",
-      "roles": [
-        "分析担当",
-        "検索露出改善担当",
-        "SEO担当"
-      ],
-      "mission": "検索データと前回値を比べ、その日に変える点を一つだけ決める。",
-      "status": "active"
-    },
-    {
-      "id": "day-improvement",
-      "name": "昼の改善勤務",
-      "time": "12:30",
-      "window_start": "12:30",
-      "window_end": "20:29",
-      "automation_id": "automation-3",
-      "roles": [
-        "教材品質責任者",
-        "UX担当",
-        "発信戦略責任者"
-      ],
-      "mission": "朝の判断を受け、教材、導線、検索露出、発信準備から一つを改善する。",
-      "status": "active"
-    },
-    {
-      "id": "evening-publishing",
-      "name": "夜の発信準備",
-      "time": "20:30",
-      "window_start": "20:30",
-      "window_end": "23:59",
-      "automation_id": "note-substack",
-      "roles": [
-        "note編集・投稿担当",
-        "Substack編集・投稿担当",
-        "編集長"
-      ],
-      "mission": "noteとSubstackを別原稿で準備し、90点以上だけを社長へ引き渡す。",
+      "id": "note-substack",
+      "name": "note・Substack毎日下書き",
+      "cadence": "毎日20:30",
+      "mission": "当日の価値ある題材がある場合だけ、媒体別の本番下書きを各1本まで作る。",
       "status": "active"
     }
   ],
@@ -69,7 +73,10 @@
     "広告費、課金、フォーム送信、Search Console送信は自動実行しない",
     "未確認の数字、成果、利用者の声を事実として記録しない",
     "大きな変更後7日間は、同じ主要要素を再変更しない",
+    "一度に変える主要要素は一つにする",
     "作業終了時に活動ログと次担当への引き継ぎを残す",
-    "実績証拠がない社員をL4または育成済みと表示しない"
+    "実績証拠がない社員をL4または育成済みと表示しない",
+    "検索順位や学習効果を保証しない",
+    "同じ失敗が3回続いた仕事は停止し、社長へ確認事項を示す"
   ]
 }

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-07-25T12:00:00+09:00",
+  "objective": "検索上位へ近づくため、観測、改善、検証を止めずに一件ずつ完了する。",
+  "tasks": [
+    {
+      "id": "review-published-longform-24h",
+      "title": "公開済みnote・Substackの24時間後確認",
+      "category": "発信結果",
+      "priority": 95,
+      "status": "ready",
+      "executor": "ai_director",
+      "due_at": "2026-07-25T22:55:00+09:00",
+      "reason": "公開結果を次の原稿へ戻し、発信担当をL4へ近づける。",
+      "success_condition": "確認できた数字と未確認を分け、次稿で変える一つを決める。",
+      "allowed_actions": [
+        "公開画面と利用可能な分析画面を読む",
+        "活動ログと日次レポートを更新する",
+        "次稿の改善案を一つ作る"
+      ],
+      "blocked_actions": [
+        "投稿や公開を確定する",
+        "数字を推測する"
+      ],
+      "attempts": 0
+    },
+    {
+      "id": "search-exposure-7d-review",
+      "title": "重点ページの検索露出を7日比較",
+      "category": "検索成長",
+      "priority": 100,
+      "status": "waiting",
+      "executor": "ai_director",
+      "due_at": "2026-07-29T06:30:00+09:00",
+      "reason": "主要SEO要素を固定した結果を同条件で判断する。",
+      "success_condition": "表示、順位、CTR、クリックを前回と比較し、維持・修正・撤回・未判定を選ぶ。",
+      "allowed_actions": [
+        "Search Consoleを読む",
+        "日次レポートと機会マップを更新する",
+        "次の改善候補を一つ決める"
+      ],
+      "blocked_actions": [
+        "同日に複数の主要SEO要素を変える",
+        "Search Consoleへ送信する"
+      ],
+      "attempts": 0
+    },
+    {
+      "id": "runtime-site-watch",
+      "title": "サイト変更の自動品質確認",
+      "category": "品質",
+      "priority": 80,
+      "status": "watching",
+      "executor": "runtime",
+      "due_at": null,
+      "reason": "変更後のリンク、SEO、教材不具合を早く見つける。",
+      "success_condition": "変更検知後にサイトQAを実行し、失敗時は最優先へ上げる。",
+      "allowed_actions": [
+        "ローカルQAを実行する",
+        "失敗内容を仕事キューへ追加する"
+      ],
+      "blocked_actions": [
+        "外部公開する",
+        "失敗を成功表示へ変える"
+      ],
+      "attempts": 0
+    }
+  ]
+}

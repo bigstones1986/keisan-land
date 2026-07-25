@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "node tools/build-public.mjs",
+    "company": "node tools/ai-company-runtime.mjs",
     "dashboard": "node tools/build-employee-dashboard.mjs",
     "qa": "npm run qa:hosting && npm run qa:site && npm run qa:drill && npm run qa:word-problems && npm run qa:mixed-word-problems && npm run qa:content && npm run qa:employees && npm run dashboard && npm run qa:dashboard && npm run qa:publishing && npm run qa:operators && npm run qa:autopublish && npm run qa:draft-inbox && npm run qa:outreach && npm run qa:profiles && npm run build",
     "qa:hosting": "node tools/hosting-seo-qa.mjs",

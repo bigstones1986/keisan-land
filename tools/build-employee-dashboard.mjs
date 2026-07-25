@@ -9,9 +9,20 @@ const matrixName = "AI_EMPLOYEE_GROWTH_MATRIX_2026-07-22.md";
 const operationsName = "AI_EMPLOYEE_OPERATIONS.json";
 const activityName = "AI_EMPLOYEE_ACTIVITY_LOG.json";
 const inboxName = "OWNER_PUBLISHING_INBOX.json";
+const runtimeName = "AI_EMPLOYEE_RUNTIME.json";
+const queueName = "AI_EMPLOYEE_WORK_QUEUE.json";
+const queueTemplateName = "AI_EMPLOYEE_WORK_QUEUE_TEMPLATE.json";
 
 async function readJson(name) {
   return JSON.parse(await readFile(path.join(rootDir, name), "utf8"));
+}
+
+async function readOptionalJson(name, fallback) {
+  try {
+    return await readJson(name);
+  } catch {
+    return fallback;
+  }
 }
 
 function teamForRole(role) {
@@ -110,11 +121,19 @@ async function readAutomations() {
   return automations;
 }
 
-const [matrix, operations, activity, inbox, report, automations] = await Promise.all([
+const [matrix, operations, activity, inbox, runtime, queue, report, automations] = await Promise.all([
   readFile(path.join(rootDir, matrixName), "utf8"),
   readJson(operationsName),
   readJson(activityName),
   readJson(inboxName),
+  readOptionalJson(runtimeName, {
+    status: "offline",
+    heartbeat_at: null,
+    active_zone: "strategy-hub",
+    current_task: null,
+    recent_events: [],
+  }),
+  readOptionalJson(queueName, await readJson(queueTemplateName)),
   latestDailyReport(),
   readAutomations(),
 ]);
@@ -140,17 +159,46 @@ const sourcePaths = [
   path.join(rootDir, operationsName),
   path.join(rootDir, activityName),
   path.join(rootDir, inboxName),
+  path.join(rootDir, queueName),
   ...(report.name ? [path.join(rootDir, report.name)] : []),
   ...automations.map((automation) => automation.source_file),
 ];
-const sourceStats = await Promise.all(sourcePaths.map((sourcePath) => stat(sourcePath)));
+if (await stat(path.join(rootDir, runtimeName)).then(() => true).catch(() => false)) {
+  sourcePaths.push(path.join(rootDir, runtimeName));
+}
+const existingSourcePaths = [];
+for (const sourcePath of sourcePaths) {
+  if (await stat(sourcePath).then(() => true).catch(() => false)) existingSourcePaths.push(sourcePath);
+}
+const sourceStats = await Promise.all(existingSourcePaths.map((sourcePath) => stat(sourcePath)));
 const generatedAt = new Date(Math.max(...sourceStats.map((item) => item.mtimeMs))).toISOString();
+const heartbeatAgeSeconds = runtime.heartbeat_at
+  ? Math.max(0, Math.round((Date.now() - Date.parse(runtime.heartbeat_at)) / 1000))
+  : null;
+const supervisorActive = (
+  ["starting", "monitoring", "working"].includes(runtime.status)
+  && heartbeatAgeSeconds !== null
+  && heartbeatAgeSeconds <= operations.runtime.stale_after_seconds
+);
 
 const dashboardData = {
   schema_version: 1,
   generated_at: generatedAt,
   operations,
   automations: automations.map(({ source_file: _sourceFile, ...automation }) => automation),
+  runtime: {
+    ...runtime,
+    heartbeat_age_seconds: heartbeatAgeSeconds,
+    supervisor_active: supervisorActive,
+  },
+  queue: {
+    ...queue,
+    tasks: [...(queue.tasks ?? [])].sort((a, b) => {
+      const statusOrder = { working: 0, ready: 1, waiting: 2, watching: 3, blocked: 4, completed: 5 };
+      return (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9)
+        || (b.priority ?? 0) - (a.priority ?? 0);
+    }),
+  },
   employees,
   activities,
   search: {
@@ -167,12 +215,14 @@ const dashboardData = {
     employee_count: employees.length,
     quality_assured_count: employees.filter((employee) => ["L3", "L4"].includes(employee.level)).length,
     trained_count: employees.filter((employee) => employee.level === "L4").length,
-    active_automations: operations.shifts.filter((shift) =>
+    active_automations: operations.ai_automations.filter((operation) =>
       automations.some((automation) => (
-        automation.id === shift.automation_id
+        automation.id === operation.id
         && automation.status === "ACTIVE"
       )),
     ).length,
+    supervisor_active: supervisorActive,
+    ready_tasks: (queue.tasks ?? []).filter((task) => task.status === "ready").length,
   },
 };
 
@@ -182,6 +232,8 @@ await writeFile(path.join(dashboardDir, "dashboard-data.js"), output, "utf8");
 
 console.log("けいさんランド AI社員ダッシュボード更新");
 console.log(`AI社員: ${dashboardData.summary.employee_count}名`);
-console.log(`自動勤務: ${dashboardData.summary.active_automations}/${operations.shifts.length}`);
+console.log(`自律監督: ${dashboardData.summary.supervisor_active ? "稼働中" : "停止"}`);
+console.log(`AI判断: ${dashboardData.summary.active_automations}/${operations.ai_automations.length}`);
+console.log(`仕事待ち: ${dashboardData.summary.ready_tasks}件`);
 console.log(`活動履歴: ${activities.length}件`);
 console.log(`出力: ${path.join("employee-dashboard", "dashboard-data.js")}`);

@@ -49,25 +49,69 @@
 
       <section class="work-band" aria-labelledby="current-shift-title">
         <div class="current-shift-copy">
-          <p class="section-kicker">CURRENT SHIFT</p>
-          <h2 id="current-shift-title">現在の勤務帯</h2>
-          <p id="current-shift-mission"></p>
+          <p class="section-kicker">AUTONOMOUS ENGINE</p>
+          <h2 id="current-shift-title">自律監督エンジン</h2>
+          <p id="current-shift-mission">起動状態を確認しています</p>
         </div>
         <div class="shift-state">
-          <span class="state-label" id="current-shift-state">待機中</span>
-          <strong id="next-run">次回 --</strong>
+          <span class="state-label" id="current-shift-state">確認中</span>
+          <strong id="next-run">心拍 --</strong>
         </div>
       </section>
 
-      <section class="content-section" aria-labelledby="timeline-title">
+      <section class="office-section" aria-labelledby="timeline-title">
         <div class="section-heading compact">
           <div>
-            <p class="section-kicker">24H ROTATION</p>
-            <h2 id="timeline-title">4交代の勤務表</h2>
+            <p class="section-kicker">LIVE AI OFFICE</p>
+            <h2 id="timeline-title">AI社員オフィス</h2>
           </div>
-          <p>定時実行の間は待機します</p>
+          <p id="office-caption">実際の監督状態と仕事キューを表示</p>
         </div>
-        <div class="shift-timeline" id="shift-timeline"></div>
+        <div class="office-layout">
+          <div class="office-floor" id="office-floor" aria-label="AI社員の作業エリア">
+            <div class="office-grid" aria-hidden="true"></div>
+            <div class="office-zone strategy" data-zone="strategy-hub">
+              <span class="zone-light" aria-hidden="true"></span>
+              <p>STRATEGY</p>
+              <h3>戦略司令室</h3>
+            </div>
+            <div class="office-zone search" data-zone="search-lab">
+              <span class="zone-light" aria-hidden="true"></span>
+              <p>SEARCH</p>
+              <h3>検索研究室</h3>
+            </div>
+            <div class="office-zone content" data-zone="content-studio">
+              <span class="zone-light" aria-hidden="true"></span>
+              <p>CONTENT</p>
+              <h3>教材・発信</h3>
+            </div>
+            <div class="office-zone quality" data-zone="quality-gate">
+              <span class="zone-light" aria-hidden="true"></span>
+              <p>QUALITY</p>
+              <h3>品質ゲート</h3>
+            </div>
+            <div class="employee-avatars" id="employee-avatars"></div>
+          </div>
+          <aside class="terminal" aria-label="自律監督エンジンの実行ログ">
+            <div class="terminal-head">
+              <span class="terminal-lamp"></span>
+              <strong>keisan-land/company.log</strong>
+              <span id="terminal-state">OFFLINE</span>
+            </div>
+            <div class="terminal-stream" id="terminal-stream"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="content-section queue-section" aria-labelledby="queue-title">
+        <div class="section-heading compact">
+          <div>
+            <p class="section-kicker">AUTONOMOUS QUEUE</p>
+            <h2 id="queue-title">AI社員が選ぶ次の仕事</h2>
+          </div>
+          <p id="queue-summary">確認中</p>
+        </div>
+        <div class="work-queue" id="work-queue"></div>
       </section>
 
       <div class="two-column">
@@ -180,7 +224,7 @@
     <p id="source-note"></p>
   </footer>
 
-  <script src="dashboard-data.js"></script>
+  <script id="dashboard-data-script" src="dashboard-data.js"></script>
   <script src="dashboard.js"></script>
 </body>
 </html>

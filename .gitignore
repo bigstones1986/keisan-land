@@ -11,3 +11,7 @@ gsc-token.json
 search-console-private/
 substack-private/
 dist/
+AI_EMPLOYEE_RUNTIME.json
+AI_EMPLOYEE_WORK_QUEUE.json
+AI_EMPLOYEE_STOP.signal
+employee-dashboard/dashboard-data.js
