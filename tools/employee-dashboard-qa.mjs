@@ -19,13 +19,15 @@ function requireText(name, source, text, message) {
   if (!source.includes(text)) errors.push(`${name}: ${message}`);
 }
 
-const [html, css, app, dataSource, operationsSource, activitySource] = await Promise.all([
+const [html, css, app, dataSource, operationsSource, activitySource, launcher, powerShellLauncher] = await Promise.all([
   load("employee-dashboard/index.html"),
   load("employee-dashboard/dashboard.css"),
   load("employee-dashboard/dashboard.js"),
   load("employee-dashboard/dashboard-data.js"),
   load("AI_EMPLOYEE_OPERATIONS.json"),
   load("AI_EMPLOYEE_ACTIVITY_LOG.json"),
+  load("open-ai-employee-dashboard.cmd"),
+  load("open-ai-employee-dashboard.ps1"),
 ]);
 
 let data = null;
@@ -74,6 +76,29 @@ for (const text of [
 
 if (/https?:\/\//i.test(html)) {
   errors.push("employee-dashboard/index.html: ローカル専用画面に外部読込があります");
+}
+
+if (launcher.trim().split(/\r?\n/).length !== 1) {
+  errors.push("open-ai-employee-dashboard.cmd: Windows用の1行起動形式ではありません");
+}
+requireText(
+  "open-ai-employee-dashboard.cmd",
+  launcher,
+  "powershell.exe -NoProfile -ExecutionPolicy Bypass",
+  "PowerShell起動処理がありません",
+);
+for (const text of [
+  "build-employee-dashboard.mjs",
+  "employee-dashboard\\index.html",
+  "Start-Process",
+  "Test-Path",
+]) {
+  requireText(
+    "open-ai-employee-dashboard.ps1",
+    powerShellLauncher,
+    text,
+    `起動処理「${text}」がありません`,
+  );
 }
 
 if (operations) {

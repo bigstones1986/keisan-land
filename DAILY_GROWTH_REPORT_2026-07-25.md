@@ -127,6 +127,8 @@
 
 - 組み込みブラウザではローカルURLが安全設定で遮断された
 - HTML、CSS、JavaScript、データ、スマホ用レイアウトを自動検査
+- 初回の`open-ai-employee-dashboard.cmd`はWindowsの改行解釈で失敗
+- 1行の起動入口とPowerShell処理へ分離し、実行成功を確認
 - 社長は`open-ai-employee-dashboard.cmd`から更新して開ける
 
 ## 未確認事項

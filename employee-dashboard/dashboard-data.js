@@ -1,6 +1,6 @@
 window.EMPLOYEE_DASHBOARD_DATA = {
   "schema_version": 1,
-  "generated_at": "2026-07-25T02:25:31.169Z",
+  "generated_at": "2026-07-25T02:34:59.488Z",
   "operations": {
     "schema_version": 1,
     "updated_at": "2026-07-25",
