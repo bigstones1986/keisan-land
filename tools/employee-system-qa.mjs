@@ -7,6 +7,8 @@ const agentsName = "AGENTS.md";
 const growthName = "GROWTH_OPERATING_SYSTEM.md";
 const matrixName = "AI_EMPLOYEE_GROWTH_MATRIX_2026-07-22.md";
 const runbookName = "PUBLISHING_RUNBOOK.md";
+const searchPlaybookName = "SEARCH_GROWTH_EMPLOYEE_PLAYBOOK.md";
+const opportunityMapName = "SEARCH_OPPORTUNITY_MAP_2026-07-25.md";
 const errors = [];
 
 async function load(name) {
@@ -24,11 +26,13 @@ function section(source, heading) {
   return source.slice(start, end < 0 ? source.length : end);
 }
 
-const [agents, growth, matrix, runbook] = await Promise.all([
+const [agents, growth, matrix, runbook, searchPlaybook, opportunityMap] = await Promise.all([
   load(agentsName),
   load(growthName),
   load(matrixName),
   load(runbookName),
+  load(searchPlaybookName),
+  load(opportunityMapName),
 ]);
 
 const requiredRoles = [
@@ -89,8 +93,39 @@ requireText(matrixName, matrix, "評価期限: 2026-07-31", "7月31日の評価�
 requireText(matrixName, matrix, "証拠がない社員をL4にしない", "証拠なし昇格の禁止がありません");
 requireText(agentsName, agents, "L4だけを「育成済み」と呼ぶ", "育成済みの判定条件がありません");
 
+for (const competency of [
+  "データ最終日",
+  "クエリ群",
+  "ページ・検索語対応表",
+  "検索機会スコア",
+  "検索結果観察",
+  "検索表示前",
+  "検索結果クリック前",
+  "教材開始前",
+  "外部発信からの流入",
+  "今週変える一つ",
+  "変えない要素",
+  "7日後",
+]) {
+  requireText(searchPlaybookName, searchPlaybook, competency, `検索成長能力「${competency}」がありません`);
+}
+
+for (const evidence of [
+  "データ最終日: 2026年7月22日",
+  "直近7日",
+  "直近28日",
+  "grade1-addition-word-problems.html",
+  "1年生 足し算 文章問題",
+  "検索表示前",
+  "2026年7月29日",
+]) {
+  requireText(opportunityMapName, opportunityMap, evidence, `検索機会マップの証拠「${evidence}」がありません`);
+}
+
 console.log("けいさんランド AI社員制度QA");
-console.log(`対象: ${agentsName} / ${growthName} / ${matrixName} / ${runbookName}`);
+console.log(
+  `対象: ${agentsName} / ${growthName} / ${matrixName} / ${runbookName} / ${searchPlaybookName} / ${opportunityMapName}`,
+);
 console.log(`必須社員: ${requiredRoles.length}`);
 console.log(`エラー: ${errors.length}`);
 
