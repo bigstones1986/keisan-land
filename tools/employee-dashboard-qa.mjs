@@ -27,6 +27,7 @@ const [
   operationsSource,
   activitySource,
   queueTemplateSource,
+  ownerActionsSource,
   launcher,
   powerShellLauncher,
   runtimeSource,
@@ -43,6 +44,7 @@ const [
   load("AI_EMPLOYEE_OPERATIONS.json"),
   load("AI_EMPLOYEE_ACTIVITY_LOG.json"),
   load("AI_EMPLOYEE_WORK_QUEUE_TEMPLATE.json"),
+  load("OWNER_ACTIONS.json"),
   load("open-ai-employee-dashboard.cmd"),
   load("open-ai-employee-dashboard.ps1"),
   load("tools/ai-company-runtime.mjs"),
@@ -57,6 +59,7 @@ let data = null;
 let operations = null;
 let activity = null;
 let queueTemplate = null;
+let ownerActions = null;
 try {
   const jsonSource = dataSource
     .replace(/^window\.EMPLOYEE_DASHBOARD_DATA\s*=\s*/, "")
@@ -65,6 +68,7 @@ try {
   operations = JSON.parse(operationsSource);
   activity = JSON.parse(activitySource);
   queueTemplate = JSON.parse(queueTemplateSource);
+  ownerActions = JSON.parse(ownerActionsSource);
 } catch (error) {
   errors.push(`JSON: ${error.message}`);
 }
@@ -72,11 +76,13 @@ try {
 for (const text of [
   "AI社員ダッシュボード",
   "data-tab=\"employees\"",
+  "data-tab=\"owner-todos\"",
   "data-tab=\"operations\"",
   "data-tab=\"history\"",
   "id=\"office-floor\"",
   "id=\"terminal-stream\"",
   "id=\"work-queue\"",
+  "id=\"owner-todo-list\"",
   "employee-dashboard/dashboard-data.js".split("/").at(-1),
 ]) {
   requireText("employee-dashboard/index.html", html, text, `必須表示「${text}」がありません`);
@@ -89,6 +95,7 @@ for (const text of [
   "renderHistory",
   "renderOffice",
   "renderQueue",
+  "renderOwnerTodos",
   "refreshLiveData",
   "escapeHtml",
 ]) {
@@ -105,6 +112,8 @@ for (const text of [
   "@keyframes employee-bob",
   ".terminal-stream",
   ".queue-card",
+  ".owner-todo-card",
+  ".owner-todo-summary",
 ]) {
   requireText("employee-dashboard/dashboard.css", css, text, `必須スタイル「${text}」がありません`);
 }
@@ -175,6 +184,17 @@ for (const task of queueTemplate?.tasks ?? []) {
   }
 }
 
+if (!Array.isArray(ownerActions?.actions)) {
+  errors.push("OWNER_ACTIONS.json: actionsが配列ではありません");
+}
+for (const action of ownerActions?.actions ?? []) {
+  for (const field of ["id", "title", "priority", "status", "action", "reason"]) {
+    if (action[field] === undefined || action[field] === "") {
+      errors.push(`OWNER_ACTIONS.json: ${action.id ?? "IDなし"}の${field}がありません`);
+    }
+  }
+}
+
 if (activity) {
   for (const entry of activity.entries ?? []) {
     for (const field of ["id", "shift_id", "started_at", "status", "roles", "title", "summary", "qa", "handoff"]) {
@@ -203,6 +223,28 @@ if (data) {
   }
   if ((data.queue?.tasks?.length ?? 0) < 3) {
     errors.push("dashboard-data.js: 自律仕事キューが不足しています");
+  }
+  if (!Array.isArray(data.owner_todos?.items)) {
+    errors.push("dashboard-data.js: 社長ToDoがありません");
+  } else {
+    const dueOrder = { overdue: 0, today: 1, upcoming: 2, no_date: 3 };
+    for (let index = 1; index < data.owner_todos.items.length; index += 1) {
+      const previous = data.owner_todos.items[index - 1];
+      const current = data.owner_todos.items[index];
+      if ((dueOrder[previous.due_state] ?? 9) > (dueOrder[current.due_state] ?? 9)) {
+        errors.push("dashboard-data.js: 社長ToDoが期限順ではありません");
+        break;
+      }
+    }
+    const expectedPublishingTodos = data.publishing?.ready ?? 0;
+    const actualPublishingTodos = data.owner_todos.items
+      .filter((item) => item.origin === "publishing_inbox").length;
+    if (actualPublishingTodos !== expectedPublishingTodos) {
+      errors.push(`dashboard-data.js: 投稿待ち${expectedPublishingTodos}件と社長ToDo${actualPublishingTodos}件が一致しません`);
+    }
+    if (data.summary?.owner_todo_count !== data.owner_todos.items.length) {
+      errors.push("dashboard-data.js: 社長ToDo件数が一致しません");
+    }
   }
 }
 
@@ -269,6 +311,7 @@ console.log(`AI社員: ${data?.employees?.length ?? 0}`);
 console.log(`自律監督: ${data?.summary?.supervisor_active ? "稼働中" : "停止または未起動"}`);
 console.log(`AI判断: ${data?.summary?.active_automations ?? 0}/${operations?.ai_automations?.length ?? 0}`);
 console.log(`仕事キュー: ${data?.queue?.tasks?.length ?? 0}`);
+console.log(`社長ToDo: ${data?.owner_todos?.items?.length ?? 0}`);
 console.log(`活動履歴: ${data?.activities?.length ?? 0}`);
 console.log(`エラー: ${errors.length}`);
 

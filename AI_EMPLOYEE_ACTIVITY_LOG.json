@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-25T16:10:00+09:00",
+  "updated_at": "2026-07-25T16:46:00+09:00",
   "entries": [
     {
       "id": "activity-20260725-search-training",
@@ -144,6 +144,34 @@
         "employee-dashboard/dashboard.js"
       ],
       "handoff": "社長起動または次回Windowsログイン後に常駐心拍とキャラクターを確認し、22時55分以降は公開記事24時間後確認を最優先にする。"
+    },
+    {
+      "id": "activity-20260725-owner-todo-dashboard",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T16:39:00+09:00",
+      "completed_at": "2026-07-25T16:46:00+09:00",
+      "status": "completed",
+      "roles": [
+        "発信進行・公開管理担当",
+        "QA担当（品質保証担当）",
+        "安全・ブランド監査責任者",
+        "編集長"
+      ],
+      "title": "優先順位付き社長ToDoをライブ運営室へ追加",
+      "summary": "投稿ボックスと社長専用台帳から、社長にしかできない外部操作を自動集約し、期限超過、今日、今後の順に表示する画面を追加した。",
+      "qa": "社長ToDo 3件、期限超過1件、今日1件、今後1件を確認。ダッシュボード生成、構文、優先順、AI承認件数、ローカルリンク、モバイルCSSの自動検査に合格。実ブラウザのローカル画面接続のみ未確認。",
+      "files": [
+        "OWNER_ACTIONS.json",
+        "OWNER_PUBLISHING_INBOX.json",
+        "tools/build-employee-dashboard.mjs",
+        "employee-dashboard/index.html",
+        "employee-dashboard/dashboard.css",
+        "employee-dashboard/dashboard.js",
+        "tools/employee-dashboard-qa.mjs",
+        "AGENTS.md",
+        "GROWTH_OPERATING_SYSTEM.md"
+      ],
+      "handoff": "社長ToDoタブで優先1から確認し、投稿後の報告または公開画面確認が取れた時だけ完了へ移す。"
     }
   ]
 }

@@ -163,6 +163,27 @@ select {
   border-bottom-color: var(--green);
 }
 
+.owner-todo-tab {
+  gap: 7px;
+}
+
+.tab-count {
+  display: inline-grid;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  place-items: center;
+  color: #fff;
+  background: #b13a3a;
+  border-radius: 11px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.owner-todo-tab.is-active .tab-count {
+  background: var(--green);
+}
+
 main {
   width: min(1320px, 100%);
   min-height: calc(100vh - 178px);
@@ -997,6 +1018,197 @@ main {
   font-size: 11px;
 }
 
+.owner-todo-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.owner-todo-stat {
+  min-height: 96px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
+  border-radius: 6px;
+}
+
+.owner-todo-stat.is-overdue {
+  border-top-color: #b13a3a;
+}
+
+.owner-todo-stat.is-today {
+  border-top-color: #d4821f;
+}
+
+.owner-todo-stat.is-upcoming {
+  border-top-color: var(--green);
+}
+
+.owner-todo-stat strong,
+.owner-todo-stat span {
+  display: block;
+}
+
+.owner-todo-stat strong {
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+}
+
+.owner-todo-stat span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.owner-todo-list {
+  display: grid;
+  gap: 10px;
+}
+
+.owner-todo-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 6px;
+}
+
+.owner-todo-card[data-due-state="overdue"] {
+  border-left-color: #b13a3a;
+}
+
+.owner-todo-card[data-due-state="today"] {
+  border-left-color: #d4821f;
+}
+
+.owner-todo-card[data-due-state="upcoming"] {
+  border-left-color: var(--green);
+}
+
+.owner-todo-card summary {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto 24px;
+  align-items: center;
+  gap: 12px;
+  min-height: 84px;
+  padding: 14px 18px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.owner-todo-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.owner-todo-card summary:hover,
+.owner-todo-card summary:focus-visible {
+  background: #f6f8f9;
+  outline: none;
+}
+
+.owner-todo-rank {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  color: #fff;
+  background: var(--charcoal);
+  border-radius: 50%;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.owner-todo-title {
+  min-width: 0;
+}
+
+.owner-todo-title strong,
+.owner-todo-category {
+  display: block;
+}
+
+.owner-todo-title strong {
+  margin-top: 2px;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.owner-todo-category {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge.owner-due.overdue {
+  color: #8b2828;
+  background: var(--red-soft);
+}
+
+.badge.owner-due.today {
+  color: #7a430d;
+  background: var(--amber-soft);
+}
+
+.badge.owner-due.upcoming,
+.badge.owner-due.no_date {
+  color: #0e6348;
+  background: var(--green-soft);
+}
+
+.todo-chevron {
+  color: var(--muted);
+  font-size: 28px;
+  line-height: 1;
+  transform: rotate(0);
+  transition: transform 160ms ease;
+}
+
+.owner-todo-card[open] .todo-chevron {
+  transform: rotate(90deg);
+}
+
+.owner-todo-body {
+  padding: 0 18px 18px 72px;
+  border-top: 1px solid var(--line);
+}
+
+.owner-todo-body dl {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 8px 14px;
+  margin: 16px 0;
+}
+
+.owner-todo-body dt {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.owner-todo-body dd {
+  margin: 0;
+}
+
+.todo-primary-action {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  color: #fff;
+  background: var(--blue);
+  border-radius: 4px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.todo-primary-action:hover,
+.todo-primary-action:focus-visible {
+  background: #174f8a;
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
 .owner-note {
   margin: 14px 0 0;
   color: var(--muted);
@@ -1185,7 +1397,8 @@ footer p {
   .summary-grid,
   .two-column,
   .metric-row,
-  .filters {
+  .filters,
+  .owner-todo-summary {
     grid-template-columns: 1fr;
   }
 
@@ -1272,6 +1485,39 @@ footer p {
   .inbox-grid {
     grid-template-columns: repeat(3, minmax(80px, 1fr));
     overflow-x: auto;
+  }
+
+  .owner-todo-card summary {
+    grid-template-columns: 38px minmax(0, 1fr) 22px;
+    gap: 9px;
+    padding: 12px;
+  }
+
+  .owner-todo-card .owner-due {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .owner-todo-card .todo-chevron {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+
+  .owner-todo-body {
+    padding: 0 14px 16px;
+  }
+
+  .owner-todo-body dl {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .owner-todo-body dd {
+    margin-bottom: 9px;
+  }
+
+  .todo-primary-action {
+    width: 100%;
   }
 
   footer {

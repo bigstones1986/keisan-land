@@ -9,6 +9,7 @@ const matrixName = "AI_EMPLOYEE_GROWTH_MATRIX_2026-07-22.md";
 const operationsName = "AI_EMPLOYEE_OPERATIONS.json";
 const activityName = "AI_EMPLOYEE_ACTIVITY_LOG.json";
 const inboxName = "OWNER_PUBLISHING_INBOX.json";
+const ownerActionsName = "OWNER_ACTIONS.json";
 const runtimeName = "AI_EMPLOYEE_RUNTIME.json";
 const queueName = "AI_EMPLOYEE_WORK_QUEUE.json";
 const queueTemplateName = "AI_EMPLOYEE_WORK_QUEUE_TEMPLATE.json";
@@ -90,6 +91,46 @@ function tomlValue(source, key) {
   return match?.[1] ?? null;
 }
 
+function japanDateKey(value = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(value);
+}
+
+function localFileHref(file) {
+  if (typeof file !== "string" || !file.trim()) return null;
+  const normalized = file.trim().replaceAll("\\", "/");
+  if (path.isAbsolute(normalized) || normalized.split("/").includes("..")) return null;
+  return `../${normalized.split("/").map((part) => encodeURIComponent(part)).join("/")}`;
+}
+
+function dueState(dueDate, today) {
+  if (!dueDate || !/^\d{4}-\d{2}-\d{2}/.test(dueDate)) return "no_date";
+  const date = dueDate.slice(0, 10);
+  if (date < today) return "overdue";
+  if (date === today) return "today";
+  return "upcoming";
+}
+
+function channelLabel(channel) {
+  return {
+    x: "X",
+    note: "note",
+    substack: "Substack",
+  }[channel] ?? channel ?? "外部サービス";
+}
+
+function ownerActionLabel(action, channel) {
+  if (action === "final_publish_in_chrome") {
+    return `Chromeで${channelLabel(channel)}の原稿を確認し、問題なければ投稿する`;
+  }
+  if (action === "final_publish") return "内容を確認し、問題なければ公開する";
+  return action || "内容を確認して最終操作を行う";
+}
+
 async function readAutomations() {
   const automationRoot = path.join(os.homedir(), ".codex", "automations");
   const automations = [];
@@ -121,11 +162,16 @@ async function readAutomations() {
   return automations;
 }
 
-const [matrix, operations, activity, inbox, runtime, queue, report, automations] = await Promise.all([
+const [matrix, operations, activity, inbox, ownerActions, runtime, queue, report, automations] = await Promise.all([
   readFile(path.join(rootDir, matrixName), "utf8"),
   readJson(operationsName),
   readJson(activityName),
   readJson(inboxName),
+  readOptionalJson(ownerActionsName, {
+    schema_version: 1,
+    updated_at: null,
+    actions: [],
+  }),
   readOptionalJson(runtimeName, {
     status: "offline",
     heartbeat_at: null,
@@ -153,12 +199,78 @@ const activities = [...activity.entries].sort((a, b) => {
 });
 const publicationEntries = inbox.entries ?? [];
 const publishedEntries = inbox.published_entries ?? [];
+const today = japanDateKey();
+
+const publishingOwnerTodos = publicationEntries
+  .filter((entry) => entry.status === "ready" && entry.handoff_status === "owner_ready")
+  .map((entry) => {
+    const approvals = Object.values(entry.approvals ?? {});
+    const approved = approvals.filter((approval) => approval.decision === "approve").length;
+    return {
+      id: `publishing:${entry.publication_id}`,
+      title: `${entry.target_date ? `${entry.target_date.slice(5).replace("-", "/")}分の` : ""}${channelLabel(entry.channel)}を投稿`,
+      category: "発信",
+      channel: entry.channel,
+      due_at: entry.target_date ?? null,
+      due_state: dueState(entry.target_date, today),
+      priority_score: Math.max(1, 101 - Number(entry.priority ?? 50)),
+      action: ownerActionLabel(entry.owner_action, entry.channel),
+      reason: `編集${entry.editorial_score ?? "未採点"}点・安全判定${entry.risk_level ?? "未確認"}・AI承認${approved}/${approvals.length}`,
+      source_file: entry.package_file ?? entry.source_file ?? null,
+      local_href: localFileHref(entry.package_file ?? entry.source_file),
+      status: "pending",
+      origin: "publishing_inbox",
+    };
+  });
+
+const customOwnerTodos = (ownerActions.actions ?? [])
+  .filter((action) => !["completed", "cancelled"].includes(action.status))
+  .map((action) => ({
+    ...action,
+    id: `owner:${action.id}`,
+    due_state: dueState(action.due_at, today),
+    priority_score: Number(action.priority ?? 50),
+    local_href: localFileHref(action.source_file),
+    status: action.status ?? "pending",
+    origin: "owner_actions",
+  }));
+
+const queueOwnerTodos = (queue.tasks ?? [])
+  .filter((task) => (
+    (task.executor === "owner" || task.owner_required === true)
+    && !["completed", "cancelled"].includes(task.status)
+  ))
+  .map((task) => ({
+    id: `queue:${task.id}`,
+    title: task.title,
+    category: task.category ?? "運営",
+    channel: null,
+    due_at: task.due_at ?? null,
+    due_state: dueState(task.due_at, today),
+    priority_score: Number(task.priority ?? 50),
+    action: task.owner_action ?? task.success_condition,
+    reason: task.reason,
+    source_file: task.source_file ?? null,
+    local_href: localFileHref(task.source_file),
+    status: task.status,
+    origin: "work_queue",
+  }));
+
+const dueOrder = { overdue: 0, today: 1, upcoming: 2, no_date: 3 };
+const ownerTodos = [...publishingOwnerTodos, ...customOwnerTodos, ...queueOwnerTodos]
+  .sort((a, b) => (
+    (dueOrder[a.due_state] ?? 9) - (dueOrder[b.due_state] ?? 9)
+    || String(a.due_at ?? "9999-12-31").localeCompare(String(b.due_at ?? "9999-12-31"))
+    || (b.priority_score ?? 0) - (a.priority_score ?? 0)
+    || a.title.localeCompare(b.title, "ja")
+  ));
 
 const sourcePaths = [
   path.join(rootDir, matrixName),
   path.join(rootDir, operationsName),
   path.join(rootDir, activityName),
   path.join(rootDir, inboxName),
+  path.join(rootDir, ownerActionsName),
   path.join(rootDir, queueName),
   ...(report.name ? [path.join(rootDir, report.name)] : []),
   ...automations.map((automation) => automation.source_file),
@@ -211,6 +323,15 @@ const dashboardData = {
     green: [...publicationEntries, ...publishedEntries]
       .filter((entry) => entry.risk_level === "green").length,
   },
+  owner_todos: {
+    items: ownerTodos,
+    counts: {
+      total: ownerTodos.length,
+      overdue: ownerTodos.filter((item) => item.due_state === "overdue").length,
+      today: ownerTodos.filter((item) => item.due_state === "today").length,
+      upcoming: ownerTodos.filter((item) => item.due_state === "upcoming").length,
+    },
+  },
   summary: {
     employee_count: employees.length,
     quality_assured_count: employees.filter((employee) => ["L3", "L4"].includes(employee.level)).length,
@@ -223,6 +344,7 @@ const dashboardData = {
     ).length,
     supervisor_active: supervisorActive,
     ready_tasks: (queue.tasks ?? []).filter((task) => task.status === "ready").length,
+    owner_todo_count: ownerTodos.length,
   },
 };
 
@@ -235,5 +357,6 @@ console.log(`AI社員: ${dashboardData.summary.employee_count}名`);
 console.log(`自律監督: ${dashboardData.summary.supervisor_active ? "稼働中" : "停止"}`);
 console.log(`AI判断: ${dashboardData.summary.active_automations}/${operations.ai_automations.length}`);
 console.log(`仕事待ち: ${dashboardData.summary.ready_tasks}件`);
+console.log(`社長ToDo: ${dashboardData.summary.owner_todo_count}件`);
 console.log(`活動履歴: ${activities.length}件`);
 console.log(`出力: ${path.join("employee-dashboard", "dashboard-data.js")}`);

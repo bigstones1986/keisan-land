@@ -30,6 +30,10 @@
 
   <nav class="tabs" aria-label="ダッシュボード表示">
     <button class="tab is-active" type="button" data-tab="overview">全体</button>
+    <button class="tab owner-todo-tab" type="button" data-tab="owner-todos">
+      社長ToDo
+      <span class="tab-count" id="owner-todo-tab-count">0</span>
+    </button>
     <button class="tab" type="button" data-tab="employees">社員</button>
     <button class="tab" type="button" data-tab="operations">勤務</button>
     <button class="tab" type="button" data-tab="history">履歴</button>
@@ -135,6 +139,19 @@
           <div id="latest-activity"></div>
         </section>
       </div>
+    </section>
+
+    <section class="tab-panel" id="owner-todos" data-panel="owner-todos">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">OWNER ACTIONS</p>
+          <h2>社長がすること</h2>
+        </div>
+        <p id="owner-todo-heading-status">確認中</p>
+      </div>
+
+      <div class="owner-todo-summary" id="owner-todo-summary" aria-label="社長ToDoの件数"></div>
+      <div class="owner-todo-list" id="owner-todo-list"></div>
     </section>
 
     <section class="tab-panel" id="employees" data-panel="employees">

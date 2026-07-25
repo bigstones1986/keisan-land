@@ -31,6 +31,9 @@
 - AI社員は `AI_EMPLOYEE_OPERATIONS.json` の自律運営方針と `AI_EMPLOYEE_WORK_QUEUE.json` の優先順位に従い、一度に一件だけ進める。
 - 自律仕事の終了時は `AI_EMPLOYEE_ACTIVITY_LOG.json` に事実、QA結果、未確認事項、次の引き継ぎを残し、ローカルダッシュボードを更新する。
 - 自動勤務が有効でも、実際の活動ログがない仕事を「完了」「作業中」「育成済み」と表示しない。
+- AI社員では完了できず社長の操作が必要な仕事は、理由、期限、具体的な操作、確認資料、優先度を `OWNER_ACTIONS.json` に記録する。
+- 投稿ボックスの `owner_ready` 原稿と `OWNER_ACTIONS.json` を社長ToDoへ集約し、期限超過、今日、今後の順で表示する。
+- 社長の完了報告または外部画面の事実確認がない仕事を、推測で社長ToDoから完了扱いにしない。
 
 ---
 
@@ -58,8 +61,9 @@
 
 1. 自律監督が `AI_EMPLOYEE_WORK_QUEUE.json` の期限と状態を更新する。
 2. AI判断担当が最優先の一件だけを選び、結果を仕事キューと `AI_EMPLOYEE_ACTIVITY_LOG.json` へ記録する。
-3. `node tools/build-employee-dashboard.mjs`と`npm run qa:dashboard`を実行する。
-4. 意味のある変更と確認結果を`PROJECT_STATUS.md`へ記録する。
+3. 社長操作が必要になった場合は `OWNER_ACTIONS.json` へ一件だけ追加し、重複や完了済みを残さない。
+4. `node tools/build-employee-dashboard.mjs`と`npm run qa:dashboard`を実行する。
+5. 意味のある変更と確認結果を`PROJECT_STATUS.md`へ記録する。
 
 ### やってはいけないこと
 

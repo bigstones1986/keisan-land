@@ -61,9 +61,9 @@
         detail: "自律ディレクターと発信担当",
       },
       {
-        label: "仕事待ち",
-        value: data.summary.ready_tasks,
-        detail: `AI社員 ${data.summary.employee_count}名`,
+        label: "社長ToDo",
+        value: data.summary.owner_todo_count,
+        detail: `期限超過 ${data.owner_todos.counts.overdue}・今日 ${data.owner_todos.counts.today}`,
       },
       {
         label: "育成済み",
@@ -209,6 +209,58 @@
     `;
   };
 
+  const dueLabel = (todo) => {
+    if (todo.due_state === "overdue") return "期限超過";
+    if (todo.due_state === "today") return "今日";
+    if (todo.due_at) return dateTime(`${todo.due_at.slice(0, 10)}T12:00:00+09:00`).split(" ")[0];
+    return "期限なし";
+  };
+
+  const renderOwnerTodos = () => {
+    const ownerTodos = data.owner_todos?.items ?? [];
+    const counts = data.owner_todos?.counts ?? {
+      total: 0,
+      overdue: 0,
+      today: 0,
+      upcoming: 0,
+    };
+    document.querySelector("#owner-todo-tab-count").textContent = counts.total;
+    document.querySelector("#owner-todo-heading-status").textContent =
+      counts.total ? `${counts.total}件・優先順位順` : "社長の作業はありません";
+    document.querySelector("#owner-todo-summary").innerHTML = `
+      <div class="owner-todo-stat is-overdue"><strong>${escapeHtml(counts.overdue)}</strong><span>期限超過</span></div>
+      <div class="owner-todo-stat is-today"><strong>${escapeHtml(counts.today)}</strong><span>今日</span></div>
+      <div class="owner-todo-stat is-upcoming"><strong>${escapeHtml(counts.upcoming)}</strong><span>今後</span></div>
+    `;
+    document.querySelector("#owner-todo-list").innerHTML = ownerTodos.length
+      ? ownerTodos.map((todo, index) => `
+          <details class="owner-todo-card" data-due-state="${escapeHtml(todo.due_state)}">
+            <summary>
+              <span class="owner-todo-rank">${index + 1}</span>
+              <span class="owner-todo-title">
+                <span class="owner-todo-category">${escapeHtml(todo.category)}</span>
+                <strong>${escapeHtml(todo.title)}</strong>
+              </span>
+              <span class="badge owner-due ${escapeHtml(todo.due_state)}">${escapeHtml(dueLabel(todo))}</span>
+              <span class="todo-chevron" aria-hidden="true">›</span>
+            </summary>
+            <div class="owner-todo-body">
+              <dl>
+                <dt>社長の操作</dt><dd>${escapeHtml(todo.action)}</dd>
+                <dt>AI確認</dt><dd>${escapeHtml(todo.reason)}</dd>
+                <dt>期限</dt><dd>${escapeHtml(todo.due_at ?? "指定なし")}</dd>
+              </dl>
+              ${todo.local_href ? `
+                <a class="todo-primary-action" href="${escapeHtml(todo.local_href)}" target="_blank" rel="noopener">
+                  原稿を開く
+                </a>
+              ` : ""}
+            </div>
+          </details>
+        `).join("")
+      : "<div class=\"empty-state\">社長が対応する作業はありません。AI社員が監視を続けます。</div>";
+  };
+
   const activityBlock = (activity) => {
     if (!activity) return "<div class=\"empty-state\">勤務履歴がまだありません。</div>";
     return `
@@ -324,6 +376,7 @@
     renderOffice();
     renderQueue();
     renderSearch();
+    renderOwnerTodos();
     renderLatestActivity();
     renderOperations();
     renderHistory();
