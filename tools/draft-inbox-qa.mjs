@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
+const warnings = [];
 
 async function loadJson(name) {
   return JSON.parse(await readFile(path.join(rootDir, name), "utf8"));
@@ -12,6 +13,10 @@ async function loadJson(name) {
 
 function add(message) {
   errors.push(message);
+}
+
+function warn(message) {
+  warnings.push(message);
 }
 
 function insideRoot(name) {
@@ -138,11 +143,24 @@ for (const entry of inbox.published_entries ?? []) {
   if (!entry.published_at || Number.isNaN(Date.parse(entry.published_at))) {
     add(`${label}: 公開日時が不正です`);
   }
-  if (!entry.public_url?.startsWith("https://")) add(`${label}: 公開URLが不正です`);
+  const ownerReportedOnly = (
+    entry.verification?.owner_reported === true
+    && entry.verification?.public_url_verified === false
+  );
+  if (ownerReportedOnly) {
+    if (entry.publication_time_basis !== "owner_report_received") {
+      add(`${label}: 社長報告時刻を使った記録ではありません`);
+    }
+    warn(`${label}: 社長から投稿済み報告あり。公開URLと公開画面は未確認です`);
+  } else if (!entry.public_url?.startsWith("https://")) {
+    add(`${label}: 公開URLが不正です`);
+  }
   if (!entry.review_24h || !entry.review_7d) add(`${label}: 公開後確認日がありません`);
-  if (!entry.verification?.title_verified) add(`${label}: 公開タイトルが未確認です`);
-  if (!Array.isArray(entry.verification?.links_verified) || entry.verification.links_verified.length === 0) {
-    add(`${label}: 公開リンクが未確認です`);
+  if (!ownerReportedOnly) {
+    if (!entry.verification?.title_verified) add(`${label}: 公開タイトルが未確認です`);
+    if (!Array.isArray(entry.verification?.links_verified) || entry.verification.links_verified.length === 0) {
+      add(`${label}: 公開リンクが未確認です`);
+    }
   }
 
   const sourcePath = insideRoot(entry.source_file);
@@ -162,7 +180,8 @@ for (const entry of inbox.published_entries ?? []) {
   }
 
   const actualHash = sourceHash(source);
-  if (entry.source_hash !== actualHash) add(`${label}: 公開時原稿のハッシュが一致しません`);
+  const expectedCurrentHash = entry.published_source_hash ?? entry.source_hash;
+  if (expectedCurrentHash !== actualHash) add(`${label}: 公開記録後に原稿が変更されています`);
 
   if (entry.approvals) {
     const reviewIds = new Set();
@@ -174,7 +193,7 @@ for (const entry of inbox.published_entries ?? []) {
       }
       if (approval.role !== role) add(`${label}: 公開前の${key}承認担当が違います`);
       if (approval.decision !== "approve") add(`${label}: 公開前の${key}承認がapproveではありません`);
-      if (approval.content_hash !== actualHash) add(`${label}: 公開前の${key}承認ハッシュが違います`);
+      if (approval.content_hash !== entry.source_hash) add(`${label}: 公開前の${key}承認ハッシュが違います`);
       if (!approval.review_id || reviewIds.has(approval.review_id)) {
         add(`${label}: 公開前review_idが未設定または重複しています`);
       }
@@ -196,7 +215,8 @@ console.log(`公開済み: ${(inbox.published_entries ?? []).length}`);
 console.log(
   `公開内訳: X ${publishedCounts.x} / Substack ${publishedCounts.substack} / note ${publishedCounts.note}`,
 );
-console.log(`エラー: ${errors.length}`);
+console.log(`エラー: ${errors.length} / 注意: ${warnings.length}`);
+for (const warning of warnings) console.log(`注意: ${warning}`);
 for (const error of errors) console.error(`エラー: ${error}`);
 
 if (errors.length > 0) process.exitCode = 1;

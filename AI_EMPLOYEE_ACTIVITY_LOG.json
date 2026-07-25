@@ -1,7 +1,80 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-25T23:00:00+09:00",
+  "updated_at": "2026-07-26T06:23:35+09:00",
   "entries": [
+    {
+      "id": "activity-20260726-owner-x25-published",
+      "shift_id": "owner-handoff",
+      "started_at": "2026-07-26T06:23:35+09:00",
+      "completed_at": "2026-07-26T06:23:35+09:00",
+      "status": "completed",
+      "roles": [
+        "発信進行・公開管理担当",
+        "X投稿・コミュニティ担当",
+        "QA担当（品質保証担当）"
+      ],
+      "title": "7月25日分Xの社長投稿完了を記録",
+      "summary": "社長からX投稿済みの報告を受け、7月25日分の完成稿を投稿待ちから公開済みへ移した。7月27日分は投稿待ちのまま維持した。",
+      "qa": "社長報告を公開済みの根拠として記録し、公開URLと実投稿時刻は未確認として分離。投稿ボックス、原稿frontmatter、発信キュー、社長ToDoを同期する。",
+      "files": [
+        "OWNER_PUBLISHING_INBOX.json",
+        "OWNER_PUBLISHING_INBOX.md",
+        "CONTENT_QUEUE_2026-07-16_TO_07-31.md",
+        "x-posts-2026-07-25.md",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md"
+      ],
+      "handoff": "2026年7月27日に24時間後反応を確認し、公開URLが共有された場合は公開画面との一致も確認する。"
+    },
+    {
+      "id": "activity-20260725-profile-verification-brief",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T23:40:00+09:00",
+      "completed_at": "2026-07-25T23:57:30+09:00",
+      "status": "completed",
+      "roles": [
+        "発信戦略責任者",
+        "安全・ブランド監査責任者",
+        "QA担当",
+        "編集長"
+      ],
+      "title": "3媒体プロフィール統一の公開確認ブリーフを作成",
+      "summary": "ready仕事が0件だったため、明日2026-07-26期限の社長プロフィール統一を支える公開確認ブリーフを一件だけ追加して完了した。X・Substack・note の公開URL、期待文言、X固定投稿の確認点、first-time.html の受け皿確認、差し戻し条件を固定した。",
+      "qa": "`PROFILE_CONVERSION_AUDIT_2026-07-15.md`、`OWNER_ACTIONS.json`、`first-time.html` を突き合わせて `PROFILE_ALIGNMENT_VERIFICATION_BRIEF_2026-07-25.md` を作成した。`node tools/build-employee-dashboard.mjs` は更新成功、`npm.cmd run qa:profiles` は PASS、`npm.cmd run qa:dashboard` はローカル運営室で AI判断2/2・エラー0 の PASS だった。",
+      "files": [
+        "PROFILE_ALIGNMENT_VERIFICATION_BRIEF_2026-07-25.md",
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md"
+      ],
+      "handoff": "社長が `owner-profile-first-time-alignment` を実施した後、このブリーフに沿って公開画面を読み、pass / fail を記録して OWNER_ACTIONS.json の完了可否を判断する。"
+    },
+    {
+      "id": "activity-20260725-longform-24h-review",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T22:56:13+09:00",
+      "completed_at": "2026-07-25T23:00:41+09:00",
+      "status": "completed",
+      "roles": [
+        "発信進行・公開管理担当",
+        "note編集・投稿担当",
+        "Substack編集・投稿担当",
+        "QA担当（品質保証担当）",
+        "編集長"
+      ],
+      "title": "公開済み長文の24時間後確認を記録",
+      "summary": "note は公開URL、本文、重点教材リンク、見出し画像なし公開を確認し、Substack は Chrome の安全ポリシーで 24時間後確認を実行できなかった。未確認を分け、次稿で変える一つを決めた。",
+      "qa": "note 公開URLと編集画面を読み取り、タイトル、本文、重点教材リンク、本文 1,345 文字を確認。Substack は `stone1986.substack.com` への Chrome 読み取りが安全ポリシーで拒否されたため未確認として記録。node tools/build-employee-dashboard.mjs、npm.cmd run qa:employees、npm.cmd run qa:dashboard は PASS。",
+      "files": [
+        "PUBLISHED_LONGFORM_24H_REVIEW_BRIEF_2026-07-25.md",
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md"
+      ],
+      "handoff": "2026年7月29日06:30 JST の `search-exposure-7d-review` と、2026年7月31日22:55 JST の `review-published-longform-7d` へ未確認事項を引き継ぐ。"
+    },
     {
       "id": "activity-20260725-github-quality-fix",
       "shift_id": "quality-gate",

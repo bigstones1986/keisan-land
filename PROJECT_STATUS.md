@@ -9679,6 +9679,55 @@ QA結果:
 1. 2026年7月25日22:55 JST 以降に `review-published-longform-24h` を開始する
 2. `PUBLISHED_LONGFORM_24H_REVIEW_BRIEF_2026-07-25.md` を使って、見えた数字だけを事実ベースで記録する
 3. 次稿で変える一つだけを決め、7日後確認 `review-published-longform-7d` へ引き継ぐ
+
+## 2026-07-25 公開済み長文の24時間後確認
+
+現在地:
+
+- `review-published-longform-24h` は 2026年7月25日22:55 JST の期限到来後に実行した
+- 対象は 2026年7月24日22:54〜22:55 JST に公開した note 1本、Substack 1本
+- `search-exposure-7d-review` は 2026年7月29日06:30 JST、`review-published-longform-7d` は 2026年7月31日22:55 JST の待機のまま
+
+担当別意見:
+
+- 発信進行・公開管理担当:
+  - note は公開URLと編集画面で読める範囲の確認を先に固める
+  - Substack は Chrome の安全ポリシーで読取り自体が止められたため、回避せず未確認として残す
+- note編集・投稿担当:
+  - 公開ページの見出し、本文、重点教材リンク、見出し画像なし公開は確認できた
+  - 編集画面では本文 1,345 文字を確認できたが、24時間後の数値は見えなかった
+- Substack編集・投稿担当:
+  - `stone1986.substack.com` への Chrome 読取りが安全ポリシーで拒否され、24時間後の閲覧、反応、新規購読は確認不能だった
+- QA担当:
+  - 見えた事実と未確認を分けて記録し、数値は推測しない条件を守った
+- 編集長:
+  - 次稿で変える一つは、公開パッケージに24時間後確認用の読取り画面URLを媒体ごとに1本明記することへ固定する
+
+実施内容:
+
+- `PUBLISHED_LONGFORM_24H_REVIEW_BRIEF_2026-07-25.md` に 24時間後確認結果を追記した
+- `AI_EMPLOYEE_WORK_QUEUE.json` の `review-published-longform-24h` を completed / attempts 1 に更新した
+- `AI_EMPLOYEE_ACTIVITY_LOG.json` と `DAILY_GROWTH_REPORT_2026-07-25.md` に結果を反映した
+
+QA結果:
+
+- note 公開ページで見出し、本文、重点教材リンク、見出し画像なし公開を確認
+- note 編集画面で本文 1,345 文字を確認
+- `node tools/build-employee-dashboard.mjs`: 更新成功
+- `npm.cmd run qa:employees`: PASS
+- `npm.cmd run qa:dashboard`: PASS
+
+未確認事項:
+
+- note の閲覧、スキ、コメント数
+- Substack の公開画面と24時間後の閲覧、反応、新規購読
+- 社長のプロフィール更新後に `first-time.html` が入口として使われたか
+
+次の一手:
+
+1. 2026年7月29日06:30 JST に `search-exposure-7d-review` を実行する
+2. 2026年7月31日22:55 JST に `review-published-longform-7d` を実行する
+3. 次の長文公開パッケージでは、24時間後確認用の読取り画面URLを媒体ごとに1本だけ明記する
 ## 2026-07-25 GitHub品質管理フロー復旧
 
 報告:
@@ -9710,3 +9759,77 @@ QA結果:
 未確認事項:
 
 - なし。品質管理フローは復旧済み
+
+## 2026-07-25 深夜の改善勤務 3媒体プロフィール統一の公開確認ブリーフ作成
+
+状況:
+
+- `AI_EMPLOYEE_WORK_QUEUE.json` の `ready` 仕事は 0 件だった
+- `search-exposure-7d-review` と `review-published-longform-7d` は future review として waiting 済み
+- サイトQA、教材QA、公開済み長文24時間後確認は当日中に完了済み
+- `OWNER_ACTIONS.json` では `owner-profile-first-time-alignment` が 2026-07-26 期限の pending
+
+判断:
+
+- 公開サイト、発信キュー、検索確認日、教材QAを見直した結果、最も近い期限で読者入口に効く未整備は「社長プロフィール統一後の公開確認基準」だった
+- 外部プロフィール変更やX固定投稿差し替えは社長だけが行うべきなので、AIは公開確認ブリーフ作成だけを一件追加して完了する方針を採用
+
+実施:
+
+- `PROFILE_ALIGNMENT_VERIFICATION_BRIEF_2026-07-25.md` を新規作成
+- X、Substack、note の公開URL、期待表示名、期待自己紹介、固定URL確認点を整理
+- X固定投稿で確認する必須文言と、旧情報 `5名のAI社員` を差し戻し条件へ追加
+- `first-time.html` の受け皿確認手順と記録テンプレートを追加
+- `AI_EMPLOYEE_WORK_QUEUE.json` に `prepare-profile-alignment-verification-brief` を completed で追加
+- `AI_EMPLOYEE_ACTIVITY_LOG.json` と `DAILY_GROWTH_REPORT_2026-07-25.md` を更新
+
+確認:
+
+- `PROFILE_CONVERSION_AUDIT_2026-07-15.md`、`OWNER_ACTIONS.json`、`first-time.html` とブリーフ内容を照合
+- 外部操作を含む変更が入っていないことを確認
+- `node tools/build-employee-dashboard.mjs`: 更新成功
+- `npm.cmd run qa:profiles`: PASS
+- `npm.cmd run qa:dashboard`: PASS
+
+未確認事項:
+
+- 社長による3媒体プロフィール更新そのもの
+- 更新後の公開プロフィール画面
+- 更新後24時間のプロフィール遷移や反応
+
+次の一手:
+
+1. 社長が `owner-profile-first-time-alignment` を実施する
+2. 実施後に `PROFILE_ALIGNMENT_VERIFICATION_BRIEF_2026-07-25.md` に沿って公開画面を読み、pass / fail を記録する
+3. 差分がなければ `OWNER_ACTIONS.json` を完了へ、差分があれば pending のまま差分だけを残す
+## 2026-07-26 7月25日分Xの投稿完了
+
+社長報告:
+
+- Xは投稿済み
+
+採用判断:
+
+- 投稿待ちの先頭だった`x-posts-2026-07-25.md`を対象とする
+- 7月27日分のX完成稿は投稿待ちのまま残す
+- 公開URLと実投稿時刻は推測せず未確認とする
+
+実施内容:
+
+- 7月25日分Xを`published`へ変更
+- 社長用投稿ボックスの投稿待ちから公開済みへ移動
+- 発信キューと原稿frontmatterを同期
+- 社長ToDoから対象Xを除外
+- 24時間後確認を2026年7月27日、7日後確認を2026年8月2日に設定
+
+確認結果:
+
+- 投稿済み根拠: 2026年7月26日06:23の社長報告
+- 公開URL: 未共有
+- 実投稿時刻: 未確認
+- 次のX投稿待ち: 2026年7月27日分
+
+次の一手:
+
+- 2026年7月27日にXの24時間後反応を確認する
+- 公開URLが確認できた場合は承認済み本文との一致を確認する

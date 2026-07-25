@@ -20,7 +20,7 @@
 | 7/18 | X | `x-posts-2026-07-18.md` | verify | 実公開日から再設定 |
 | 7/20 | X | `x-posts-2026-07-20.md` | verify | 実公開日から再設定 |
 | 7/24 | X | `x-posts-2026-07-24.md` | verify | 実公開日から再設定 |
-| 7/25 | X | `x-posts-2026-07-25.md` | ready | 7/26、8/1 |
+| 7/25 | X | `x-posts-2026-07-25.md` | published | 7/27、8/2 |
 | 7/27 | X | `x-posts-2026-07-27.md` | ready | 7/28、8/3 |
 | 7/24 | Substack | `dev-diary-12-substack-ready.md` | published | 7/25、7/31 |
 | 7/30 | noteまたはX | 7/29の週次判断で決定 | hold | 7/31、8/6 |

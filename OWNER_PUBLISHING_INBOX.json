@@ -4,49 +4,8 @@
   "final_external_action": "owner_only",
   "entries": [
     {
-      "publication_id": "x-20260725-reader-question-001",
-      "priority": 1,
-      "channel": "x",
-      "target_date": "2026-07-25",
-      "source_file": "x-posts-2026-07-25.md",
-      "package_file": "x-posts-2026-07-25.md",
-      "status": "ready",
-      "handoff_status": "owner_ready",
-      "editorial_score": 92,
-      "risk_level": "green",
-      "source_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40",
-      "owner_action": "final_publish_in_chrome",
-      "freshness_review_due": "2026-08-01",
-      "approvals": {
-        "editorial": {
-          "role": "編集長",
-          "review_id": "owner-inbox-x25-editorial",
-          "decision": "approve",
-          "content_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40"
-        },
-        "qa": {
-          "role": "QA担当（品質保証担当）",
-          "review_id": "owner-inbox-x25-qa",
-          "decision": "approve",
-          "content_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40"
-        },
-        "safety": {
-          "role": "安全・ブランド監査責任者",
-          "review_id": "owner-inbox-x25-safety",
-          "decision": "approve",
-          "content_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40"
-        },
-        "handoff": {
-          "role": "AI公開承認責任者",
-          "review_id": "owner-inbox-x25-handoff",
-          "decision": "approve",
-          "content_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40"
-        }
-      }
-    },
-    {
       "publication_id": "x-20260727-print-drill-001",
-      "priority": 2,
+      "priority": 1,
       "channel": "x",
       "target_date": "2026-07-27",
       "source_file": "x-posts-2026-07-27.md",
@@ -87,6 +46,56 @@
     }
   ],
   "published_entries": [
+    {
+      "publication_id": "x-20260725-reader-question-001",
+      "channel": "x",
+      "target_date": "2026-07-25",
+      "source_file": "x-posts-2026-07-25.md",
+      "package_file": "x-posts-2026-07-25.md",
+      "status": "published",
+      "handoff_status": "completed",
+      "editorial_score": 92,
+      "risk_level": "green",
+      "source_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40",
+      "published_source_hash": "sha256:11b2a29ed17e32628608c0d0268b397c43fc8a32153d0bdd43840cafc022c67a",
+      "owner_action": "owner_published_in_chrome",
+      "published_at": "2026-07-26T06:23:35+09:00",
+      "publication_time_basis": "owner_report_received",
+      "public_url": null,
+      "review_24h": "2026-07-27",
+      "review_7d": "2026-08-02",
+      "verification": {
+        "verified_at": "2026-07-26",
+        "owner_reported": true,
+        "public_url_verified": false
+      },
+      "approvals": {
+        "editorial": {
+          "role": "編集長",
+          "review_id": "owner-inbox-x25-editorial",
+          "decision": "approve",
+          "content_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40"
+        },
+        "qa": {
+          "role": "QA担当（品質保証担当）",
+          "review_id": "owner-inbox-x25-qa",
+          "decision": "approve",
+          "content_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40"
+        },
+        "safety": {
+          "role": "安全・ブランド監査責任者",
+          "review_id": "owner-inbox-x25-safety",
+          "decision": "approve",
+          "content_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40"
+        },
+        "handoff": {
+          "role": "AI公開承認責任者",
+          "review_id": "owner-inbox-x25-handoff",
+          "decision": "approve",
+          "content_hash": "sha256:3e57c2644a97aa4779a125592921d0cdbb8b47893dfc0ad2411790a2a2288b40"
+        }
+      }
+    },
     {
       "publication_id": "substack-20260728-dev-diary-012",
       "channel": "substack",

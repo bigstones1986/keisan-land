@@ -586,6 +586,43 @@ QA結果:
 1. 2026年7月25日22時55分以降に `review-published-longform-24h` を開始する
 2. ブリーフの記録欄へ、見えた数字だけを事実ベースで残す
 3. 次稿で変える一つだけを決める
+
+## 2026-07-25 夜の進捗: 公開済み長文の24時間後確認
+
+現在地:
+
+- 22時56分以降に `review-published-longform-24h` を実行した
+- 対象は前夜公開の note 1本と Substack 1本
+- 7日後確認 `review-published-longform-7d` は 2026年7月31日22:55 JST の待機のまま
+
+確認できたこと:
+
+- note は公開URL、見出し、本文、重点教材リンク、見出し画像なし公開を確認できた
+- note 編集画面で本文 1,345 文字を確認できた
+- Substack は Chrome の安全ポリシーで `stone1986.substack.com` の読取りが拒否され、24時間後確認を実行できなかった
+
+今回の判断:
+
+- 見えた数字だけを残し、見えない数値は未確認のまま維持する
+- 次稿で変える一つは、公開パッケージに24時間後確認用の読取り画面URLを媒体ごとに1本明記することに固定した
+
+QA結果:
+
+- `node tools/build-employee-dashboard.mjs`: 更新成功
+- `npm.cmd run qa:employees`: PASS
+- `npm.cmd run qa:dashboard`: PASS
+
+未確認事項:
+
+- note の閲覧、スキ、コメント数
+- Substack の公開画面と24時間後の閲覧、反応、新規購読
+- 社長のプロフィール更新後に `first-time.html` が入口として使われたか
+
+次の一手:
+
+1. 2026年7月29日06:30 JST に `search-exposure-7d-review` を実行する
+2. 2026年7月31日22:55 JST に `review-published-longform-7d` を実行する
+3. 次の長文公開パッケージに、24時間後確認で使う読取り画面URLを媒体ごとに1本だけ残す
 ## GitHub品質管理フロー復旧
 
 - 直近4回の`Quality checks`失敗を確認
@@ -594,3 +631,43 @@ QA結果:
 - GitHub相当環境の全`npm run qa`はPASS
 - 修正後run `30160755435`は`success`
 - 品質基準を下げず、実行場所に応じた正しい検査へ修正
+
+## 2026-07-25 深夜の改善勤務 3媒体プロフィール統一の公開確認ブリーフ
+
+`ready` の仕事が 0 件だったため、公開サイト、発信キュー、検索確認日、教材QAを見直した。公開済み記事の future review はすでに待機中で、サイトQAと教材QAも通過済みだった。一方で、2026年7月26日が期限の `owner-profile-first-time-alignment` は社長操作待ちで、変更後の公開確認基準だけが未整備だった。
+
+担当別判断:
+
+- 発信戦略責任者: 3媒体プロフィールは保護者・先生の最初の入口なので、変更後に同じ基準で確認できるブリーフを先に固定する価値が高い
+- 安全・ブランド監査責任者: 外部プロフィール変更やX固定投稿差し替えは社長だけが行い、AIは公開画面確認だけにとどめる
+- QA担当: 公開URL、期待文言、差し戻し条件、証拠の残し方が1枚にまとまっていれば、変更後の判定がぶれない
+- 編集長: future review と重ならず、読者価値と安全性の両方を上げる一件として採用する
+
+実施内容:
+
+- `PROFILE_ALIGNMENT_VERIFICATION_BRIEF_2026-07-25.md` を新規作成
+- X、Substack、note の公開URL、期待表示名、期待自己紹介、固定URL確認点を整理
+- X固定投稿で確認する必須文言と、旧情報 `5名のAI社員` を差し戻し条件へ明記
+- `first-time.html` を入口LPとして再確認する手順と記録テンプレートを追加
+- `AI_EMPLOYEE_WORK_QUEUE.json` に `prepare-profile-alignment-verification-brief` を completed で追加
+- `AI_EMPLOYEE_ACTIVITY_LOG.json` に今回の完了記録を追加
+
+QA結果:
+
+- `PROFILE_CONVERSION_AUDIT_2026-07-15.md`、`OWNER_ACTIONS.json`、`first-time.html` とブリーフの内容を照合
+- 外部操作を含まない更新だけに限定していることを確認
+- `node tools/build-employee-dashboard.mjs`: 更新成功
+- `npm.cmd run qa:profiles`: PASS
+- `npm.cmd run qa:dashboard`: PASS
+
+未確認事項:
+
+- 社長による3媒体プロフィール更新そのもの
+- 更新後の公開プロフィール画面
+- 更新後24時間のプロフィール遷移や反応
+
+次の一手:
+
+1. 社長が `owner-profile-first-time-alignment` を実施する
+2. 変更後に `PROFILE_ALIGNMENT_VERIFICATION_BRIEF_2026-07-25.md` に沿って公開画面を読み、pass / fail を記録する
+3. 差分がなければ `OWNER_ACTIONS.json` を完了へ、差分があれば事実だけを残して pending を維持する

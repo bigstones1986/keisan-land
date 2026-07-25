@@ -83,13 +83,21 @@ function checkEditorialMetadata(file, metadata) {
     addError(file, "editorial_focusに今回の編集焦点を20文字以上で記録してください");
   }
 
-  const expected24h = addDays(metadata.date, 1);
-  const expected7d = addDays(metadata.date, 7);
+  const publishedDate = metadata.published_at?.match(/^(\d{4}-\d{2}-\d{2})/)?.[1];
+  if (metadata.status === "published" && !publishedDate) {
+    addError(file, "publishedにはpublished_atをISO日時で記録してください");
+  }
+  const reviewBaseDate = metadata.status === "published" && publishedDate
+    ? publishedDate
+    : metadata.date;
+  const reviewBaseLabel = metadata.status === "published" ? "公開日" : "公開予定日";
+  const expected24h = addDays(reviewBaseDate, 1);
+  const expected7d = addDays(reviewBaseDate, 7);
   if (expected24h && metadata.review_24h !== expected24h) {
-    addError(file, `review_24hは公開予定日の翌日にしてください（正: ${expected24h}）`);
+    addError(file, `review_24hは${reviewBaseLabel}の翌日にしてください（正: ${expected24h}）`);
   }
   if (expected7d && metadata.review_7d !== expected7d) {
-    addError(file, `review_7dは公開予定日の7日後にしてください（正: ${expected7d}）`);
+    addError(file, `review_7dは${reviewBaseLabel}の7日後にしてください（正: ${expected7d}）`);
   }
 }
 
