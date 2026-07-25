@@ -5,6 +5,10 @@ import { fileURLToPath } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
+const isContinuousIntegration = (
+  process.env.CI === "true"
+  || process.env.GITHUB_ACTIONS === "true"
+);
 
 async function load(relativePath) {
   try {
@@ -157,6 +161,13 @@ if (operations) {
   if (automationIds.size !== operations.ai_automations?.length) {
     errors.push("AI_EMPLOYEE_OPERATIONS.json: AI判断担当IDが重複しています");
   }
+  for (const automation of operations.ai_automations ?? []) {
+    for (const field of ["id", "name", "cadence", "mission"]) {
+      if (!automation[field]) {
+        errors.push(`AI_EMPLOYEE_OPERATIONS.json: ${automation.id ?? "IDなし"}の${field}がありません`);
+      }
+    }
+  }
   if ((operations.guardrails?.length ?? 0) < 8) {
     errors.push("AI_EMPLOYEE_OPERATIONS.json: 暴走防止ルールが不足しています");
   }
@@ -212,7 +223,7 @@ if (data) {
   if (data.summary?.trained_count !== data.employees?.filter((employee) => employee.level === "L4").length) {
     errors.push("dashboard-data.js: L4と育成済み人数が一致しません");
   }
-  if (data.summary?.active_automations !== 2) {
+  if (!isContinuousIntegration && data.summary?.active_automations !== 2) {
     errors.push(`dashboard-data.js: AI判断担当が全件有効ではありません（${data.summary?.active_automations ?? 0}/2）`);
   }
   if ((data.activities?.length ?? 0) < 2) {
@@ -249,14 +260,16 @@ if (data) {
 }
 
 const automationDir = path.join(os.homedir(), ".codex", "automations");
-for (const id of operations?.ai_automations?.map((automation) => automation.id) ?? []) {
-  try {
-    const automation = await readFile(path.join(automationDir, id, "automation.toml"), "utf8");
-    requireText(`automation:${id}`, automation, "status = \"ACTIVE\"", "自動勤務が有効ではありません");
-    requireText(`automation:${id}`, automation, "AI_EMPLOYEE_ACTIVITY_LOG.json", "活動ログへの記録指示がありません");
-    requireText(`automation:${id}`, automation, "build-employee-dashboard.mjs", "ダッシュボード更新指示がありません");
-  } catch {
-    errors.push(`automation:${id}: 自動勤務設定が見つかりません`);
+if (!isContinuousIntegration) {
+  for (const id of operations?.ai_automations?.map((automation) => automation.id) ?? []) {
+    try {
+      const automation = await readFile(path.join(automationDir, id, "automation.toml"), "utf8");
+      requireText(`automation:${id}`, automation, "status = \"ACTIVE\"", "自動勤務が有効ではありません");
+      requireText(`automation:${id}`, automation, "AI_EMPLOYEE_ACTIVITY_LOG.json", "活動ログへの記録指示がありません");
+      requireText(`automation:${id}`, automation, "build-employee-dashboard.mjs", "ダッシュボード更新指示がありません");
+    } catch {
+      errors.push(`automation:${id}: 自動勤務設定が見つかりません`);
+    }
   }
 }
 
@@ -307,6 +320,7 @@ for (const name of [
 }
 
 console.log("けいさんランド AI社員ダッシュボードQA");
+console.log(`検査環境: ${isContinuousIntegration ? "GitHub品質管理" : "ローカル運営室"}`);
 console.log(`AI社員: ${data?.employees?.length ?? 0}`);
 console.log(`自律監督: ${data?.summary?.supervisor_active ? "稼働中" : "停止または未起動"}`);
 console.log(`AI判断: ${data?.summary?.active_automations ?? 0}/${operations?.ai_automations?.length ?? 0}`);
