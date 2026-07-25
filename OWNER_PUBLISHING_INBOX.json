@@ -1,52 +1,11 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-24",
+  "updated_at": "2026-07-25",
   "final_external_action": "owner_only",
   "entries": [
     {
-      "publication_id": "x-20260724-learning-tip-001",
-      "priority": 1,
-      "channel": "x",
-      "target_date": "2026-07-24",
-      "source_file": "x-posts-2026-07-24.md",
-      "package_file": "x-posts-2026-07-24.md",
-      "status": "ready",
-      "handoff_status": "owner_ready",
-      "editorial_score": 93,
-      "risk_level": "green",
-      "source_hash": "sha256:600db416c2e4d7f08635832f33a5ebe6b8c1ad2126d9beb7ed175892dfbeabea",
-      "owner_action": "final_publish_in_chrome",
-      "freshness_review_due": "2026-07-31",
-      "approvals": {
-        "editorial": {
-          "role": "編集長",
-          "review_id": "owner-inbox-x24-editorial",
-          "decision": "approve",
-          "content_hash": "sha256:600db416c2e4d7f08635832f33a5ebe6b8c1ad2126d9beb7ed175892dfbeabea"
-        },
-        "qa": {
-          "role": "QA担当（品質保証担当）",
-          "review_id": "owner-inbox-x24-qa",
-          "decision": "approve",
-          "content_hash": "sha256:600db416c2e4d7f08635832f33a5ebe6b8c1ad2126d9beb7ed175892dfbeabea"
-        },
-        "safety": {
-          "role": "安全・ブランド監査責任者",
-          "review_id": "owner-inbox-x24-safety",
-          "decision": "approve",
-          "content_hash": "sha256:600db416c2e4d7f08635832f33a5ebe6b8c1ad2126d9beb7ed175892dfbeabea"
-        },
-        "handoff": {
-          "role": "AI公開承認責任者",
-          "review_id": "owner-inbox-x24-handoff",
-          "decision": "approve",
-          "content_hash": "sha256:600db416c2e4d7f08635832f33a5ebe6b8c1ad2126d9beb7ed175892dfbeabea"
-        }
-      }
-    },
-    {
       "publication_id": "x-20260725-reader-question-001",
-      "priority": 2,
+      "priority": 1,
       "channel": "x",
       "target_date": "2026-07-25",
       "source_file": "x-posts-2026-07-25.md",
@@ -87,7 +46,7 @@
     },
     {
       "publication_id": "x-20260727-print-drill-001",
-      "priority": 3,
+      "priority": 2,
       "channel": "x",
       "target_date": "2026-07-27",
       "source_file": "x-posts-2026-07-27.md",

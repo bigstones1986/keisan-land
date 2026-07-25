@@ -1,7 +1,154 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-25T16:46:00+09:00",
+  "updated_at": "2026-07-25T23:00:00+09:00",
   "entries": [
+    {
+      "id": "activity-20260725-github-quality-fix",
+      "shift_id": "quality-gate",
+      "started_at": "2026-07-25T22:57:00+09:00",
+      "completed_at": "2026-07-25T23:00:00+09:00",
+      "status": "completed",
+      "roles": [
+        "QA担当（品質保証担当）",
+        "発信進行・公開管理担当",
+        "編集長"
+      ],
+      "title": "GitHub品質管理の環境誤判定を修正",
+      "summary": "GitHubの検査用PCにローカル専用AI自動勤務設定がないことを不具合と誤判定していたため、GitHubとローカルで確認範囲を分離した。",
+      "qa": "GitHub相当の個人設定なし環境でnpm.cmd run qaを実行し、27ページ、教材37,000問、発信、安全ゲート、公開ファイル作成まで全検査PASS。修正コミット2f28b52のGitHub Actions run 30160755435もsuccessを確認。",
+      "files": [
+        "tools/employee-dashboard-qa.mjs",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md"
+      ],
+      "handoff": "GitHubではリポジトリ内のAI社員定義と品質を検査し、ローカルでは自動勤務2/2の実在と有効状態まで引き続き検査する。"
+    },
+    {
+      "id": "activity-20260725-longform-24h-brief",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T22:02:00+09:00",
+      "completed_at": "2026-07-25T22:02:00+09:00",
+      "status": "completed",
+      "roles": [
+        "発信進行・公開管理担当",
+        "分析担当",
+        "QA担当（品質保証担当）",
+        "編集長"
+      ],
+      "title": "公開済み長文の24時間後確認ブリーフを作成",
+      "summary": "22:55 JST 前は未来レビューを実行せず、公開済みnote・Substack 2本のURL、確認項目、未確認の扱いを1枚へ固定した。",
+      "qa": "OWNER_PUBLISHING_INBOX.json、NOTE_PUBLISHING_PACKAGE_2026-07-17.md、SUBSTACK_PUBLISHING_PACKAGE_2026-07-28.md、PUBLISHING_RUNBOOK.md を照合してブリーフを作成。node tools/build-employee-dashboard.mjs、npm.cmd run qa:employees、npm.cmd run qa:dashboard は PASS。",
+      "files": [
+        "PUBLISHED_LONGFORM_24H_REVIEW_BRIEF_2026-07-25.md",
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md"
+      ],
+      "handoff": "2026年7月25日22:55 JST 以降に review-published-longform-24h を開始し、このブリーフを使って note と Substack の24時間後結果を事実ベースで記録する。"
+    },
+    {
+      "id": "activity-20260725-search-review-brief",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T20:56:04+09:00",
+      "completed_at": "2026-07-25T20:56:04+09:00",
+      "status": "completed",
+      "roles": [
+        "分析担当",
+        "検索露出改善担当",
+        "SEO担当",
+        "QA担当（品質保証担当）",
+        "編集長"
+      ],
+      "title": "重点ページの検索7日比較ブリーフを作成",
+      "summary": "Search Consoleの基準値、固定中の要素、2026年7月29日の比較手順を1枚へまとめ、次回レビューの条件ぶれを防ぐ準備を終えた。",
+      "qa": "SEARCH_OPPORTUNITY_MAP_2026-07-25.md と DAILY_GROWTH_REPORT_2026-07-25.md の数値、クエリ群、確認日を照合。node tools/build-employee-dashboard.mjs、npm.cmd run qa:employees、npm.cmd run qa:dashboard は PASS。",
+      "files": [
+        "SEARCH_REVIEW_BRIEF_GRADE1_ADDITION_WORD_PROBLEMS_2026-07-25.md",
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md"
+      ],
+      "handoff": "2026年7月25日22:55 JST 以降は review-published-longform-24h を優先し、2026年7月29日06:30 JST 以降はこのブリーフを使って search-exposure-7d-review を実施する。"
+    },
+    {
+      "id": "activity-20260725-note-substack-triage",
+      "shift_id": "note-substack",
+      "started_at": "2026-07-25T20:33:46+09:00",
+      "completed_at": "2026-07-25T20:39:39+09:00",
+      "status": "completed",
+      "roles": [
+        "note編集・投稿担当",
+        "Substack編集・投稿担当",
+        "発信戦略責任者",
+        "QA担当（品質保証担当）",
+        "編集長"
+      ],
+      "title": "note・Substack新規下書きを見送り",
+      "summary": "noteは前日公開記事との重複が強く、SubstackはChrome安全ポリシーで publish 画面が拒否されたため、新規本番下書きは追加せず記録更新に止めた。",
+      "qa": "Chromeで note.com ログイン状態と https://note.com/notes/new の編集画面到達を確認し、noteホームで前日公開記事の存在を確認した。Substack の https://stone1986.substack.com/publish/posts はブラウザ安全ポリシーで拒否された。その後、qa:publishing PASS、qa:draft-inbox PASS、ダッシュボード更新成功、qa:dashboard PASS を確認した。",
+      "files": [
+        "CONTENT_QUEUE_2026-07-16_TO_07-31.md",
+        "OWNER_PUBLISHING_INBOX.md",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json"
+      ],
+      "handoff": "2026年7月25日22:55 JST 以降は review-published-longform-24h を最優先で開始し、新しい読者事実が出るまで同じ教材・同じ困りごとの長文を増やさない。"
+    },
+    {
+      "id": "activity-20260725-overdue-x-verify",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T18:56:45+09:00",
+      "completed_at": "2026-07-25T18:56:45+09:00",
+      "status": "completed",
+      "roles": [
+        "発信進行・公開管理担当",
+        "X投稿・コミュニティ担当",
+        "QA担当（品質保証担当）",
+        "編集長"
+      ],
+      "title": "期限超過X完成稿をverifyへ整理",
+      "summary": "2026-07-24分X完成稿の公開証拠がないため、owner_ready から外して verify 管理へ戻した。",
+      "qa": "qa:publishing PASS、qa:draft-inbox PASS、ダッシュボード更新と qa:dashboard PASS。OWNER_PUBLISHING_INBOX.json / OWNER_PUBLISHING_INBOX.md / x-posts-2026-07-24.md の状態を一致させた。",
+      "files": [
+        "x-posts-2026-07-24.md",
+        "OWNER_PUBLISHING_INBOX.json",
+        "OWNER_PUBLISHING_INBOX.md",
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md"
+      ],
+      "handoff": "2026-07-25 22:55 JST 以降は review-published-longform-24h を最優先で開始し、2026-07-24分X原稿は社長確認または公開証拠取得後に published か reschedule へ進める。"
+    },
+    {
+      "id": "activity-20260725-profile-owner-action",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T17:56:34+09:00",
+      "completed_at": "2026-07-25T17:56:34+09:00",
+      "status": "completed",
+      "roles": [
+        "発信戦略責任者",
+        "QA担当（品質保証担当）",
+        "安全・ブランド監査責任者",
+        "編集長"
+      ],
+      "title": "3媒体プロフィール更新を社長ToDo化",
+      "summary": "qa:profiles PASS と監査素材を根拠に、first-time.html へ統一する外部プロフィール更新を社長待ち台帳へ追加した。",
+      "qa": "qa:profiles PASS。外部変更は未実施のまま、固定URL・自己紹介・X固定投稿の更新内容を PROFILE_CONVERSION_AUDIT_2026-07-15.md と OWNER_ACTIONS.json にそろえた。",
+      "files": [
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "OWNER_ACTIONS.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md",
+        "PROFILE_CONVERSION_AUDIT_2026-07-15.md"
+      ],
+      "handoff": "社長がX、Substack、noteの表示名・自己紹介・固定URL・X固定投稿を更新後、AI社員が公開画面で一致確認する。"
+    },
     {
       "id": "activity-20260725-search-training",
       "shift_id": "morning-growth",
@@ -172,6 +319,57 @@
         "GROWTH_OPERATING_SYSTEM.md"
       ],
       "handoff": "社長ToDoタブで優先1から確認し、投稿後の報告または公開画面確認が取れた時だけ完了へ移す。"
+    },
+    {
+      "id": "activity-20260725-published-entry-route-qa",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T16:50:00+09:00",
+      "completed_at": "2026-07-25T16:53:53+09:00",
+      "status": "completed",
+      "roles": [
+        "発信進行・公開管理担当",
+        "SEO担当",
+        "QA担当（品質保証担当）",
+        "編集長"
+      ],
+      "title": "公開済み発信の受け皿導線QAを完了",
+      "summary": "published_entries のリンク記録と、重点ページへ向かうトップ・使い方・関連ドリル導線を照合し、サイトQAと発信QAも通した。",
+      "qa": "OWNER_PUBLISHING_INBOX.json で Substack #12 は重点ページとトップ、note は重点ページリンクを確認。index.html、how-to-use.html、grade1-addition.html から重点ページへの導線あり。npm.cmd run qa:site と npm.cmd run qa:publishing は PASS。",
+      "files": [
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md",
+        "OWNER_PUBLISHING_INBOX.json",
+        "index.html",
+        "how-to-use.html",
+        "grade1-addition.html"
+      ],
+      "handoff": "次は 2026年7月25日22:55 JST 以降に review-published-longform-24h を開始し、公開後24時間の閲覧・反応・流入を事実ベースで記録する。"
+    },
+    {
+      "id": "activity-20260725-first-time-route-qa",
+      "shift_id": "autonomous-company",
+      "started_at": "2026-07-25T19:53:58+09:00",
+      "completed_at": "2026-07-25T19:53:58+09:00",
+      "status": "completed",
+      "roles": [
+        "LP改善担当",
+        "UX担当",
+        "QA担当（品質保証担当）",
+        "編集長"
+      ],
+      "title": "はじめての方ページの導線QAを完了",
+      "summary": "first-time.html の主要CTA、学年カード、おすすめ導線、フッター導線を照合し、入口ページの受け皿品質を確認した。",
+      "qa": "first-time.html の相対リンク17件を抽出し、すべて既存ファイルまたは拡張子なしで解決できることを確認。step-calculation は step-calculation.html に解決。npm.cmd run qa:site は 27ページ、エラー0、注意0でPASS。",
+      "files": [
+        "AI_EMPLOYEE_WORK_QUEUE.json",
+        "AI_EMPLOYEE_ACTIVITY_LOG.json",
+        "PROJECT_STATUS.md",
+        "DAILY_GROWTH_REPORT_2026-07-25.md",
+        "first-time.html"
+      ],
+      "handoff": "2026年7月25日22:55以降は review-published-longform-24h を開始し、公開済み記事の24時間後確認とあわせて first-time.html の実利用状況を追う。"
     }
   ]
 }

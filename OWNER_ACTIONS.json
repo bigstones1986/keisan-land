@@ -1,5 +1,28 @@
 {
   "schema_version": 1,
   "updated_at": "2026-07-25",
-  "actions": []
+  "actions": [
+    {
+      "id": "owner-profile-first-time-alignment",
+      "title": "3媒体プロフィール固定URLを統一",
+      "category": "プロフィール",
+      "due_at": "2026-07-26",
+      "priority": 92,
+      "status": "pending",
+      "action": "X、Substack、noteの表示名・自己紹介・固定URLを `https://keisan-land.netlify.app/first-time.html` 方針へ更新し、X固定投稿の旧情報も差し替える",
+      "reason": "PROFILE_CONVERSION_AUDIT_2026-07-15.md と qa:profiles は PASS。公開済み発信の入口を保護者・先生向けの正式導線へそろえるため。",
+      "source_file": "PROFILE_CONVERSION_AUDIT_2026-07-15.md",
+      "materials": [
+        "PROFILE_CONVERSION_AUDIT_2026-07-15.md",
+        "GROWTH_OPERATING_SYSTEM.md",
+        "x-posts-2026-07-24.md",
+        "x-posts-2026-07-25.md"
+      ],
+      "required_proof": [
+        "X、Substack、noteの公開プロフィールで表示名・自己紹介・固定URLを確認",
+        "X固定投稿で旧情報「5名のAI社員」が消え、first-time.html が入っていることを確認"
+      ],
+      "verification_after": "社長の変更後、AI社員が公開画面を読んで一致確認する"
+    }
+  ]
 }

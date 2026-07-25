@@ -1,6 +1,6 @@
 # けいさんランド プロジェクト状況
 
-更新日: 2026-07-22
+更新日: 2026-07-25
 
 ## 2026-06-25 小学2年生 九九の文章問題ページ作成
 
@@ -9312,3 +9312,401 @@ Search Console:
 - 社長は`社長ToDo`タブを開き、優先1から確認する
 - 投稿後の報告または公開画面確認が取れた項目だけを完了へ移す
 - AI社員は新しい社長操作が発生した場合、理由、期限、具体的な操作、確認資料、優先度を台帳へ追加する
+
+## 2026-07-25 公開済み発信の受け皿導線QA
+
+`ready` の仕事がなく、`review-published-longform-24h` は 2026-07-25 22:55 JST まで期限未到来だったため、公開済みnote・Substackの受け皿導線を一件だけ追加して完了した。
+
+実施内容:
+
+- `OWNER_PUBLISHING_INBOX.json` の `published_entries` を確認し、Substack #12 は重点ページとトップページ、note は重点ページへのリンク確認記録があることを照合
+- `index.html`、`how-to-use.html`、`grade1-addition.html` から `grade1-addition-word-problems.html` への導線を確認
+- `npm.cmd run qa:site` と `npm.cmd run qa:publishing` を実行し、どちらも PASS を確認
+- `AI_EMPLOYEE_WORK_QUEUE.json`、`AI_EMPLOYEE_ACTIVITY_LOG.json`、`DAILY_GROWTH_REPORT_2026-07-25.md` を更新
+
+QA結果:
+
+- サイト点検: 27ページ、エラー0、注意0
+- 発信原稿QA: X 3本、note 1本、Substack 1本、エラー0、注意0
+- published_entries の公開記録と重点ページへの案内先が矛盾していない
+- トップページ、使い方、関連ドリルから重点ページへの内部導線あり
+
+未確認事項:
+
+- この実行では公開URLそのもののHTTP到達や画面表示を外部取得で再確認していない
+- 2026-07-25 22:55 JST 以降のnote・Substack 24時間後の閲覧、反応、教材流入
+
+次の一手:
+
+1. 2026-07-25 22:55 JST 以降に `review-published-longform-24h` を開始する
+2. 事実として確認できた数字と未確認を分けて記録する
+3. 次稿で変える一つだけを決める
+
+## 2026-07-25 夕方の改善勤務 3媒体プロフィール導線の社長ToDo起票
+
+2026年7月25日17時台の時点でも、期限到来済みまたは期限なしの `ready` 仕事は 0 件だった。
+
+- `review-published-longform-24h` は 2026年7月25日22:55 JST まで未到来
+- `search-exposure-7d-review` は 2026年7月29日 06:30 待ち
+- `review-published-longform-7d` は 2026年7月31日 22:55 待ち
+
+このため、未来時刻のレビューを前倒しせず、公開済み発信の入口品質に効き、まだ社長ToDo化されていなかった外部プロフィール統一を一件だけ追加して完了した。
+
+担当別意見:
+
+- 発信戦略責任者: プロフィールはサイト全体の入口なので、`first-time.html` への統一は保護者・先生の理解を早める。
+- QA担当: `PROFILE_CONVERSION_AUDIT_2026-07-15.md` と `qa:profiles` がそろっており、社長が安全に実行できる材料は準備済み。
+- 安全・ブランド監査責任者: X、Substack、noteの外部プロフィール変更とX固定投稿差し替えは社長だけが行う。
+- 編集長: いまAIがやるべきなのは変更そのものではなく、重複しない社長操作として期限と根拠を残すこと。
+
+編集長判断:
+
+- 採用:
+  - `prepare-profile-conversion-owner-action` を仕事キューへ追加して完了
+  - `owner-profile-first-time-alignment` を `OWNER_ACTIONS.json` へ追加
+- 保留:
+  - 変更後の公開プロフィール確認
+  - 24時間後の反応確認
+- やらない:
+  - AIによる外部プロフィール変更
+  - 未来時刻の公開後レビュー前倒し
+
+実施内容:
+
+- `PROFILE_CONVERSION_AUDIT_2026-07-15.md` の推奨表示名、自己紹介、固定URL、X固定投稿案を確認
+- `npm.cmd run qa:profiles` を実行し、PASSを確認
+- `OWNER_ACTIONS.json` に、X、Substack、noteの表示名・自己紹介・固定URLとX固定投稿の更新タスクを追加
+- `AI_EMPLOYEE_WORK_QUEUE.json`、`AI_EMPLOYEE_ACTIVITY_LOG.json`、`DAILY_GROWTH_REPORT_2026-07-25.md` を更新
+
+確認結果:
+
+- `qa:profiles`: PASS
+- `AI_EMPLOYEE_WORK_QUEUE.json`: `ready` 0件、`waiting` 3件のまま。新規追加仕事は completed で記録
+- `OWNER_ACTIONS.json`: 3媒体プロフィール固定URL統一の社長操作 1件を追加
+- 旧情報 `5名のAI社員` を含むX固定投稿の差し替え必要性を監査ファイルで再確認
+
+未確認事項:
+
+- 社長変更後のX、Substack、note公開プロフィール画面
+- X固定投稿が新しい案内文と `first-time.html` に差し替わったこと
+- 変更後24時間のプロフィール遷移や反応
+
+次の一手:
+
+1. 社長が `PROFILE_CONVERSION_AUDIT_2026-07-15.md` を見ながら、3媒体の表示名、自己紹介、固定URL、X固定投稿を更新する
+2. AI社員は変更後に公開画面を確認し、`OWNER_ACTIONS.json` を完了へ移す
+3. 2026年7月25日22:55 JST 以降は `review-published-longform-24h` を最優先で開始する
+
+## 2026-07-25 夜前の改善勤務 期限超過X完成稿のverify整理
+
+2026年7月25日18時台の時点でも、期限到来済みまたは期限なしの `ready` 仕事は 0 件だった。
+
+- `review-published-longform-24h` は 2026年7月25日22:55 JST まで未到来
+- `search-exposure-7d-review` は 2026年7月29日 06:30 待ち
+- `review-published-longform-7d` は 2026年7月31日 22:55 待ち
+- 一方で `x-posts-2026-07-24.md` は候補日を過ぎても `owner_ready` のまま残っており、公開証拠未確認の原稿を社長投稿待ちに混ぜない運用ルールとずれていた
+
+担当別意見:
+
+- 発信進行・公開管理担当: 予定日を過ぎた `ready` は、公開証拠がない限り `verify` へ移し、当日以降の完成稿と混ぜない
+- X投稿・コミュニティ担当: 2026-07-24分Xは未公開と断定せず、本文は保持したまま公開確認待ちへ戻す
+- QA担当: `x-posts-2026-07-24.md`、`OWNER_PUBLISHING_INBOX.json`、`OWNER_PUBLISHING_INBOX.md`、ダッシュボードの件数を一致させる
+- 編集長: 新規原稿や新規導線追加ではなく、公開進行の状態管理を一件だけ正す
+
+編集長判断:
+
+- 採用:
+  - `verify-overdue-owner-ready-x24` を追加して完了
+  - `x-posts-2026-07-24.md` を `verify` へ移す
+  - `OWNER_PUBLISHING_INBOX.json` と `OWNER_PUBLISHING_INBOX.md` から 2026-07-24 分Xを社長投稿待ち一覧から外す
+- 保留:
+  - 2026-07-24分Xが実際に公開済みか未公開かの判定
+  - 2026-07-25分Xの当日投稿結果
+- やらない:
+  - 公開有無の推測
+  - 未来期限レビューの前倒し
+  - 今日分と将来分のX完成稿の内容変更
+
+実施内容:
+
+- `x-posts-2026-07-24.md` の frontmatter を `status: verify` へ更新
+- `OWNER_PUBLISHING_INBOX.json` を更新し、社長投稿待ちは 2026-07-25 分と 2026-07-27 分の2件だけに整理
+- `OWNER_PUBLISHING_INBOX.md` も同じ状態へ更新し、2026-07-24分Xは `verify` 管理中であることを追記
+- `AI_EMPLOYEE_WORK_QUEUE.json`、`AI_EMPLOYEE_ACTIVITY_LOG.json`、`DAILY_GROWTH_REPORT_2026-07-25.md` を更新
+
+QA結果:
+
+- `npm.cmd run qa:publishing`: PASS
+- `npm.cmd run qa:draft-inbox`: PASS
+- `node tools/build-employee-dashboard.mjs`: 更新成功
+- `npm.cmd run qa:dashboard`: PASS
+
+未確認事項:
+
+- 2026-07-24分Xの公開URLまたは公開画面
+- 2026-07-25分Xの投稿結果
+- 2026-07-25 22:55 JST 以降のnote・Substack 24時間後の閲覧、反応、教材流入
+
+次の一手:
+
+1. 2026年7月25日22:55 JST 以降に `review-published-longform-24h` を開始する
+2. 2026-07-24分Xは、公開証拠を確認できたら `published`、未公開を確認できたら `reschedule` へ進める
+3. 2026-07-25分と2026-07-27分のX完成稿だけを社長投稿待ちとして維持する
+
+## 2026-07-25 夜の改善勤務 はじめての方ページの導線QA
+
+2026年7月25日19時台の時点でも、期限到来済みまたは期限なしの `ready` 仕事は 0 件だった。
+
+- `review-published-longform-24h` は 2026年7月25日22:55 JST まで未到来
+- `search-exposure-7d-review` は 2026年7月29日 06:30 待ち
+- `review-published-longform-7d` は 2026年7月31日 22:55 待ち
+- `first-time.html` は今後のプロフィール固定URLと入口導線の受け皿だが、今日の改善勤務ではページ自体の主要CTA到達先をまだ確認していなかった
+
+担当別意見:
+
+- LP改善担当: `first-time.html` は初回流入の受け皿なので、次に押すボタンが実在ページへつながるかを先に確認したい
+- UX担当: はじめて来た保護者・先生は、学年カード、おすすめ導線、終盤CTAのどこからでも迷わず進める必要がある
+- QA担当: 主要CTAと内部リンクの到達先を明示し、拡張子なし導線も既存ページへ解決できることを分けて確認したい
+- 編集長: 外部変更や主要SEO変更はせず、入口ページの受け皿品質だけを一件で確認する
+
+編集長判断:
+
+- 採用:
+  - `qa-first-time-entry-routes` を一件だけ追加して完了
+  - `first-time.html` のヒーローCTA、学年カード、おすすめ導線、終盤CTA、フッター導線を点検
+- 保留:
+  - 本番 `first-time.html` の再確認
+  - 社長による3媒体プロフィール更新後の実流入確認
+- やらない:
+  - 外部プロフィール変更
+  - title、description、h1 など主要SEO要素の変更
+
+実施内容:
+
+- `first-time.html` のリンクを確認し、ヒーローCTA、学年カード4件、おすすめ導線5件、終盤CTA、フッター導線を抽出
+- 相対リンク17件を照合し、すべて既存ファイルまたは拡張子なしで既存ページへ解決できることを確認
+- `step-calculation` 導線は `step-calculation.html` に解決できることを確認
+- `npm.cmd run qa:site` を実行し、27ページ、エラー0、注意0でPASSを確認
+- `AI_EMPLOYEE_WORK_QUEUE.json`、`AI_EMPLOYEE_ACTIVITY_LOG.json`、`DAILY_GROWTH_REPORT_2026-07-25.md` を更新
+
+QA結果:
+
+- `first-time.html` の相対リンク17件はすべて解決可能
+- ヒーローCTA、学年カード、おすすめ導線、終盤CTA、フッター導線に未解決リンクなし
+- `npm.cmd run qa:site`: 27ページ、エラー0、注意0、PASS
+
+未確認事項:
+
+- 本番 `https://keisan-land.netlify.app/first-time.html` の画面そのものの再確認
+- 社長による3媒体プロフィール更新後の遷移や反応
+- 2026年7月25日22:55 JST 以降のnote・Substack 24時間後の閲覧、反応、教材流入
+
+次の一手:
+
+1. 2026年7月25日22:55 JST 以降に `review-published-longform-24h` を開始する
+2. 公開済み記事の24時間後確認とあわせて、`first-time.html` が入口として機能しているかを事実ベースで記録する
+3. 社長がプロフィール固定URLを更新した後、公開画面を読んで `OWNER_ACTIONS.json` の完了可否を判断する
+
+## 2026-07-25 note・Substack毎日下書きの題材判定
+
+2026年7月25日20時33分時点で、長文の24時間後確認 `review-published-longform-24h` は 2026年7月25日22時55分 JST まで未到来だった。
+
+現在地:
+
+- 前日2026年7月24日22時54分にnote公開、22時55分にSubstack公開が完了している
+- 今日の意味ある改善は `first-time.html` の導線QAと、3媒体プロフィール固定URLを `first-time.html` へそろえる社長ToDo起票だった
+- 重点ページ `grade1-addition-word-problems.html` と、その読者の困りごとは前日公開2本で既に扱っている
+
+確認結果:
+
+- Chromeで `note.com` へのログイン状態を確認し、ヘッダーに `TK｜2児の父親×AI開発` が表示されていた
+- noteホーム上で、公開済み記事 `小学1年生が足し算の文章題で止まったら。式より先に試したい3つの声かけ` が21時間前の記事として見えていた
+- `https://note.com/notes/new` からnoteの新規編集画面へ到達できた
+- `https://stone1986.substack.com/publish/posts` へのChrome操作は、ブラウザ安全ポリシーにより拒否された
+
+編集長判断:
+
+- 採用:
+  - 今日のnote新規下書きは作らない
+  - 今日のSubstack新規下書きは作らない
+  - 前日公開2本の24時間後確認を先に進める
+- 保留:
+  - `first-time.html` を題材にした次回note候補
+  - プロフィール固定URL更新後の導線変化を扱う次回Substack候補
+- やらない:
+  - 前日公開記事と読者・教材が近い長文を24時間以内に重ねる
+  - 公開済み原稿や承認済みハッシュを、理由なく書き換える
+  - 安全ポリシーで拒否されたSubstack操作の迂回
+
+理由:
+
+- noteは、前日公開の保存版記事と今日の候補が、読者、教材URL、困りごとまで近く、新規稿にすると重複が強い
+- 今日の改善材料は導線QAとプロフィール整備であり、公的資料、学年・単元、具体例を備えた別の保存版noteへ伸ばすには新しい読者事実が足りない
+- SubstackはChrome側の安全ポリシーで `stone1986.substack.com` の publish 画面へ進めず、本番下書き保存の条件を満たせなかった
+
+QA結果:
+
+- noteのログイン状態確認: PASS
+- note公開済み記事の存在確認: PASS
+- note新規編集画面到達: PASS
+- Substack publish 画面到達: ブラウザ安全ポリシーで拒否
+- `npm.cmd run qa:publishing`: PASS
+- `npm.cmd run qa:draft-inbox`: PASS
+- `node tools/build-employee-dashboard.mjs`: 更新成功
+- `npm.cmd run qa:dashboard`: PASS
+
+未確認事項:
+
+- 2026年7月25日22時55分以降のnote・Substack 24時間後の閲覧、反応、教材流入
+- 社長による3媒体プロフィール固定URL更新後の遷移変化
+- Substackの安全ポリシー拒否が一時的か恒久設定か
+
+次の一手:
+
+1. 2026年7月25日22時55分以降に `review-published-longform-24h` を開始する
+2. 24時間後確認で新しい読者事実が出た場合だけ、次のnote・Substack題材を再判定する
+3. 社長がプロフィール固定URLを更新した後、`first-time.html` への入口変化を次回長文候補へ戻す
+
+## 2026-07-25 夜の改善勤務 重点ページの検索7日比較ブリーフ作成
+
+2026年7月25日20時台の時点でも、期限到来済みまたは期限なしの `ready` 仕事は 0 件だった。
+
+- `review-published-longform-24h` は 2026年7月25日22:55 JST まで未到来
+- `search-exposure-7d-review` は 2026年7月29日 06:30 待ち
+- `review-published-longform-7d` は 2026年7月31日 22:55 待ち
+- `SEARCH_OPPORTUNITY_MAP_2026-07-25.md` はサイト全体の判断材料として十分だったが、重点ページ `grade1-addition-word-problems.html` の7日比較に使う固定条件を1枚へ切り出していなかった
+
+担当別意見:
+
+- 分析担当: 2026年7月22日をデータ最終日に固定し、7日と28日の比較期間を明示しておきたい
+- 検索露出改善担当: クエリ群、案内先、詰まり、確認日を1枚へまとめ、2026年7月29日の判断を速くしたい
+- SEO担当: 2026年7月29日までは title、description、h1、canonical を変えない前提を明文化したい
+- QA担当: 7日後レビュー時に「変えていない要素」と「改善前の値」を同じ文書で確認できる状態にしたい
+- 編集長: 今回は新しいページ改修を行わず、未来タスクの判断条件だけを固定する
+
+編集長判断:
+
+- 採用:
+  - `prepare-search-review-brief-grade1-addition` を一件だけ追加して完了
+  - `SEARCH_REVIEW_BRIEF_GRADE1_ADDITION_WORD_PROBLEMS_2026-07-25.md` を作成
+  - 2026年7月29日の検索7日比較で見る値、固定要素、判断条件を明文化
+- 保留:
+  - 2026年7月25日22:55 JST 以降のnote・Substack 24時間後確認
+  - 2026年7月29日のSearch Console実測比較
+- やらない:
+  - `grade1-addition-word-problems.html` の主要SEO要素変更
+  - Search Consoleへの送信
+
+実施内容:
+
+- `SEARCH_OPPORTUNITY_MAP_2026-07-25.md` と `DAILY_GROWTH_REPORT_2026-07-25.md` を基に、重点ページの7日・28日基準値を再整理
+- 新規ファイル `SEARCH_REVIEW_BRIEF_GRADE1_ADDITION_WORD_PROBLEMS_2026-07-25.md` を追加
+- 重点検索語2件、クエリ群、案内先、検索結果形式、現在の詰まり、固定要素、確認日、判断条件、2026年7月29日の確認手順を記録
+- `AI_EMPLOYEE_WORK_QUEUE.json`、`AI_EMPLOYEE_ACTIVITY_LOG.json`、`DAILY_GROWTH_REPORT_2026-07-25.md` を更新
+
+QA結果:
+
+- ブリーフの数値は `SEARCH_OPPORTUNITY_MAP_2026-07-25.md` と一致
+- 比較日、固定要素、判断条件が1ファイルで読める
+- `node tools/build-employee-dashboard.mjs`: 更新成功
+- `npm.cmd run qa:employees`: PASS
+- `npm.cmd run qa:dashboard`: PASS
+
+未確認事項:
+
+- 2026年7月25日22:55 JST 以降のnote・Substack 24時間後確認
+- 2026年7月29日のSearch Console実測比較
+- 7日比較後に主要SEO要素の修正が本当に必要かどうか
+
+次の一手:
+
+1. 2026年7月25日22:55 JST 以降に `review-published-longform-24h` を開始する
+2. 2026年7月29日06:30 JST に `search-exposure-7d-review` を開始し、ブリーフ条件で維持・修正・撤回・未判定を選ぶ
+3. 7日比較が終わるまでは `grade1-addition-word-problems.html` の主要SEO要素を変えない
+
+## 2026-07-25 夜の改善勤務 公開済み長文の24時間後確認ブリーフ
+
+2026年7月25日21時55分時点でも、期限到来済みまたは期限なしの `ready` 仕事は 0 件だった。
+
+- `review-published-longform-24h` は 2026年7月25日22:55 JST まで未到来
+- `search-exposure-7d-review` は 2026年7月29日06:30 JST 待ち
+- `review-published-longform-7d` は 2026年7月31日22:55 JST 待ち
+- 公開済みnoteとSubstackの24時間後確認項目は運用手順に分散しており、今回の2本専用の確認シートがまだなかった
+
+担当別意見:
+
+- 発信進行・公開管理担当: 22:55 JST 前に実績化せず、公開済み2本のURLと確認対象を先に固定したい
+- 分析担当: 数字が見えない項目を未確認のまま残せるテンプレートを先に用意したい
+- QA担当: noteとSubstackで確認項目がずれると比較がぶれるため、同じ重点ページと記録欄へそろえたい
+- 編集長: 新しい長文や本文修正は行わず、24時間後レビューを速く正確に始める準備だけを一件で終える
+
+編集長判断:
+
+- 採用:
+  - `prepare-published-longform-24h-brief` を一件だけ追加して完了
+  - `PUBLISHED_LONGFORM_24H_REVIEW_BRIEF_2026-07-25.md` を作成
+  - noteとSubstackの公開URL、公開時刻、確認項目、変えない要素、次稿で決める一つを固定
+- 保留:
+  - 2026年7月25日22:55 JST 以降の実数値
+  - 社長のプロフィール更新後に `first-time.html` が入口として使われた事実
+- やらない:
+  - 22:55 JST 前の24時間後レビュー前倒し
+  - 公開済み本文やタイトルの変更
+  - 外部投稿、公開、予約、送信
+
+実施内容:
+
+- `OWNER_PUBLISHING_INBOX.json` で公開済みnote・Substackの公開URL、公開時刻、重点ページ、確認日を再確認
+- `NOTE_PUBLISHING_PACKAGE_2026-07-17.md` と `SUBSTACK_PUBLISHING_PACKAGE_2026-07-28.md` を読み、媒体別の公開確認済み事実と未確認点を整理
+- `PUBLISHING_RUNBOOK.md` の24時間後確認項目を、今回の2本専用ブリーフへ落とし込んだ
+- `PUBLISHED_LONGFORM_24H_REVIEW_BRIEF_2026-07-25.md` を追加し、仕事キュー、活動ログ、日次レポートを更新した
+
+QA結果:
+
+- ブリーフ内の公開URL、公開時刻、読者、重点ページは `OWNER_PUBLISHING_INBOX.json` と両パッケージ記録に一致
+- `node tools/build-employee-dashboard.mjs`: 更新成功
+- `npm.cmd run qa:employees`: PASS
+- `npm.cmd run qa:dashboard`: PASS
+
+未確認事項:
+
+- 2026年7月25日22:55 JST 以降のnote・Substack 24時間後の閲覧、反応、購読、教材反応
+- 社長のプロフィール更新後に `first-time.html` が入口として実際に使われたか
+- note見出し画像なし公開が反応へ影響したと断定できる材料
+
+次の一手:
+
+1. 2026年7月25日22:55 JST 以降に `review-published-longform-24h` を開始する
+2. `PUBLISHED_LONGFORM_24H_REVIEW_BRIEF_2026-07-25.md` を使って、見えた数字だけを事実ベースで記録する
+3. 次稿で変える一つだけを決め、7日後確認 `review-published-longform-7d` へ引き継ぐ
+## 2026-07-25 GitHub品質管理フロー復旧
+
+報告:
+
+- GitHubから`Quality checks`失敗メールが届いた
+- 直近4回が連続失敗し、最新失敗はrun `30149978364`
+
+原因:
+
+- サイト、教材、SEO、発信品質の検査はすべて合格していた
+- `qa:dashboard`だけが、GitHubの検査用PCにもローカル専用のAI自動勤務設定が存在する前提で判定していた
+- GitHubでは自動勤務設定が0/2になるため、3件の誤検知で失敗していた
+
+修正:
+
+- GitHub品質管理では、リポジトリ内のAI社員定義、必須項目、画面データ、仕事キュー、安全ルールを検査
+- ローカル運営室では従来どおり、自動勤務2/2の実在と有効状態まで検査
+- 検査場所を表示し、どちらの判定か分かるようにした
+
+確認:
+
+- GitHub相当環境で`npm.cmd run qa`: 全項目PASS
+- ローカル運営室で`npm.cmd run qa:dashboard`: AI判断2/2、エラー0
+- 修正コミット: `2f28b52`
+- 修正後GitHub Actions: run `30160755435`
+- 結果: `success`
+- URL: https://github.com/bigstones1986/keisan-land/actions/runs/30160755435
+
+未確認事項:
+
+- なし。品質管理フローは復旧済み
